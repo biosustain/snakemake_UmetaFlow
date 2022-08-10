@@ -1,0 +1,14 @@
+include: "rules/common.smk"
+
+rule all:
+    input:
+        get_final_output()
+
+include: "rules/fileconversion.smk",
+include: "rules/preprocessing.smk",
+include: "rules/requantification.smk",
+include: "rules/GNPSexport.smk",
+include: "rules/sirius_csi.smk",
+include: "rules/sirius.smk",
+include: "rules/annotate.smk",
+include: "rules/fbmn_sirius.smk"

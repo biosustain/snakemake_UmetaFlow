@@ -1,0 +1,39 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+# possible entries of the config file and which type they should be
+properties:
+  items:
+    type: object
+    properties:
+      name:
+        type: string
+      samples:
+        type: string
+    required:
+      - samples
+  rules:
+    type: object
+    properties:
+      fileconversion:
+        type: boolean
+      preprocessing:
+        type: boolean
+      GNPSexport:
+        type: boolean
+      requantification:
+        type: boolean
+      sirius:
+        type: boolean
+      sirius_csi:
+        type: boolean
+      annotate:
+        type: boolean
+      fbmn_sirius:
+        type: boolean
+
+required:
+  - rules

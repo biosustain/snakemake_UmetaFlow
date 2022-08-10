@@ -1,0 +1,12 @@
+name: pyopenms
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - ipython
+    - -r requirements.txt
+  - pandas
+  - numpy
+  - networkx

@@ -1,0 +1,13 @@
+name: executables
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.9
+  - bioconda::thermorawfileparser
+  - bioconda::sirius-csifingerid
+  - pip
+  - pip:
+    - ipython
+  - pandas
+  - numpy
