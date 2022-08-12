@@ -45,7 +45,7 @@ def sirius_csi_annotations(matrix, annotated):
         DF_CSI["featureId"][i]= DF_CSI["featureId"][i].split(",")
 
     DF_features= pd.read_csv(matrix, sep="\t")
-    DF_features= DF_features.drop(columns=["quality", "id"])
+    DF_features= DF_features.drop(columns=["quality"])
     DF_features= DF_features.fillna(0)
     DF_features["feature_ids"]= [ids[1:-1].split(",") for ids in DF_features["feature_ids"]]
 
