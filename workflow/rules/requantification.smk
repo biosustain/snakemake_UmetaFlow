@@ -68,7 +68,7 @@ rule build_library:
 rule requantify:
     input:
         var1= join("results", "Interim", "Requantified", "MetaboliteIdentification.tsv"),
-        var2= join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML")
+        var2= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
         join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML")
     log: join("workflow", "report", "logs", "requantification", "requantify_{samples}.log")

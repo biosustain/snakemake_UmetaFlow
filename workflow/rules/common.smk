@@ -41,7 +41,7 @@ def get_final_output():
         expand(os.path.join("results", "Interim", "Preprocessed", "FFM_{samples}.featureXML"), samples=SAMPLES),
         expand(os.path.join("results", "Interim", "mzML", "PCfeature_{samples}.mzML"), samples=SAMPLES),
         expand([os.path.join("results", "Interim", "Preprocessed", "MapAligned_{samples}.featureXML"), os.path.join("results", "Interim", "Preprocessed", "MapAligned_{samples}.trafoXML")], samples=SAMPLES),
-        expand(os.path.join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML"), samples=SAMPLES),
+        expand(os.path.join("results", "Interim", "mzML", "Aligned_{samples}.mzML"), samples=SAMPLES),
         expand(os.path.join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML"), samples=SAMPLES),
         expand(os.path.join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")),
         expand(os.path.join("results", "Preprocessed", "FeatureMatrix.tsv"))],

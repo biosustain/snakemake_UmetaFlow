@@ -9,7 +9,7 @@ from os.path import join
 if config["rules"]["requantification"]==True:
     rule sirius_csi:
         input: 
-            var1= join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML"),
+            var1= join("results", "Interim", "mzML", "Aligned_{samples}.mzML"),
             var2= join("results", "Interim", "Requantified", "MFD_{samples}.featureXML") 
         output:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),
@@ -27,7 +27,7 @@ if config["rules"]["requantification"]==True:
 else:
     rule sirius_csi:
         input: 
-            var1= join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML"),
+            var1= join("results", "Interim", "mzML", "Aligned_{samples}.mzML"),
             var2= join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML") 
         output:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),

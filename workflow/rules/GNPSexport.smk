@@ -35,7 +35,7 @@ else:
 rule GNPS_export:
     input:
         var1= join("results", "Interim", "GNPSexport", "filtered.consensusXML"),
-        var2= expand(join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML"), samples=SAMPLES)
+        var2= expand(join("results", "Interim", "mzML", "Aligned_{samples}.mzML"), samples=SAMPLES)
     output:
         out1= join("results", "GNPSexport", "MSMS.mgf"),
         out2= join("results", "GNPSexport", "FeatureQuantificationTable.txt"), 

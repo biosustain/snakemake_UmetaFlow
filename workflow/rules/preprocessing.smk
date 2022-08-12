@@ -74,7 +74,7 @@ rule mzMLaligner:
         var1= join("results", "Interim", "mzML", "PCfeature_{samples}.mzML"),
         var2= join("results", "Interim", "Preprocessed", "MapAligned_{samples}.trafoXML")
     output:
-        join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML")
+        join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     log: join("workflow", "report", "logs", "preprocessing", "mzMLaligner_{samples}.log")
     threads: 4
     conda:
@@ -105,7 +105,7 @@ rule IDMapper_FFM:
     input:
         var1= join("resources", "emptyfile.idXML"),
         var2= join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML"),
-        var3= join("results", "GNPSexport", "mzML", "Aligned_{samples}.mzML")
+        var3= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
         join("results", "Interim", "Preprocessed", "IDMapper_{samples}.featureXML")
     log: join("workflow", "report", "logs", "preprocessing", "IDMapper_FFM_{samples}.log")
