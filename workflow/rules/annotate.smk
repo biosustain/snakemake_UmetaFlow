@@ -87,7 +87,7 @@ if GNPS_library:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/GNPS.py") {input.lib} {input.featurematrix} {input.mgf_path} {output.gnps} 2>> {log}
+            python workflow/scripts/GNPS.py {input.lib} {input.featurematrix} {input.mgf_path} {output.gnps} 2>> {log}
             """
 else:
     print("no file found")
