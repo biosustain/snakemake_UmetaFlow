@@ -12,7 +12,7 @@ If you have Agilent or Bruker files, skip that step (write "FALSE" for rule file
 
 ### `2) Pre-processing:`
 
-Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode.
+Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode.
 
 ![dag](/images/Preprocessing.svg) 
 

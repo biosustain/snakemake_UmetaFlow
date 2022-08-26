@@ -44,7 +44,7 @@ Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to
 
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 
 
-**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_sampletsv_file.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid spaces in sample names.**
+**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_sampletsv_file.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in sample names.**
 
 `samples.tsv` example:
 
@@ -96,7 +96,9 @@ Activate the conda environment:
 
     conda activate snakemake
 
-Build OpenMS on [Linux](https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html) or [MacOS](https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/release/latest/html/install_mac.html) until the 3.0 release is published.
+#### For both systems
+
+Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html) until the 3.0 release is published.
 
 #### For Linux only !
 
