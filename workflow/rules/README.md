@@ -34,14 +34,14 @@ CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
 
+Once the job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library identifications under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+
 ![dag](/images/GNPSExport.svg) 
 
 ### `6) Annotate:`
 
-Annotate the feature matrix with formula and structural predictions, as well as GNPS spectral matches after FBMN. 
-When FBMN is done, download the cytoscape files. Under the directory "DB_result", there is a .TSV file with all metabolite identifications through MSMS matching. Tranfer that file under "resources". The result is a Feature Matrix with SIRIUS, CSI and GNPS annotations.
+Annotate the feature matrix with formula and structural predictions, as well as GNPS spectral matches after FBMN. The result is a Feature Matrix with SIRIUS, CSI and GNPS annotations. If the GNPSexport step is omitted, this rule will only annotate the Feature Matrix with SIRIUS and CSI predictions. 
 
 ### `7) fbmn_sirius:`
 
 This rule allows for integration of the SIRIUS and CSI predictions to the .GRAPHML file from FBMN. 
-After FBMN is done, download the cytoscape files and transfer the graphml network under the directory "results/GNPSexport". 
