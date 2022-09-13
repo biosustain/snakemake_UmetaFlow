@@ -11,17 +11,17 @@ The pipeline consists of five interconnected steps:
 
 1) File conversion: Simply add your Thermo raw files in data/raw/ and they will be converted to centroid mzML files. If you have Agilent or Bruker files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow") and convert them independently using proteowizard (see https://proteowizard.sourceforge.io/) and add them to the data/mzML/ directory.
 
-2) Pre-processing: converting raw data to a feature table with a series of algorithms 
+2) Pre-processing: converting raw data to a feature table with a series of algorithms. 
 
 3) Re-quantification: Re-quantify all raw files to avoid missing values resulted by the pre-processing workflow for statistical analysis and data exploration.
 
-4) Structural and formula predictions (SIRIUS and CSI:FingeID)
+4) Structural and formula predictions (SIRIUS and CSI:FingeID).
 
 5) GNPSexport: generate all the files necessary to create a [FBMN](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/) or [IIMN](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges) job at GNPS. 
 
 6) Annotate the feature matrix with formula and structural predictions (GNPS metabolite annotations optional).
 
-7) Integrate Sirius and CSI predictions to the network (after FBMN)
+7) Integrate Sirius and CSI predictions to the network (after FBMN).
 
 ### Overview
 ![dag](/images/UmetaFlow_graph.svg)
@@ -36,7 +36,6 @@ The pipeline consists of five interconnected steps:
 Step 1: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
-
 
     git clone https://github.com/NBChub/snakemake-UmetaFlow.git
 
