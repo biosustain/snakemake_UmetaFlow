@@ -23,6 +23,7 @@ The pipeline consists of five interconnected steps:
 
 7) Integrate Sirius and CSI predictions to the network (after FBMN)
 
+See [README](workflow/rules/README.md) file for details.
 ### Overview
 ![dag](/images/UmetaFlow_graph.svg)
 

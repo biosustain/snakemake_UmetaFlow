@@ -30,6 +30,8 @@ CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for th
 
 CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and the rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file.
 
+For negative mode, replace the possible adducts with "[M-H]-, [M-H2O-H]-, [M-HCOOH]-".
+
 ### `5) GNPSexport:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
