@@ -7,13 +7,13 @@ This is a snakemake implementation of the [pyOpenMS workflow](https://github.com
 
 ## Workflow overview
 
-The pipeline consists of five interconnected steps:
+The pipeline consists of seven interconnected steps:
 
 1) File conversion: Simply add your Thermo raw files in data/raw/ and they will be converted to centroid mzML files. If you have Agilent or Bruker files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow") and convert them independently using proteowizard (see https://proteowizard.sourceforge.io/) and add them to the data/mzML/ directory.
 
 2) Pre-processing: converting raw data to a feature table with a series of algorithms. 
 
-3) Re-quantification: Re-quantify all raw files to avoid missing values resulted by the pre-processing workflow for statistical analysis and data exploration.
+3) Re-quantification (optional): Re-quantify all raw files to avoid missing values resulted by the pre-processing workflow for statistical analysis and data exploration.
 
 4) Structural and formula predictions (SIRIUS and CSI:FingeID).
 
