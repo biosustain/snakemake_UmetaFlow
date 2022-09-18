@@ -32,7 +32,7 @@ def GNPS_annotations(lib, featurematrix, mgf_path, gnps):
                     hits.append(hit)
         Matrix["SCANS"][i] = " ## ".join(hits)                  
 
-    Matrix.insert(0, "GNPS_IDs", "")
+    Matrix.insert(0, "GNPS", "")
 
     for i, scan in zip(Matrix.index, Matrix["SCANS"]):
         hits = []
@@ -41,7 +41,7 @@ def GNPS_annotations(lib, featurematrix, mgf_path, gnps):
                 hit = f"{name}"
                 if hit not in hits:
                     hits.append(hit)
-        Matrix["GNPS_IDs"][i] = " ## ".join(hits)
+        Matrix["GNPS"][i] = " ## ".join(hits)
 
     Matrix.to_csv(gnps, sep="\t", index = False)
     return Matrix
