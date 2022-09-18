@@ -18,7 +18,7 @@ Converting raw data to a feature table with a series of OpenMS algorithms (see d
 
 ### `3) Re-quantification:` 
 
-Re-quantify all raw files to avoid missing values resulted by the pre-processing steps for statistical analysis and data exploration. Generate a FeatureMatrix for further statistical analysis. Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode. Also, edit the script workflow/scripts/metaboliteidentification.py: comment the positive ionisation part of the script and uncomment the negative ionisation version. 
+Re-quantify all raw files to avoid missing values resulted by the pre-processing steps for statistical analysis and data exploration. Generate a FeatureMatrix for further statistical analysis. Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode. Also, edit the script workflow/scripts/metaboliteNaN.py: comment the positive ionisation part of the script and uncomment the negative ionisation version. 
 
 ![dag](/images/Re-quantification.svg) 
 
@@ -36,7 +36,7 @@ For negative mode, replace the possible adducts with "[M-H]-, [M-H2O-H]-, [M-HCO
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
 
-Once the job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library identifications under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+Once the job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
 
 ![dag](/images/GNPSExport.svg) 
 

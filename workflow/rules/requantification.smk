@@ -53,21 +53,21 @@ rule build_library:
     input:
         matrix= join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
     output:
-        lib= join("results", "Interim", "Requantified", "MetaboliteIdentification.tsv")
+        lib= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")
     log: join("workflow", "report", "logs", "requantification", "build_library.log")
     threads: 4
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:    
         """
-        python workflow/scripts/metaboliteidentification.py {input.matrix} {output.lib} 2>> {log}   
+        python workflow/scripts/metaboliteNaN.py {input.matrix} {output.lib} 2>> {log}   
         """
 
 # 3) Re-quantify all the raw files to cover missing values (missing value imputation can be avoided with that step)
 
 rule requantify:
     input:
-        var1= join("results", "Interim", "Requantified", "MetaboliteIdentification.tsv"),
+        var1= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv"),
         var2= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
         join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML")

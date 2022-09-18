@@ -47,7 +47,7 @@ def get_final_output():
         expand(os.path.join("results", "Preprocessed", "FeatureMatrix.tsv"))],
                 "requantification" : [expand([os.path.join("results", "Interim", "Requantified", "Complete.consensusXML"), os.path.join("results", "Interim", "Requantified", "Missing.consensusXML")]),
         expand(os.path.join("results", "Interim", "Requantified", "Complete_{samples}.featureXML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Requantified", "MetaboliteIdentification.tsv")),
+        expand(os.path.join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")),
         expand(os.path.join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML"), samples=SAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "Merged_{samples}.featureXML"), samples=SAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "MFD_{samples}.featureXML"), samples=SAMPLES),

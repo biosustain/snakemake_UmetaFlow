@@ -101,5 +101,5 @@ else:
             join("..", "envs", "openms.yaml")
         shell:
             """ 
-            echo "No GNPS metabolite identification file was found" > {output} 2>> {log}
+            echo "No GNPS metabolite annotations file was found" > {output} 2>> {log}
             """
