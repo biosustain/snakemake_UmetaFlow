@@ -15,13 +15,13 @@ The pipeline consists of seven interconnected steps:
 
 3) Re-quantification (optional): Re-quantify all raw files to avoid missing values resulted by the pre-processing workflow for statistical analysis and data exploration.
 
-4) Structural and formula predictions (SIRIUS and CSI:FingeID).
+4) Structural and formula predictions (SIRIUS and CSI:FingeID) and annotation of the feature matrix with those predictions.
 
 5) GNPSexport: generate all the files necessary to create a [FBMN](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/) or [IIMN](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges) job at GNPS. 
 
-6) Annotate the feature matrix with formula and structural predictions (GNPS metabolite annotations optional).
+6) Spectral matching with in-house or publicly available library (MGF format) and annotation of the feature matrix with those matches (Level 1-2 MSI annotations).
 
-7) Integrate Sirius and CSI predictions to the network (after FBMN).
+7) After FBMN or IIMN: Integrate Sirius and CSI predictions to the network (GraphML) and MSMS spectral library annotations to the feature matrix (optionally if the user does not have a downloaded MGF library).
 
 See [README](workflow/rules/README.md) file for details.
 ### Overview
