@@ -30,9 +30,9 @@ properties:
         type: boolean
       sirius_csi:
         type: boolean
-      annotate:
+      spectralmatcher:
         type: boolean
-      fbmn_sirius:
+      fbmn_integration:
         type: boolean
 
 required:

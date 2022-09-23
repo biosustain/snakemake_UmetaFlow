@@ -17,5 +17,5 @@ rules:
   requantification: FALSE #true for files with common features
   sirius: FALSE #only formula, no structural predictions
   sirius_csi: TRUE #both formula and structural predictions
-  annotate: TRUE #annotate the feature matrix with formula and structural predictions using feature_ids
-  fbmn_sirius: FALSE #integration of sirius and csi predictions to FBMN. This rule requires the .graphml file generated from FBMN
+  spectralmatcher: TRUE #annotate the feature matrix with formula and structural predictions using feature_ids
+  fbmn_integration: FALSE #integration of sirius and csi predictions to FBMN. This rule requires the .graphml file generated from FBMN

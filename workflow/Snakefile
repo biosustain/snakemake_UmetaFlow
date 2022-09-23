@@ -10,5 +10,5 @@ include: "rules/requantification.smk",
 include: "rules/GNPSexport.smk",
 include: "rules/sirius_csi.smk",
 include: "rules/sirius.smk",
-include: "rules/annotate.smk",
-include: "rules/fbmn_sirius.smk"
+include: "rules/spectralmatcher.smk",
+include: "rules/fbmn_integration.smk"

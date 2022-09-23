@@ -1,11 +1,11 @@
 name: pyopenms
 channels:
   - conda-forge
+  - bioconda
 dependencies:
   - python=3.9
   - pip
   - pip:
     - ipython
     - -r requirements.txt
-  - pandas
-  - numpy
+  - pyteomics

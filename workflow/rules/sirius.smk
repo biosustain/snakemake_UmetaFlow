@@ -56,3 +56,35 @@ rule df_sirius:
         python workflow/scripts/df_SIRIUS.py {input.input_sirius} {output.output_sirius} 2>> {log}
         """
 
+# 3) Create a sirius library from all the tables with formula predictions by only taking into acount the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
+
+if config["rules"]["requantification"]==True:
+    rule sirius_annotations:
+        input:
+            matrix= join("results", "Requantified", "FeatureMatrix.tsv"),
+            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES)
+        output:
+            annotated= join("results", "annotations", "FeatureTable_sirius.tsv")
+        log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
+        threads: 4
+        conda:
+            join("..", "envs", "openms.yaml")
+        shell:
+            """
+            python workflow/scripts/SIRIUS_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            """
+else:
+    rule sirius_annotations:
+        input:
+            matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
+            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES)
+        output:
+            annotated= join("results", "annotations", "FeatureTable_sirius.tsv")
+        log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
+        threads: 4
+        conda:
+            join("..", "envs", "openms.yaml")
+        shell:
+            """
+            python workflow/scripts/SIRIUS_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            """

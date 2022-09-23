@@ -24,6 +24,7 @@ if config["rules"]["requantification"]==True:
             """
             SiriusAdapter -sirius_executable {params.exec_path} -in {input.var1} -in_featureinfo {input.var2} -out_sirius {output.out1} -out_fingerid {output.out2} -preprocessing:filter_by_num_masstraces 2 -preprocessing:feature_only -sirius:profile orbitrap -sirius:db none -sirius:ions_considered "[M+H]+, [M-H2O+H]+, [M+Na]+, [M+NH4]+" -sirius:elements_enforced CHN[15]OS[4]Cl[2]P[2] -debug 3 -fingerid:candidates 5 -threads {threads} -log {log} 2>> {log}
             """
+
 else:
     rule sirius_csi:
         input: 
@@ -60,3 +61,37 @@ rule df_sirius_csi:
         python workflow/scripts/df_SIRIUS_CSI.py {input.input_sirius} {input.input_csi} {output.output_sirius} {output.output_csi} 2>> {log}
         """
 
+# 3) Create a sirius library from all the tables with formula predictions by only taking into acount the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
+
+if config["rules"]["requantification"]==True:
+    rule siriuscsi_annotations:
+        input:
+            matrix= join("results", "Requantified", "FeatureMatrix.tsv"),
+            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SAMPLES),
+            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SAMPLES)
+        output:
+            annotated= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
+        log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
+        threads: 4
+        conda:
+            join("..", "envs", "openms.yaml")
+        shell:
+            """
+            python workflow/scripts/SIRIUS_CSI_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            """
+else:
+    rule siriuscsi_annotations:
+        input:
+            matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
+            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SAMPLES),
+            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SAMPLES)
+        output:
+            annotated= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
+        log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
+        threads: 4
+        conda:
+            join("..", "envs", "openms.yaml")
+        shell:
+            """
+            python workflow/scripts/SIRIUS_CSI_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            """

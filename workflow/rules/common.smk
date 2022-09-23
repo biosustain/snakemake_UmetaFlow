@@ -60,12 +60,16 @@ def get_final_output():
         expand(os.path.join("results", "GNPSexport", "SuppPairs.csv")),
         expand(os.path.join("results", "GNPSexport", "metadata.tsv"))],
                 "sirius_csi" : [expand([os.path.join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"), os.path.join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")], samples=SAMPLES),
-        expand([os.path.join("results", "SiriusCSI", "formulas_{samples}.tsv"), os.path.join("results", "SiriusCSI", "structures_{samples}.tsv")], samples=SAMPLES)],
+        expand([os.path.join("results", "SiriusCSI", "formulas_{samples}.tsv"), os.path.join("results", "SiriusCSI", "structures_{samples}.tsv")], samples=SAMPLES),
+        expand(os.path.join("results", "annotations", "FeatureTable_siriuscsi.tsv"))],
                 "sirius" : [expand(os.path.join("results", "Interim", "Sirius", "formulas_{samples}.mzTab"), samples=SAMPLES),
-        expand(os.path.join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES)],
-                "annotate" : [expand(os.path.join("results", "annotations", "annotated_FeatureTable.tsv")),
-        expand(os.path.join("results", "annotations", "GNPS_annotated_FeatureTable.tsv"))],
-                "fbmn_sirius": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml"))
+        expand(os.path.join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES),
+        expand(os.path.join("results", "annotations", "FeatureTable_sirius.tsv"))],
+                "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
+        expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
+        expand(os.path.join("results", "annotations", "FeatureTable_sirius_MSMS.tsv"))],
+                "fbmn_integration": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
+        expand(os.path.join("results", "annotations", "FeatureTable_sirius_MSMS_GNPS.tsv"))
         ]
                 }
     

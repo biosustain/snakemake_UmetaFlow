@@ -24,26 +24,27 @@ Re-quantify all raw files to avoid missing values resulted by the pre-processing
 
 ### `4) SIRIUS and CSI:FingerID:`
 
-The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID for formula and structural predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)).
+The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID for formula and structural predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)). (For negative mode, replace the possible adducts with "[M-H]-, [M-H2O-H]-, [M-HCOOH]-").
 
 CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for the structural library seach and all computations for the structural predictions. The disadvantage in this case is that the workflow is dependent on the functionality of their servers, queued jobs, etc. 
 
 CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and the rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file.
 
-For negative mode, replace the possible adducts with "[M-H]-, [M-H2O-H]-, [M-HCOOH]-".
-
+Level 3 MSI annotations are added to the feature matrix.
 ### `5) GNPSexport:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
 
-Once the job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+
 
 ![dag](/images/GNPSExport.svg) 
 
-### `6) Annotate:`
+### `6) Spectral matcher:`
 
-Annotate the feature matrix with formula and structural predictions, as well as GNPS spectral matches after FBMN. The result is a Feature Matrix with SIRIUS, CSI and GNPS annotations. If the GNPSexport step is omitted, this rule will only annotate the Feature Matrix with SIRIUS and CSI predictions. 
+Annotate the feature matrix with MS2 spectral matching through the OpenMS algorithm MetaboliteSpectralMatcher and an in-house or publicly available library (MSI level 1 or 2 identification.)
 
-### `7) fbmn_sirius:`
+### `7) fbmn_integration:`
 
-This rule allows for integration of the SIRIUS and CSI predictions to the .GRAPHML file from FBMN. 
+Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+
+
