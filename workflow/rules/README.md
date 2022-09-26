@@ -31,6 +31,7 @@ CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for th
 CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and the rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file.
 
 Level 3 MSI annotations are added to the feature matrix.
+
 ### `5) GNPSexport:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
@@ -41,7 +42,7 @@ Generate all the files necessary to create a FBMN job at GNPS (see documentation
 
 ### `6) Spectral matcher:`
 
-Annotate the feature matrix with MS2 spectral matching through the OpenMS algorithm MetaboliteSpectralMatcher and an in-house or publicly available library (MSI level 1 or 2 identification.)
+Annotate the feature matrix with MS2 spectral matching through the OpenMS algorithm MetaboliteSpectralMatcher and an in-house or publicly available library (MSI level 2 identifications)
 
 ### `7) fbmn_integration:`
 

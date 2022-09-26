@@ -37,9 +37,9 @@ else:
             python workflow/scripts/FBMN_SIRIUS.py {input.input_matrix} {input.input_mgf} {input.input_graphml} {output.output_graphml} 2>> {log}
             """
 
-# 2) Optionally, After FBMN, download the cytoscape data and move the .TSV file from the directory "DB_result" under the workflow's directory "resources". This file has all the MSMS library matches that GNPS performs during FBMN. 
+# 2) Optionally, download the cytoscape data and move the .TSV file from the directory "DB_result" under the workflow's directory "resources". This file has all the MSMS library matches that GNPS performs during FBMN. 
 # Filter out the ones that have a mass error > 10.0 ppm.
-# Annotate compounds in FeatureMatrix through the unique SCAN number
+# Annotate compounds in FeatureMatrix through the unique SCAN number (Annotate with metabolite annotations level 2 (MSI level 2))
 
 GNPS_library = find_files("resources", "*.tsv")
 if GNPS_library:

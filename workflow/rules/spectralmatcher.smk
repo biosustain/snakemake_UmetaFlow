@@ -1,7 +1,7 @@
 import glob
 from os.path import join 
 
-# Annotate with level 1 or 2 MSI using the OpenMS algorithm MetaboliteSpectralMatcher with an MGF -or MSP- format file library (you can download publicly available ones and/or use in-house libraries):
+# Annotate with metabolite annotations level 2 (MSI level 2) using the OpenMS algorithm MetaboliteSpectralMatcher with an MGF -or MSP- format file library (you can download publicly available ones and/or use in-house libraries):
 
 rule converter:
     input:
