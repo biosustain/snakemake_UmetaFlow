@@ -88,4 +88,34 @@ if MGF_library:
                 """
 
 else:
-    print("No MGF file found")
+    print("no file found")
+    if config["rules"]["sirius_csi"]==True:
+        rule MSMS_annotations:
+            input:
+                MATRIX= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
+            output:
+                MSMS_MATRIX= join("results", "annotations", "FeatureTable_sirius_MSMS.tsv")
+            log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
+            threads: 4
+            conda:
+                join("..", "envs", "pyopenms.yaml")
+            shell:
+                """
+                mv {input.MATRIX} {output.MSMS_MATRIX}
+                """
+
+    else:
+        print("no file found")
+        rule MSMS_annotations:
+            input:
+                MATRIX= join("results", "annotations", "FeatureTable_sirius.tsv")
+            output:
+                MSMS_MATRIX= join("results", "annotations", "FeatureTable_sirius_MSMS.tsv")
+            log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
+            threads: 4
+            conda:
+                join("..", "envs", "pyopenms.yaml")
+            shell:
+                """
+                mv {input.MATRIX} {output.MSMS_MATRIX}
+                """
