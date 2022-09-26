@@ -1,0 +1,21 @@
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+samples: config/samples.tsv
+
+projects:
+# Project 1
+  - name: example
+    samples: config/samples.tsv
+
+#### RULE CONFIGURATION ####
+# rules: set value to TRUE if you want to run the analysis or FALSE if you don't
+rules:
+  fileconversion: TRUE #true only for *.raw files from Thermo
+  preprocessing: TRUE
+  GNPSexport: TRUE #if you want to perform FBMN
+  requantification: FALSE #true for files with common features
+  sirius: FALSE #only formula, no structural predictions and annotate the feature matrix with formula predictions using feature_ids
+  sirius_csi: TRUE #both formula and structural predictions and annotate the feature matrix with formula and structural predictions using feature_ids (MSI level 3)
+  spectralmatcher: TRUE # MSMS matching with in-house or any downloaded MGF format MSMS library & feature matrix annotation (MSI level 2)
+  fbmn_integration: FALSE # After FBMN is finished: integration of sirius and csi predictions to the GraphML FBMN file. Optionally, annotate with the MSMS library matches from GNPS also (MSI level 2)
