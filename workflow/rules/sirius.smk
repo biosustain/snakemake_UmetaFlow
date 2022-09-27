@@ -17,8 +17,8 @@ if config["rules"]["requantification"]==True:
         conda:
             join(".snakemake", "conda", "exe") 
         params:
-            exec_path = glob.glob("**/sirius", recursive= True)[0]
-            email= "" 
+            exec_path = glob.glob(join("**", "sirius", recursive= True)[0],
+            email= "",
             password= "" 
         threads: 4
         shell:
@@ -36,8 +36,8 @@ else:
         conda:
             join(".snakemake", "conda", "exe") 
         params:
-            exec_path = glob.glob("**/sirius", recursive= True)[0]
-            email= "" 
+            exec_path = glob.glob(join("**", "sirius", recursive= True)[0],
+            email= "",
             password= "" 
         threads: 4
         shell:
