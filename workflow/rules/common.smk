@@ -28,6 +28,11 @@ def find_files(base, pattern):
     return [n for n in fnmatch.filter(os.listdir(base), pattern) if
         os.path.isfile(os.path.join(base, n))]
 
+def find_exec(dir, program):
+        for path in Path(dir).rglob(program):
+                if os.path.isfile(path):
+                        return path 
+                        
 SAMPLES = samples.sample_name.to_list()
 
 ##### 7. Customize final output based on config["rule"] values #####

@@ -17,7 +17,7 @@ if config["rules"]["requantification"]==True:
         conda:
             join(".snakemake", "conda", "exe") 
         params:
-            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
+            exec_path = find_exec("resources", "sirius"),
             email= "",
             password= "" 
         threads: 4
@@ -36,7 +36,7 @@ else:
         conda:
             join(".snakemake", "conda", "exe") 
         params:
-            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
+            exec_path = find_exec("resources", "sirius"),
             email= "",
             password= "" 
         threads: 4
@@ -60,7 +60,7 @@ rule df_sirius:
         python workflow/scripts/df_SIRIUS.py {input.input_sirius} {output.output_sirius} 2>> {log}
         """
 
-# 3)  Annotate the feature matrix with formula predictions by only taking into account the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
+# 3) Create a sirius library from all the tables with formula predictions by only taking into acount the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
 
 if config["rules"]["requantification"]==True:
     rule sirius_annotations:

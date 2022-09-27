@@ -18,7 +18,7 @@ if config["rules"]["requantification"]==True:
             join(".snakemake", "conda", "exe")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
-            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
+            exec_path = find_exec("resources", "sirius"),
             email= "",
             password= "" 
         threads: 4
@@ -39,7 +39,7 @@ else:
             join(".snakemake", "conda", "exe")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
-            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
+            exec_path = find_exec("resources", "sirius"),
             email= "",
             password= "" 
         threads: 4
@@ -65,7 +65,7 @@ rule df_sirius_csi:
         python workflow/scripts/df_SIRIUS_CSI.py {input.input_sirius} {input.input_csi} {output.output_sirius} {output.output_csi} 2>> {log}
         """
 
-# 3) Annotate the feature matrix with formula and structural predictions (MSI level 3 annotations) by only taking into account the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
+# 3) Create a sirius library from all the tables with formula predictions by only taking into acount the rank #1 predictions for simplicity. Mind that there are cases where SIRIUS predicts the correct formula ranked as >1. 
 
 if config["rules"]["requantification"]==True:
     rule siriuscsi_annotations:
