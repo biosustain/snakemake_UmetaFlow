@@ -13,7 +13,7 @@ rule converter:
         join("..", "envs", "openms.yaml")
     shell:
         """
-        FileConverter -in {input} -out {output} 2>> {log}
+        /Users/eeko/devel/openms_build/bin/FileConverter -in {input} -out {output} 2>> {log}
         """
 
 MGF_library = find_files("resources", "*.mgf")
@@ -31,26 +31,9 @@ if MGF_library:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} 2>> {log}
+            /Users/eeko/devel/openms_build/bin/MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} 2>> {log}
             """  
 
-else:
-    print("no MGF file found")
-    rule spectral_matcher:
-        input:
-            join("results", "Interim", "annotations", "MSMS.mzML")
-        output:
-            join("results", "Interim", "annotations", "MSMSMatcher.mzTab")
-        log: join("workflow", "report", "logs", "annotate", "spectral_matcher.log")
-        threads: 4 
-        conda:
-            join("..", "envs", "openms.yaml")
-        shell:
-            """
-            echo "No MGF library file was found" > {output} 2>> {log}
-            """  
-
-if MGF_library:    
     if config["rules"]["sirius_csi"]==True:
         rule MSMS_annotations:
             input:
@@ -69,23 +52,23 @@ if MGF_library:
                 python workflow/scripts/MSMS_annotations.py {input.MZTAB} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
                 """
 
-    if config["rules"]["sirius"]==True:
-        rule MSMS_annotations:
-            input:
-                MSMS = join("results", "Interim", "annotations", "MSMSMatcher.mzTab"),
-                MGF = join("results", "GNPSexport", "MSMS.mgf"),
-                MZML = join("results", "Interim", "annotations", "MSMS.mzML"),
-                MATRIX= join("results", "annotations", "FeatureTable_sirius.tsv")
-            output:
-                MSMS_MATRIX= join("results", "annotation", "FeatureTable_MSMS.tsv")
-            log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
-            conda:
-                join("..", "envs", "pyopenms.yaml")
-            shell:
-                """
-                python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
-                """
+    elif config["rules"]["sirius"]==True:
+            rule MSMS_annotations:
+                input:
+                    MSMS = join("results", "Interim", "annotations", "MSMSMatcher.mzTab"),
+                    MGF = join("results", "GNPSexport", "MSMS.mgf"),
+                    MZML = join("results", "Interim", "annotations", "MSMS.mzML"),
+                    MATRIX= join("results", "annotations", "FeatureTable_sirius.tsv")
+                output:
+                    MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
+                log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
+                threads: 4
+                conda:
+                    join("..", "envs", "pyopenms.yaml")
+                shell:
+                    """
+                    python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
+                    """
 
     else:
         rule MSMS_annotations:
@@ -95,7 +78,7 @@ if MGF_library:
                 MZML = join("results", "Interim", "annotations", "MSMS.mzML"),
                 MATRIX= join("results", "Preprocessed", "FeatureTable.tsv")
             output:
-                MSMS_MATRIX= join("results", "annotation", "FeatureTable_MSMS.tsv")
+                MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
             threads: 4
             conda:
@@ -104,41 +87,10 @@ if MGF_library:
                 """
                 python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
                 """
+
 else:
     print("no file found")
-    if config["rules"]["sirius_csi"]==True:
-        rule MSMS_annotations:
-            input:
-                MATRIX= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
-            output:
-                MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
-            log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
-            conda:
-                join("..", "envs", "pyopenms.yaml")
-            shell:
-                """
-                mv {input.MATRIX} {output.MSMS_MATRIX}
-                """
-
-    if config["rules"]["sirius"]==True:
-        print("no file found")
-        rule MSMS_annotations:
-            input:
-                MATRIX= join("results", "annotations", "FeatureTable_sirius.tsv")
-            output:
-                MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
-            log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
-            conda:
-                join("..", "envs", "pyopenms.yaml")
-            shell:
-                """
-                mv {input.MATRIX} {output.MSMS_MATRIX}
-                """
-    else:
-        print("no file found")
-        rule MSMS_annotations:
+    rule MSMS_annotations:
             input:
                 MATRIX= join("results", "Preprocessed", "FeatureTable.tsv")
             output:
@@ -149,5 +101,5 @@ else:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                mv {input.MATRIX} {output.MSMS_MATRIX}
+                mv {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
                 """
