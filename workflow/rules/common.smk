@@ -67,9 +67,9 @@ def get_final_output():
         expand(os.path.join("results", "annotations", "FeatureTable_sirius.tsv"))],
                 "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
         expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
-        expand(os.path.join("results", "annotations", "FeatureTable_sirius_MSMS.tsv"))],
+        expand(os.path.join("results", "annotations", "FeatureTable_MSMS.tsv"))],
                 "fbmn_integration": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
-        expand(os.path.join("results", "annotations", "FeatureTable_sirius_MSMS_GNPS.tsv"))
+        expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
         ]
                 }
     

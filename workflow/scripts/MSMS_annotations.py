@@ -48,7 +48,7 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     Matrix= pd.read_csv(MATRIX, sep="\t")
     Matrix["id"]= Matrix["id"].astype(str)
     Matrix["feature_ids"]= Matrix["feature_ids"].values.tolist()
-    Matrix.insert(0, "SCANS", "")
+    Matrix.insert(0, "SCAN_IDS", "")
     for i, id in zip(Matrix.index, Matrix["id"]):
         hits = []
         for scan, feature_id in zip(mgf_file["scans"], mgf_file["feature_id"]): 
@@ -56,12 +56,12 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                 hit = f"{scan}"
                 if hit not in hits:
                     hits.append(hit)
-        Matrix["SCANS"][i] = " ## ".join(hits)
+        Matrix["SCAN_IDS"][i] = " ## ".join(hits)
 
     Matrix.insert(0, "description", "")
     Matrix.insert(0, "smiles", "")
 
-    for i, scan in zip(Matrix.index, Matrix["SCANS"]):
+    for i, scan in zip(Matrix.index, Matrix["SCAN_IDS"]):
         hits1 = []
         hits2=[]
         for name, smiles, scan_number, in zip(spectralmatch_DF["description"],spectralmatch_DF["smiles"], spectralmatch_DF["SCANS"]):
@@ -73,6 +73,7 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                     hits2.append(hit2)
         Matrix["description"][i] = " ## ".join(hits1)
         Matrix["smiles"][i] = " ## ".join(hits2)
+    Matrix= Matrix.drop(columns="SCAN_IDS")
     Matrix.to_csv(MSMS_MATRIX, sep="\t", index = False)
     return MSMS_MATRIX
 

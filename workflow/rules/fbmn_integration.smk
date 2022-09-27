@@ -46,10 +46,10 @@ if GNPS_library:
     rule GNPS_annotations:
         input:
             lib= glob.glob(join("resources", "*.tsv")),
-            featurematrix= join("results", "annotations", "FeatureTable_sirius_MSMS.tsv"),
+            featurematrix= join("results", "annotations", "FeatureTable_MSMS.tsv"),
             mgf_path= join("results", "GNPSexport", "MSMS.mgf")
         output:
-            gnps= join("results", "annotations", "FeatureTable_sirius_MSMS_GNPS.tsv")
+            gnps= join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv")
         log: join("workflow", "report", "logs", "annotate", "GNPS_annotations.log")
         threads: 4
         conda:
@@ -62,9 +62,9 @@ else:
     print("no file found")
     rule GNPS_annotations:
         input:
-            join("results", "annotations", "FeatureTable_sirius_MSMS.tsv")
+            join("results", "annotations", "FeatureTable_MSMS.tsv")
         output:
-            join("results", "annotations", "FeatureTable_sirius_MSMS_GNPS.tsv")
+            join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv")
         log: join("workflow", "report", "logs", "annotate", "GNPS_annotations.log")
         conda:
             join("..", "envs", "openms.yaml")
