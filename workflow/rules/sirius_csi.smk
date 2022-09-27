@@ -18,7 +18,7 @@ if config["rules"]["requantification"]==True:
             join(".snakemake", "conda", "exe")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
-            exec_path = glob.glob(join("**", "sirius", recursive= True)[0],
+            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
             email= "",
             password= "" 
         threads: 4
@@ -39,7 +39,7 @@ else:
             join(".snakemake", "conda", "exe")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
-            exec_path = glob.glob(join("**", "sirius", recursive= True)[0],
+            exec_path = glob.glob(join("**", "sirius"), recursive= True)[0],
             email= "",
             password= "" 
         threads: 4
