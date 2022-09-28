@@ -4,6 +4,7 @@ import pandas as pd
 from snakemake.utils import validate
 from snakemake.utils import min_version
 import glob
+from pathlib import Path
 
 min_version("5.18.0")
 
@@ -31,7 +32,7 @@ def find_files(base, pattern):
 def find_exec(dir, program):
         for path in Path(dir).rglob(program):
                 if os.path.isfile(path):
-                        return path 
+                        return os.path.join(path)
                         
 SAMPLES = samples.sample_name.to_list()
 
