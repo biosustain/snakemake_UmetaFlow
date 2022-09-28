@@ -15,7 +15,7 @@ if config["rules"]["requantification"]==True:
             join("results", "Interim", "Sirius", "formulas_{samples}.mzTab")
         log: join("workflow", "report", "logs", "sirius", "SiriusAdapter_{samples}.log")
         conda:
-            join(".snakemake", "conda", "exe") 
+            join("..", "envs", "openms.yaml")
         params:
             exec_path = find_exec("resources", "sirius"),
             email= "",
@@ -34,7 +34,7 @@ else:
             join("results", "Interim", "Sirius", "formulas_{samples}.mzTab")
         log: join("workflow", "report", "logs", "sirius", "SiriusAdapter_{samples}.log")
         conda:
-            join(".snakemake", "conda", "exe") 
+            join("..", "envs", "openms.yaml")
         params:
             exec_path = find_exec("resources", "sirius"),
             email= "",

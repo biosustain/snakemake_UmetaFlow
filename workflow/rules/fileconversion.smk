@@ -11,10 +11,8 @@ rule mzml_conversion:
         join("data", "mzML", "{samples}.mzML")
     log: join("workflow", "report", "logs", "FileConversion", "mzml_conversion_{samples}.log")
     conda:
-        join(".snakemake", "conda", "exe")
-    params:
-        exec_path = glob.glob(join(".snakemake","conda","exe","bin","ThermoRawFileParser.exe"))
+        join("..", "envs", "openms.yaml")
     shell:
         """
-        mono {params.exec_path} -i={input} -b={output} >> {log}
+        FileConverter -in {input} -out {output} >> {log}
         """

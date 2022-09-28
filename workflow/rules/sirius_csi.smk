@@ -15,7 +15,7 @@ if config["rules"]["requantification"]==True:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),
             out2= join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")
         conda:
-            join(".snakemake", "conda", "exe")
+            join("..", "envs", "openms.yaml")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
             exec_path = find_exec("resources", "sirius"),
@@ -36,7 +36,7 @@ else:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),
             out2= join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")
         conda:
-            join(".snakemake", "conda", "exe")
+            join("..", "envs", "openms.yaml")
         log: join("workflow", "report", "logs", "sirius_csi", "SiriusAdapter_{samples}.log")
         params:
             exec_path = find_exec("resources", "sirius"),

@@ -13,9 +13,9 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     spectralmatch.metadata
     df= spectralmatch.small_molecule_table
     spectralmatch_DF= df.drop(columns= ["identifier", "inchi_key", "modifications", "calc_mass_to_charge", "opt_adduct_ion", "taxid", "species", "database", "spectra_ref", "search_engine", "opt_sec_id","smallmolecule_abundance_std_error_study_variable[1]", "smallmolecule_abundance_stdev_study_variable[1]", "smallmolecule_abundance_study_variable[1]", "chemical_formula"])
-    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] <= 10] 
-    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] >= -10]
-    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_match_score"] >= 60]
+    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] < 10] 
+    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] > -10]
+    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_match_score"] >= 60] #isotope matching score
     spectralmatch_DF["opt_spec_native_id"]= spectralmatch_DF["opt_spec_native_id"].str.replace(r"index=", "")       
 
     exp = MSExperiment()
@@ -58,8 +58,8 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                     hits.append(hit)
         Matrix["SCAN_IDS"][i] = " ## ".join(hits)
 
-    Matrix.insert(0, "description", "")
-    Matrix.insert(0, "smiles", "")
+    Matrix.insert(0, "SpectralMatch", "")
+    Matrix.insert(0, "SpectralMatch_smiles", "")
 
     for i, scan in zip(Matrix.index, Matrix["SCAN_IDS"]):
         hits1 = []
@@ -71,8 +71,8 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                 if hit1 not in hits1:
                     hits1.append(hit1)
                     hits2.append(hit2)
-        Matrix["description"][i] = " ## ".join(hits1)
-        Matrix["smiles"][i] = " ## ".join(hits2)
+        Matrix["SpectralMatch"][i] = " ## ".join(hits1)
+        Matrix["SpectralMatch_smiles"][i] = " ## ".join(hits2)
     Matrix= Matrix.drop(columns="SCAN_IDS")
     Matrix.to_csv(MSMS_MATRIX, sep="\t", index = False)
     return MSMS_MATRIX
