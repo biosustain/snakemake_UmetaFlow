@@ -3,7 +3,7 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.7.0-brightgreen.svg)](https://snakemake.bitbucket.io)
 [![Build Status](https://travis-ci.org/snakemake-workflows/snakemake-bgc-analytics.svg?branch=master)](https://travis-ci.org/snakemake-workflows/snakemake-bgc-analytics)
 
-This is a snakemake implementation of the [pyOpenMS workflow](https://github.com/biosustain/pyOpenMS_UmetaFlow.git) tailored by [Eftychia Eva Kontou](https://github.com/eeko-kon) and [Axel Walter](https://github.com/axelwalter).
+This is the Snakemake implementation of the [pyOpenMS workflow](https://github.com/biosustain/pyOpenMS_UmetaFlow.git) tailored by [Eftychia Eva Kontou](https://github.com/eeko-kon) and [Axel Walter](https://github.com/axelwalter).
 
 ## Workflow overview
 
@@ -100,16 +100,6 @@ Activate the conda environment:
 
 Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html) until the 3.0 release is published.
 
-#### For Linux only !
-
-Install mono with sudo:
-
-    sudo apt install mono-devel
-
-If sudo cannot find the package, then follow the directions in the [link](https://www.mono-project.com/download/stable/#download-lin) for the Ubuntu version that you work with.
-
-Press enter (RETURN) to continue 
-
 #### Get example input data (only for testing the workflow with the example dataset)
 
     (cd data && wget https://zenodo.org/record/6948449/files/Commercial_std_raw.zip?download=1 && unzip *.zip -d raw)
@@ -125,16 +115,11 @@ Get the latest pyOpenMS wheels (until pyOpenMS 3.0 is available in conda):
     find .snakemake/conda/*cp39*.whl > .snakemake/conda/requirements.txt
     rm .snakemake/conda/*.whl & rm .snakemake/conda/*.zip
 
-Download the latest SIRIUS executable manually until available as a bioconda installation:
-For MacOS:
-    (cd resources && wget https://github.com/boecker-lab/sirius/releases/download/v5.5.7/sirius-5.5.7-osx64-headless.zip && unzip *.zip)
-
-For Linux:
-    (cd resources && wget https://github.com/boecker-lab/sirius/releases/download/v5.5.7/sirius-5.5.7-linux64-headless.zip && unzip *.zip)
+Download the latest SIRIUS executable manually from [here](https://github.com/boecker-lab/sirius/releases) until available as a conda-forge installation. Choose the headless zipped file compatible for your operating system (linux, macOS or windows) and unzip it under the directory "resources/".
 
 Then, add your email and password to the scripts (required for SIRIUS versions > 5):
-    rule [SIRIUS and CSI:FingerID](workflow/rules/sirius_csi.smk) lines 22, 23 and 43, 44
-    rule [SIRIUS](workflow/rules/sirius.smk) lines 21, 22 and 40, 41
+- rule [SIRIUS and CSI:FingerID](workflow/rules/sirius_csi.smk) lines 22, 23 and 43, 44
+- rule [SIRIUS](workflow/rules/sirius.smk) lines 21, 22 and 40, 41
 
 Test your configuration by performing a dry-run via
 
