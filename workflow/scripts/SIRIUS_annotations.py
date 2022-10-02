@@ -19,7 +19,7 @@ def sirius_annotations(matrix, annotated):
         list_of_df.append(df)
     DF_SIRIUS= pd.concat(list_of_df,ignore_index=True)
     DF_SIRIUS= DF_SIRIUS.drop(columns="index")
-    DF_SIRIUS= DF_SIRIUS.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "mz", "retention_time": "RT"})
+    DF_SIRIUS= DF_SIRIUS.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "m/z", "retention_time": "RT (s)"})
     DF_SIRIUS["featureId"]= DF_SIRIUS["featureId"].str.replace(r"id_", "")
     for i, rows in DF_SIRIUS.iterrows():
         DF_SIRIUS["featureId"][i]= DF_SIRIUS["featureId"][i].split(",")

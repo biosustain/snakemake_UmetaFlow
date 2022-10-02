@@ -19,7 +19,7 @@ def sirius_csi_annotations(matrix, annotated):
         list_of_df.append(df)
     DF_SIRIUS= pd.concat(list_of_df,ignore_index=True)
     DF_SIRIUS= DF_SIRIUS.drop(columns="index")
-    DF_SIRIUS= DF_SIRIUS.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "mz", "retention_time": "RT"})
+    DF_SIRIUS= DF_SIRIUS.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "m/z", "retention_time": "RT(s)"})
     DF_SIRIUS["featureId"]= DF_SIRIUS["featureId"].str.replace(r"id_", "")
     for i, rows in DF_SIRIUS.iterrows():
         DF_SIRIUS["featureId"][i]= DF_SIRIUS["featureId"][i].split(",")
@@ -39,7 +39,7 @@ def sirius_csi_annotations(matrix, annotated):
         list_of_df.append(df)
     DF_CSI= pd.concat(list_of_df,ignore_index=True)
     DF_CSI= DF_CSI.drop(columns="index")
-    DF_CSI= DF_CSI.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "mz", "retention_time": "RT", "description":"name"})
+    DF_CSI= DF_CSI.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "m/z", "retention_time": "RT(s)", "description":"name"})
     DF_CSI["featureId"]= DF_CSI["featureId"].str.replace(r"id_", "")
     for i, rows in DF_CSI.iterrows():
         DF_CSI["featureId"][i]= DF_CSI["featureId"][i].split(",")
