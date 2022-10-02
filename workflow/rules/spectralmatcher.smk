@@ -13,7 +13,7 @@ rule converter:
         join("..", "envs", "openms.yaml")
     shell:
         """
-        /Users/eeko/devel/openms_build/bin/FileConverter -in {input} -out {output} 2>> {log}
+        FileConverter -in {input} -out {output} 2>> {log}
         """
 
 MGF_library = find_files("resources", "*.mgf")
@@ -31,7 +31,7 @@ if MGF_library:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            /Users/eeko/devel/openms_build/bin/MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} 2>> {log}
+            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} 2>> {log}
             """  
 
     if config["rules"]["sirius_csi"]==True:
