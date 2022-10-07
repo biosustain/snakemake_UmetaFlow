@@ -92,7 +92,7 @@ else:
     print("no file found")
     rule MSMS_annotations:
             input:
-                MATRIX= join("results", "Preprocessed", "FeatureTable.tsv")
+                MATRIX= join("results", "Preprocessed", "FeatureMatrix.tsv")
             output:
                 MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
