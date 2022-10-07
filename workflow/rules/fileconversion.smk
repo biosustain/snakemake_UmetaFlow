@@ -12,7 +12,9 @@ rule mzml_conversion:
     log: join("workflow", "report", "logs", "FileConversion", "mzml_conversion_{samples}.log")
     conda:
         join("..", "envs", "openms.yaml")
+    params:
+        exec_path= find_exec(".snakemake", "ThermoRawFileParser")
     shell:
         """
-        FileConverter -in {input} -out {output} >> {log}
+        FileConverter -ThermoRaw_executable {params.exec_path} -in {input} -out {output} >> {log}
         """
