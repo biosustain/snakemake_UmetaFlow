@@ -94,12 +94,13 @@ else:
             input:
                 MATRIX= join("results", "Preprocessed", "FeatureMatrix.tsv")
             output:
-                MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
+                MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv"),
+                MZTAB = join("results", "Interim", "annotations", "MSMSMatcher.mzTab")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
             threads: 4
             conda:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                mv {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
+                mv {input.MATRIX} {output.MSMS_MATRIX} && echo "No MGF library file was found" > {output} 2>> {log}
                 """
