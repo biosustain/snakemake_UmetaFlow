@@ -76,7 +76,7 @@ if MGF_library:
                 MSMS = join("results", "Interim", "annotations", "MSMSMatcher.mzTab"),
                 MGF = join("results", "GNPSexport", "MSMS.mgf"),
                 MZML = join("results", "Interim", "annotations", "MSMS.mzML"),
-                MATRIX= join("results", "Preprocessed", "FeatureTable.tsv")
+                MATRIX= join("results", "Preprocessed", "FeatureMatrix.tsv")
             output:
                 MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
