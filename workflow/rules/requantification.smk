@@ -119,7 +119,7 @@ rule IDMapper_FFMident:
     input:
         var1= join("resources", "emptyfile.idXML"),
         var2= join("results", "Interim", "Requantified", "MFD_{samples}.featureXML"),
-        var3= join("results", "Interim", "mzML", "PCfeature_{samples}.mzML")
+        var3= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
         join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML")
     log: join("workflow", "report", "logs", "requantification", "IDMapper_FFMident_{samples}.log")
