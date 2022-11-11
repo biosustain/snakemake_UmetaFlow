@@ -33,6 +33,7 @@ def sirius_csi_annotations(matrix, annotated):
         pd.to_numeric(s)
         df= df.loc[df["opt_global_rank"]==1]
         df= df.rename(columns={"opt_global_featureId":"featureId"})
+        df= df.rename(columns={"opt_global_dblinks":"db"})
         df= df.drop(columns=df.filter(regex=fr"Score").columns)
         df= df.drop(columns= df.filter(regex=fr"opt").columns)
         df=df.reset_index()
@@ -64,24 +65,29 @@ def sirius_csi_annotations(matrix, annotated):
     DF_features.insert(0, "CSI_predictions_name", "")
     DF_features.insert(0, "CSI_predictions_formula", "")
     DF_features.insert(0, "CSI_predictions_smiles", "")
+    DF_features.insert(0, "CSI_db_links", "")
 
     for i, id, sirius in zip(DF_features.index, DF_features["feature_ids"], DF_features["SIRIUS_predictions"]):
         hits1 = []
         hits2= []
         hits3=[]
-        for name, formula, smiles, Pred_id in zip(DF_CSI["name"], DF_CSI["formulas"], DF_CSI["smiles"], DF_CSI["featureId"]): 
+        hits4=[]
+        for name, formula, smiles, Pred_id, db in zip(DF_CSI["name"], DF_CSI["formulas"], DF_CSI["smiles"], DF_CSI["featureId"], DF_CSI["db"]): 
             for x,y in zip(id,Pred_id):
                 if (x==y)& (formula in sirius):
                     hit1 = f"{name}"
                     hit2 = f"{formula}"
                     hit3= f"{smiles}"
+                    hit4= f"{db}"
                     if hit1 not in hits1:
                         hits1.append(hit1)
                         hits2.append(hit2)
                         hits3.append(hit3)
+                        hits4.append(hit4)
         DF_features["CSI_predictions_name"][i] = " ## ".join(hits1)
         DF_features["CSI_predictions_formula"][i] = " ## ".join(hits2)
         DF_features["CSI_predictions_smiles"][i] = " ## ".join(hits3)
+        DF_features["CSI_db_links"][i] = " ## ".join(hits4)
 
     DF_features.to_csv(annotated, sep="\t", index= None)
     return DF_features
