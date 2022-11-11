@@ -9,7 +9,7 @@ This is the Snakemake implementation of the [pyOpenMS workflow](https://github.c
 
 The pipeline consists of seven interconnected steps:
 
-1) File conversion: Simply add your Thermo raw files in data/raw/ and they will be converted to centroid mzML files. If you have Agilent or Bruker files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow") and convert them independently using proteowizard (see https://proteowizard.sourceforge.io/) and add them to the data/mzML/ directory.
+1) File conversion: Simply add your Thermo raw files in data/raw/ and they will be converted to centroid mzML files. If you have Agilent or Bruker files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow") and convert them independently using [proteowizard](https://proteowizard.sourceforge.io/) and add them to the data/mzML/ directory.
 
 2) Pre-processing: converting raw data to a feature table with a series of algorithms. 
 
@@ -33,10 +33,11 @@ See [README](workflow/rules/README.md) file for details.
 
 [Clone](https://help.github.com/en/articles/cloning-a-repository) this repository to your local system, into the place where you want to perform the data analysis.
 
-(Make sure to have the right access / SSH Key. If **not**, follow the steps:
+Make sure to have the right access / SSH Key. If **not**, follow the steps:
+
 Step 1: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
-Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
     git clone https://github.com/NBChub/snakemake-UmetaFlow.git
 
@@ -79,7 +80,9 @@ Follow the Next steps instructions to add Linuxbrew to your PATH and to your bas
 
     brew install wget
 
-Install conda for any [system](https://docs.conda.io/en/latest/miniconda.html#linux-installers).
+(Windows usually have the windows version of wget== **winget** already installed, otherwise follow the [link](https://learn.microsoft.com/en-us/windows/package-manager/winget/) for directions)
+
+Install conda for any [system](https://docs.conda.io/en/latest/miniconda.html#).
 Installing Snakemake using [Mamba](https://github.com/mamba-org/mamba) is advised. In case you don’t use [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) you can always install [Mamba](https://github.com/mamba-org/mamba) into any other Conda-based Python distribution with:
 
     conda install -n base -c conda-forge mamba
@@ -168,5 +171,7 @@ Dührkop K, Fleischauer M, Ludwig M, et al. SIRIUS 4: a rapid tool for turning t
 Dührkop K, Shen H, Meusel M, Rousu J, Böcker S. Searching molecular structure databases with tandem mass spectra using CSI:FingerID. Proc Natl Acad Sci. 2015;112(41):12580-12585. doi:10.1073/pnas.1509788112
 
 Nothias LF, Petras D, Schmid R, et al. Feature-based molecular networking in the GNPS analysis environment. Nat Methods. 2020;17(9):905-908. doi:10.1038/s41592-020-0933-6
+
+Schmid R, Petras D, Nothias LF, et al. Ion identity molecular networking for mass spectrometry-based metabolomics in the GNPS environment. Nat Commun. 2021;12(1):3832. doi:10.1038/s41467-021-23953-9
 
 Mölder F, Jablonski KP, Letcher B, et al. Sustainable data analysis with Snakemake. Published online January 18, 2021. doi:10.12688/f1000research.29032.1
