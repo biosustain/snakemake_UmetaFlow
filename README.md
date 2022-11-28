@@ -41,23 +41,7 @@ Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to
 
     git clone https://github.com/NBChub/snakemake-UmetaFlow.git
 
-### Step 2: Configure workflow
-
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 
-
-**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_sampletsv_file.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in sample names.**
-
-`samples.tsv` example:
-
-|  sample_name |       comment                |
-|-------------:|-----------------------------:|
-| NBC_00162    | pyracrimicin                 |
-| MDNA_WGS_14  | epemicins_A_B                |
-
-
-Further formatting rules can be defined in the `workflow/schemas/` folder.
-
-### Step 3: Create a conda environment& install snakemake
+### Step 2: Install all dependencies
 
 #### For both systems
 
@@ -93,36 +77,58 @@ Then install Snakemake with:
 
 For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
+Get the latest pyOpenMS wheels (until pyOpenMS 3.0 is available in conda):
+
+    MY_OS="Linux" # or "macOS" or "Windows" (case-sensitive)
+    mkdir -p .snakemake/conda/
+    wget -O .snakemake/conda/${MY_OS}-wheels.zip https://nightly.link/OpenMS/OpenMS/workflows/pyopenms-wheels/nightly/${MY_OS}-wheels.zip\?query\=completed
+    (cd .snakemake/conda/ && unzip *.zip)
+    (cd .snakemake/conda/ && find *cp39*.whl > requirements.txt)
+    rm .snakemake/conda/*.zip
+
+Download the latest SIRIUS executable manually from [here](https://github.com/boecker-lab/sirius/releases) until available as a conda-forge installation.
+Choose the headless zipped file compatible for your operating system (linux, macOS or windows) and unzip it under the directory "resources/". Make sure to
+register using your university email and password. 
+
+Tip: Make sure to download a version >5.6. Avoid SNAPSHOT versions and get the headless zipped file. Example (for linux OS:)
+    
+    (cd resources/ && wget https://github.com/boecker-lab/sirius/releases/download/v5.6.2/sirius-5.6.2-linux64-headless.zip && unzip *.zip)
+
+Then, add your email and password to the scripts (required for SIRIUS versions > 5):
+- rule [SIRIUS and CSI:FingerID](workflow/rules/sirius_csi.smk) lines 22, 23 and 43, 44
+- rule [SIRIUS](workflow/rules/sirius.smk) lines 21, 22 and 40, 41
+
+#### For both systems
+
+Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html) until the 3.0 release is published.
+
+### Step 3: Configure workflow
+
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 
+
+**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_sampletsv_file.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in sample names.**
+
+`samples.tsv` example:
+
+|  sample_name |       comment                |
+|-------------:|-----------------------------:|
+| NBC_00162    | pyracrimicin                 |
+| MDNA_WGS_14  | epemicins_A_B                |
+
+
+Further formatting rules can be defined in the `workflow/schemas/` folder.
+
 ### Step 4: Execute workflow
 
 Activate the conda environment:
 
     conda activate snakemake
 
-#### For both systems
-
-Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html) until the 3.0 release is published.
 
 #### Get example input data (only for testing the workflow with the example dataset)
 
     (cd data && wget https://zenodo.org/record/6948449/files/Commercial_std_raw.zip?download=1 && unzip *.zip -d raw)
     
-#### Execute the workflow
-    
-Get the latest pyOpenMS wheels (until pyOpenMS 3.0 is available in conda):
-
-    MY_OS="Linux" # or "macOS" or "Windows" (case-sensitive)
-    mkdir -p .snakemake/conda/
-    wget -O .snakemake/conda/${MY_OS}-wheels.zip https://nightly.link/OpenMS/OpenMS/workflows/pyopenms-wheels/nightly/${MY_OS}-wheels.zip\?status\=completed
-    (cd .snakemake/conda/ && unzip *.zip)
-    (cd .snakemake/conda/ && find *cp39*.whl > requirements.txt)
-    rm .snakemake/conda/*.zip
-
-Download the latest SIRIUS executable manually from [here](https://github.com/boecker-lab/sirius/releases) until available as a conda-forge installation. Choose the headless zipped file compatible for your operating system (linux, macOS or windows) and unzip it under the directory "resources/".
-
-Then, add your email and password to the scripts (required for SIRIUS versions > 5):
-- rule [SIRIUS and CSI:FingerID](workflow/rules/sirius_csi.smk) lines 22, 23 and 43, 44
-- rule [SIRIUS](workflow/rules/sirius.smk) lines 21, 22 and 40, 41
 
 Test your configuration by performing a dry-run via
 
