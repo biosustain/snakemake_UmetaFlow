@@ -7,7 +7,7 @@ import pyteomics
 from pyteomics import mztab
 from pyteomics import mgf, auxiliary
 
-def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
+def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
 
     spectralmatch=  pyteomics.mztab.MzTab(MZTAB, encoding="UTF8", table_format="df")
     spectralmatch.metadata
@@ -78,4 +78,4 @@ def merge(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     return MSMS_MATRIX
 
 if __name__ == "__main__":
-    merge(sys.argv[1], sys.argv[2], sys.argv[3],  sys.argv[4],  sys.argv[5])
+    annotate_ms2(sys.argv[1], sys.argv[2], sys.argv[3],  sys.argv[4],  sys.argv[5])
