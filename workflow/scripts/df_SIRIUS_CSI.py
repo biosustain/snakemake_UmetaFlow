@@ -18,8 +18,8 @@ def df_sirius_csi(input_sirius, input_csi, output_sirius, output_csi):
 
     CSI=  pyteomics.mztab.MzTab(input_csi, encoding='UTF8', table_format='df')
     CSI.metadata
-    df= CSI.small_molecule_table
-    csifingerID= df.drop(columns= ["calc_mass_to_charge", "charge", "taxid", "species","database", "database_version", "spectra_ref", "search_engine", "modifications"])
+    csifingerID= CSI.small_molecule_table
+#    csifingerID= df.drop(columns= ["calc_mass_to_charge", "charge", "taxid", "species","database", "database_version", "spectra_ref", "search_engine", "modifications"])
     csifingerID.to_csv(output_csi, sep="\t")
     return SIRIUS_DF, csifingerID
 
