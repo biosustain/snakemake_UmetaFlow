@@ -12,6 +12,5 @@ dependencies:
   - pandas=1.2.4
   - pyteomics=4.4.2
   - numpy=1.20.2
-  - bioconda::openms
   - bioconda::thermorawfileparser
   - networkx

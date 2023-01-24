@@ -92,7 +92,7 @@ register using your university email and password.
 
 Tip: Make sure to download a version >5.6. Avoid SNAPSHOT versions and get the headless zipped file. Example (for linux OS:)
     
-    (cd resources/ && wget https://github.com/boecker-lab/sirius/releases/download/v5.6.2/sirius-5.6.2-linux64-headless.zip && unzip *.zip)
+    (cd resources/ && wget https://github.com/boecker-lab/sirius/releases/download/v5.6.3/sirius-5.6.3-linux64-headless.zip && unzip *.zip)
 
 Then, add your email and password to the scripts (required for SIRIUS versions > 5):
 - rule [SIRIUS and CSI:FingerID](workflow/rules/sirius_csi.smk) lines 22, 23 and 43, 44
