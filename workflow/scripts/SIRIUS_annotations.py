@@ -9,14 +9,17 @@ def sirius_annotations(matrix, annotated):
     list_of_df=[]
     for csv in input_formulas:
         df= pd.read_csv(csv, sep="\t", index_col="Unnamed: 0")
-        s= df["opt_global_rank"]
-        pd.to_numeric(s)
-        df= df.loc[df["opt_global_rank"]==1]
-        df= df.rename(columns={"opt_global_featureId":"featureId"})
-        df= df.drop(columns=df.filter(regex=fr"Score").columns)
-        df= df.drop(columns= df.filter(regex=fr"opt").columns)
-        df=df.reset_index()
-        list_of_df.append(df)
+        if "opt_global_rank" in df.columns:
+            s= df["opt_global_rank"]
+            pd.to_numeric(s)
+            df= df.loc[df["opt_global_rank"]==1]
+            df= df.rename(columns={"opt_global_featureId":"featureId"})
+            df= df.drop(columns=df.filter(regex=fr"Score").columns)
+            df= df.drop(columns= df.filter(regex=fr"opt").columns)
+            df=df.reset_index()
+            list_of_df.append(df)
+        else:
+            print("Empty SIRIUS file")
     DF_SIRIUS= pd.concat(list_of_df,ignore_index=True)
     DF_SIRIUS= DF_SIRIUS.drop(columns="index")
     DF_SIRIUS= DF_SIRIUS.rename(columns= {"chemical_formula": "formulas", "exp_mass_to_charge": "m/z", "retention_time": "RT (s)"})

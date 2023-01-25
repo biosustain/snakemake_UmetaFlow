@@ -7,7 +7,7 @@ import pyteomics
 from pyteomics import mztab
 from pyteomics import mgf, auxiliary
 
-def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
+def ms2matches(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
 
     spectralmatch=  pyteomics.mztab.MzTab(MZTAB, encoding="UTF8", table_format="df")
     spectralmatch.metadata
@@ -15,7 +15,7 @@ def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     spectralmatch_DF= df.drop(columns= ["identifier", "inchi_key", "modifications", "calc_mass_to_charge", "opt_adduct_ion", "taxid", "species", "database", "spectra_ref", "search_engine", "opt_sec_id","smallmolecule_abundance_std_error_study_variable[1]", "smallmolecule_abundance_stdev_study_variable[1]", "smallmolecule_abundance_study_variable[1]", "chemical_formula"])
     spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] < 10] 
     spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_ppm_error"] > -10]
-    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_match_score"] >= 60] #isotope matching score
+    spectralmatch_DF=spectralmatch_DF[spectralmatch_DF["opt_match_score"] >= 60]
     spectralmatch_DF["opt_spec_native_id"]= spectralmatch_DF["opt_spec_native_id"].str.replace(r"index=", "")       
 
     exp = MSExperiment()
@@ -48,7 +48,7 @@ def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     Matrix= pd.read_csv(MATRIX, sep="\t")
     Matrix["id"]= Matrix["id"].astype(str)
     Matrix["feature_ids"]= Matrix["feature_ids"].values.tolist()
-    Matrix.insert(0, "SCAN_IDS", "")
+    Matrix.insert(0, "SCANS", "")
     for i, id in zip(Matrix.index, Matrix["id"]):
         hits = []
         for scan, feature_id in zip(mgf_file["scans"], mgf_file["feature_id"]): 
@@ -56,12 +56,12 @@ def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                 hit = f"{scan}"
                 if hit not in hits:
                     hits.append(hit)
-        Matrix["SCAN_IDS"][i] = " ## ".join(hits)
+        Matrix["SCANS"][i] = " ## ".join(hits)
 
-    Matrix.insert(0, "SpectralMatch", "")
-    Matrix.insert(0, "SpectralMatch_smiles", "")
+    Matrix.insert(0, "SpectralMatches", "")
+    Matrix.insert(0, "SpectralMatches_smiles", "")
 
-    for i, scan in zip(Matrix.index, Matrix["SCAN_IDS"]):
+    for i, scan in zip(Matrix.index, Matrix["SCANS"]):
         hits1 = []
         hits2=[]
         for name, smiles, scan_number, in zip(spectralmatch_DF["description"],spectralmatch_DF["smiles"], spectralmatch_DF["SCANS"]):
@@ -71,11 +71,10 @@ def annotate_ms2(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                 if hit1 not in hits1:
                     hits1.append(hit1)
                     hits2.append(hit2)
-        Matrix["SpectralMatch"][i] = " ## ".join(hits1)
-        Matrix["SpectralMatch_smiles"][i] = " ## ".join(hits2)
-    Matrix= Matrix.drop(columns="SCAN_IDS")
+        Matrix["SpectralMatches"][i] = " ## ".join(hits1)
+        Matrix["SpectralMatches_smiles"][i] = " ## ".join(hits2)
     Matrix.to_csv(MSMS_MATRIX, sep="\t", index = False)
     return MSMS_MATRIX
 
 if __name__ == "__main__":
-    annotate_ms2(sys.argv[1], sys.argv[2], sys.argv[3],  sys.argv[4],  sys.argv[5])
+    ms2matches(sys.argv[1], sys.argv[2], sys.argv[3],  sys.argv[4],  sys.argv[5])
