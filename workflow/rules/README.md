@@ -12,13 +12,20 @@ If you have Agilent or Bruker files, skip that step (write "FALSE" for rule file
 
 ### `2) Pre-processing:`
 
-Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode.
+Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). 
+
+**Important note**: The current MetaboAdductDecharger command is for data in positive mode. For negative mode, replace the command with the following one:
+```   
+MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode "true" -algorithm:MetaboliteFeatureDeconvolution:potential_adducts "H-1:-:1" "H-2O-1:0:0.05" "CH2O2:0:0.5" -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -log {log} 2>> {log} 
+```
 
 ![dag](/images/Preprocessing.svg) 
 
 ### `3) Re-quantification:` 
 
-Re-quantify all raw files to avoid missing values resulted by the pre-processing steps for statistical analysis and data exploration. Generate a FeatureMatrix for further statistical analysis. Important note: the MetaboAdductDecharger is in positive mode. Use adduct list: [H-1:-:1,H-2O-1:0:0.05,CH2O2:0:0.5] for negative mode. Also, edit the script workflow/scripts/metaboliteNaN.py: comment the positive ionisation part of the script and uncomment the negative ionisation version. 
+Re-quantify all raw files to avoid missing values resulted by the pre-processing steps for statistical analysis and data exploration. Generate a FeatureMatrix for further statistical analysis. 
+
+**Important note**: The current MetaboAdductDecharger command is for data in positive mode. Replace the command with the one above again for negative mode. Also, edit the script workflow/scripts/metaboliteNaN.py: comment the positive ionisation part of the script and uncomment the negative ionisation version. 
 
 ![dag](/images/Re-quantification.svg) 
 
@@ -35,7 +42,6 @@ Level 3 MSI annotations are added to the feature matrix.
 ### `5) GNPSexport:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
-
 
 
 ![dag](/images/GNPSExport.svg) 
