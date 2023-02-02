@@ -18,6 +18,10 @@ Converting raw data to a feature table with a series of OpenMS algorithms (see d
 ```   
 MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts "H-1:-:1" "H-2O-1:0:0.05" "CH2O2:0:0.5" -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -log {log} 2>> {log} 
 ```
+Also add the following in IDMapper for negative mode:
+```
+IDMapper -ignore_charge -id {input.var1} -in {input.var2}  -spectra:in {input.var3} -out {output} -log {log} 2>> {log} 
+```
 
 ![dag](/images/Preprocessing.svg) 
 
