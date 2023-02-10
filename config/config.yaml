@@ -1,18 +1,21 @@
 # This file should contain everything to configure the workflow on a global scale.
 # In case of sample based data, it should be complemented by a samples.tsv file that contains
 # one row per sample. It can be parsed easily via pandas.
-samples: config/samples.tsv
+pep_version: 2.1.0
+sample_table: "dataset.tsv"
+subsample_table: ["samples.tsv"]
 
 projects:
-# Project 1
-  - name: example
-    samples: config/samples.tsv
+  - name: Test
+    sample_table: dataset.tsv
+    subsample_table: ["samples.tsv"]
+    rules: "config/config.yaml"
 
 #### RULE CONFIGURATION ####
 # rules: set value to TRUE if you want to run the analysis or FALSE if you don't
 rules:
   fileconversion: TRUE #true only for *.raw files from Thermo
-  preprocessing: TRUE
+  preprocessing: TRUE # without filtering blanks/QCs or controls
   GNPSexport: TRUE #if you want to perform FBMN
   requantification: FALSE #true for files with common features
   sirius: FALSE #only formula, no structural predictions and annotate the feature matrix with formula predictions using feature_ids

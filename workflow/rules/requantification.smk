@@ -77,7 +77,7 @@ rule requantify:
     threads: 4
     shell:
         """
-        FeatureFinderMetaboIdent -id {input.var1} -in {input.var2} -out {output} -extract:mz_window 10.0 -threads {threads} -log {log} 2>> {log}
+        FeatureFinderMetaboIdent -id {input.var1} -in {input.var2} -out {output} -extract:mz_window 10.0 -extract:rt_window 30.0 -threads {threads} -log {log} 2>> {log}
         """
 
 # 4) Merge the re-quantified with the complete feature files
@@ -135,7 +135,7 @@ rule IDMapper_FFMident:
 
 rule FeatureLinker_FFMident:
     input:
-        expand(join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SAMPLES)
+        expand(join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SUBSAMPLES)
     output:
         join("results", "Interim", "Requantified", "Requantified.consensusXML")
     log: join("workflow", "report", "logs", "requantification", "FeatureLinker_FFMident.log")

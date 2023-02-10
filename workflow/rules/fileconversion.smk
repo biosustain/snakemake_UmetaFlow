@@ -6,10 +6,10 @@ from os.path import join
 
 rule mzml_conversion:
     input:
-        join("data", "raw", "{samples}.raw")
+        join("data", "raw", "{dataset}.raw")
     output:
-        join("data", "mzML", "{samples}.mzML")
-    log: join("workflow", "report", "logs", "FileConversion", "mzml_conversion_{samples}.log")
+        join("data", "mzML", "{dataset}.mzML")
+    log: join("workflow", "report", "logs", "FileConversion", "mzml_conversion_{dataset}.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:

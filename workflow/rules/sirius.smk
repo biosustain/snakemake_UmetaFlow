@@ -63,7 +63,7 @@ if config["rules"]["requantification"]==True:
     rule sirius_annotations:
         input:
             matrix= join("results", "Requantified", "FeatureMatrix.tsv"),
-            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES)
+            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SUBSAMPLES)
         output:
             annotated= join("results", "annotations", "FeatureTable_sirius.tsv")
         log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
@@ -78,7 +78,7 @@ else:
     rule sirius_annotations:
         input:
             matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
-            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES)
+            sirius= expand(join("results", "Sirius", "formulas_{samples}.tsv"), samples=SUBSAMPLES)
         output:
             annotated= join("results", "annotations", "FeatureTable_sirius.tsv")
         log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")

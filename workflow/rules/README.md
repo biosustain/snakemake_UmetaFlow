@@ -14,11 +14,13 @@ If you have Agilent or Bruker files, skip that step (write "FALSE" for rule file
 
 Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). 
 
-**Important note**: The current MetaboAdductDecharger command is for data in positive mode. For negative mode, replace the command with the following one:
+If the user defines blank/QC/control samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a cutoff > 0.3 (average int in blanks devided by average int in samples).
+
+**Important note**: The current MetaboAdductDecharger command is for data in positive mode. For **negative mode**, replace the command with the following one:
 ```   
 MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts "H-1:-:1" "H-2O-1:0:0.05" "CH2O2:0:0.5" -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -log {log} 2>> {log} 
 ```
-Also add the following in IDMapper for negative mode:
+Also add the following in IDMapper for **negative mode**:
 ```
 IDMapper -ignore_charge -id {input.var1} -in {input.var2}  -spectra:in {input.var3} -out {output} -log {log} 2>> {log} 
 ```

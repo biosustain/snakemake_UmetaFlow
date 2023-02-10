@@ -1,13 +1,14 @@
 import glob
 from os.path import join 
+import peppy
 # 1) Correct the MS2 precursor on a peak level (To the "highest intensity MS1 peak")
 
 rule precursorcorrection_peak:
     input:
-        join("data", "mzML", "{samples}.mzML")
+        join("data", "mzML", "{dataset}.mzML")
     output:
-        join("results", "Interim", "mzML", "PCpeak_{samples}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_peak_{samples}.log")
+        join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML")
+    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_peak_{dataset}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -19,27 +20,43 @@ rule precursorcorrection_peak:
     
 rule preprocess:
     input:
-        join("results", "Interim", "mzML", "PCpeak_{samples}.mzML")
+        join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML")
     output:
-        join("results", "Interim", "Preprocessed", "FFM_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "preprocess_{samples}.log")
+        join("results", "Interim", "Preprocessed", "FFM_{dataset}.featureXML")
+    log: join("workflow", "report", "logs", "preprocessing", "preprocess_{dataset}.log")
     conda:
         join("..", "envs", "openms.yaml")
     threads: 4
     shell:
         """
-        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int "1.0e04" -algorithm:mtd:mass_error_ppm "10.0" -algorithm:epd:width_filtering "fixed" -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -threads {threads} -log {log} 2>> {log}
+        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int "1.0e03" -algorithm:mtd:mass_error_ppm "10.0" -algorithm:epd:width_filtering "fixed" -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -threads {threads} -log {log} 2>> {log}
         """
 
-# 3) Correct the MS2 precursor in a feature level (for GNPS FBMN).        
+# 3) Remove all features in blanks/control/QC samples:
+ 
+rule filter:
+    input:
+        feature_files= join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
+    output:
+        out_filtered= join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
+    log: join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    threads: 4
+    shell:
+        """
+        python workflow/scripts/filter.py {input.feature_files} {output.out_filtered} 2>> {log}
+        """
+
+# 4) Correct the MS2 precursor in a feature level (for GNPS FBMN).        
 
 rule precursorcorrection_feature:
     input:
-        var1= join("results", "Interim", "mzML", "PCpeak_{samples}.mzML"),
-        var2= join("results", "Interim", "Preprocessed", "FFM_{samples}.featureXML")
+        var1= join("results", "Interim", "mzML", "PCpeak_{sample}.mzML"),
+        var2= join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
     output:
-        join("results", "Interim", "mzML", "PCfeature_{samples}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_feature_{samples}.log")
+        join("results", "Interim", "mzML", "PCfeature_{sample}.mzML")
+    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_feature_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -47,14 +64,14 @@ rule precursorcorrection_feature:
         HighResPrecursorMassCorrector -in {input.var1} -feature:in {input.var2} -out {output}  -nearest_peak:mz_tolerance "100.0" -log {log} 2>> {log} 
         """ 
 
-# 4) (i) MapAlignerPoseClustering is used to perform a linear retention time alignment, to correct for linear shifts in retention time between different runs.
+# 5) (i) MapAlignerPoseClustering is used to perform a linear retention time alignment, to correct for linear shifts in retention time between different runs.
 
 rule MapAligner:
     input:
-        expand(join("results", "Interim", "Preprocessed", "FFM_{samples}.featureXML"), samples=SAMPLES)
+        expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        var1= expand(join("results", "Interim", "Preprocessed", "MapAligned_{samples}.featureXML"), samples=SAMPLES),
-        var2= expand(join("results", "Interim", "Preprocessed", "MapAligned_{samples}.trafoXML"), samples=SAMPLES)
+        var1= expand(join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML"), sample=SUBSAMPLES),
+        var2= expand(join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML"), sample=SUBSAMPLES)
     log: 
         general= join("workflow", "report", "logs", "preprocessing", "MapAlignerGeneral.log"),
         job= join("workflow", "report", "logs", "preprocessing", "MapAligner.log")
@@ -67,15 +84,15 @@ rule MapAligner:
         MapAlignerPoseClustering -algorithm:max_num_peaks_considered -1 -algorithm:superimposer:mz_pair_max_distance 0.05 -algorithm:pairfinder:distance_MZ:max_difference 10.0 -algorithm:pairfinder:distance_MZ:unit ppm -in {input} -out {output.var1} -trafo_out {output.var2} -threads {threads} -log {log.job} 2>> {log.job}
         """ 
 
-# 4) (ii) MapRTTransformer is used to perform a linear retention time alignment, to correct for linear shifts in retention time between different runs using the transformation files from the reprocessing rule MapAlignerPoseClustering (faster computationally)
+# 5) (ii) MapRTTransformer is used to perform a linear retention time alignment, to correct for linear shifts in retention time between different runs using the transformation files from the reprocessing rule MapAlignerPoseClustering (faster computationally)
 
 rule mzMLaligner:
     input:
-        var1= join("results", "Interim", "mzML", "PCfeature_{samples}.mzML"),
-        var2= join("results", "Interim", "Preprocessed", "MapAligned_{samples}.trafoXML")
+        var1= join("results", "Interim", "mzML", "PCfeature_{sample}.mzML"),
+        var2= join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML")
     output:
-        join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "mzMLaligner_{samples}.log")
+        join("results", "Interim", "mzML", "Aligned_{sample}.mzML")
+    log: join("workflow", "report", "logs", "preprocessing", "mzMLaligner_{sample}.log")
     threads: 4
     conda:
         join("..", "envs", "openms.yaml")
@@ -84,14 +101,14 @@ rule mzMLaligner:
         MapRTTransformer -in {input.var1} -trafo_in {input.var2} -out {output} -threads {threads} -log {log} 2>> {log} 
         """ 
 
-# 5) Decharger: Decharging algorithm for adduct assignment
+# 6) Decharger: Decharging algorithm for adduct assignment
 
 rule adduct_annotations_FFM:
     input:
-        join("results", "Interim", "Preprocessed", "MapAligned_{samples}.featureXML")
+        join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
     output:
-        join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{samples}.log")
+        join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML")
+    log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -99,16 +116,16 @@ rule adduct_annotations_FFM:
         MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts "H:+:0.6" "Na:+:0.1" "NH4:+:0.1" "H-1O-1:+:0.1" "H-3O-2:+:0.1" -algorithm:MetaboliteFeatureDeconvolution:charge_max "1" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "1"  -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -log {log} 2>> {log} 
         """    
 
-# 6) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
+# 7) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
 
 rule IDMapper_FFM:
     input:
         var1= join("resources", "emptyfile.idXML"),
-        var2= join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML"),
-        var3= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
+        var2= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
+        var3= join("results", "Interim", "mzML", "Aligned_{sample}.mzML")
     output:
-        join("results", "Interim", "Preprocessed", "IDMapper_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "IDMapper_FFM_{samples}.log")
+        join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML")
+    log: join("workflow", "report", "logs", "preprocessing", "IDMapper_FFM_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -116,11 +133,11 @@ rule IDMapper_FFM:
         IDMapper -id {input.var1} -in {input.var2}  -spectra:in {input.var3} -out {output} -log {log} 2>> {log} 
         """
 
-# 7) The FeatureLinkerUnlabeledKD is used to aggregate the feature information (from single files) into a ConsensusFeature, linking features from different files together, which have a similar m/z and RT (MS1 level).
+# 8) The FeatureLinkerUnlabeledKD is used to aggregate the feature information (from single files) into a ConsensusFeature, linking features from different files together, which have a similar m", "z and rt (MS1 level).
 
 rule FeatureLinker_FFM:
     input:
-        expand(join("results", "Interim", "Preprocessed", "IDMapper_{samples}.featureXML"), samples=SAMPLES)
+        expand(join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
         join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
     log: join("workflow", "report", "logs", "preprocessing", "FeatureLinker_FFM.log")
@@ -132,7 +149,7 @@ rule FeatureLinker_FFM:
         FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol 30.0 -algorithm:link:mz_tol 8.0 -threads {threads} -log {log} 2>> {log} 
         """
 
-# 8) export the consensusXML file to a tsv file to produce a single matrix for PCA
+# 9) export the consensusXML file to a tsv file to produce a single matrix for PCA
 
 rule FFM_matrix:
     input:

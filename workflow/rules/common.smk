@@ -5,22 +5,29 @@ from snakemake.utils import validate
 from snakemake.utils import min_version
 import glob
 from pathlib import Path
+import peppy
 
 min_version("5.18.0")
+pepfile: os.path.join("config", "config.yaml")
+pepschema: "http://schema.databio.org/pep/2.1.0.yaml"
 
 ##### load config and sample sheets #####
-
 configfile: os.path.join("config", "config.yaml")
 validate(config, schema=os.path.join("..", "schemas", "config.schema.yaml"))
 
-# set up sample
-samples = pd.read_csv(config["samples"], sep="\t").set_index("sample_name", drop=False)
-samples.index.names = ["samples"]
+# set up dataset
+dataset = peppy.Project(os.path.join("config", "dataset.tsv"), sample_table_index="sample_name")
 
+# set up samples and blanks or control or QC for filtering
+blanks = pd.read_csv(os.path.join("config", "blanks.tsv"), sep="\t", index_col=None)
 
-##### Wildcard constraints #####
-wildcard_constraints:
-    sample="|".join(samples.index),
+if blanks.empty:
+        samples = peppy.Project(os.path.join("config", "dataset.tsv"), subsample_table_index="sample_name")
+else:
+        samples = peppy.Project(os.path.join("config", "samples.tsv"), subsample_table_index="sample_name")
+
+DATASET = dataset.sample_table["sample_name"].to_list()
+SUBSAMPLES= samples.sample_table["sample_name"].to_list()
 
 ##### Helper functions #####
 
@@ -34,30 +41,29 @@ def find_exec(dir, program):
                 if os.path.isfile(path):
                         return os.path.join(path)
                         
-SAMPLES = samples.sample_name.to_list()
-
 ##### 7. Customize final output based on config["rule"] values #####
 def get_final_output():
     """
     Generate final output for rule all given a TRUE value in config["rules"]
     """
     # dictionary of rules and its output files
-    rule_dict = {"fileconversion" : expand(os.path.join("data", "mzML", "{samples}.mzML"), samples=SAMPLES),
-                "preprocessing" : [expand(os.path.join("results", "Interim", "mzML", "PCpeak_{samples}.mzML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Preprocessed", "FFM_{samples}.featureXML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "mzML", "PCfeature_{samples}.mzML"), samples=SAMPLES),
-        expand([os.path.join("results", "Interim", "Preprocessed", "MapAligned_{samples}.featureXML"), os.path.join("results", "Interim", "Preprocessed", "MapAligned_{samples}.trafoXML")], samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "mzML", "Aligned_{samples}.mzML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML"), samples=SAMPLES),
+    rule_dict = {"fileconversion" : expand(os.path.join("data", "mzML", "{dataset}.mzML"), dataset=DATASET),
+                "preprocessing" : [expand(os.path.join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML"), dataset=DATASET),
+        expand(os.path.join("results", "Interim", "Preprocessed", "FFM_{dataset}.featureXML"), dataset=DATASET),
+        expand(os.path.join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "mzML", "PCfeature_{sample}.mzML"), sample=SUBSAMPLES),
+        expand([os.path.join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML")], sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "mzML", "Aligned_{sample}.mzML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")),
         expand(os.path.join("results", "Preprocessed", "FeatureMatrix.tsv"))],
                 "requantification" : [expand([os.path.join("results", "Interim", "Requantified", "Complete.consensusXML"), os.path.join("results", "Interim", "Requantified", "Missing.consensusXML")]),
-        expand(os.path.join("results", "Interim", "Requantified", "Complete_{samples}.featureXML"), samples=SAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "Complete_{sample}.featureXML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")),
-        expand(os.path.join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Requantified", "Merged_{samples}.featureXML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Requantified", "MFD_{samples}.featureXML"), samples=SAMPLES),
-        expand(os.path.join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "FFMID_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "Merged_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "Requantified.consensusXML")),
         expand(os.path.join("results", "Requantified", "FeatureMatrix.tsv"))],
                 "GNPSexport" : [expand(os.path.join("results", "Interim", "GNPSexport", "filtered.consensusXML")),
@@ -65,11 +71,11 @@ def get_final_output():
         expand(os.path.join("results", "GNPSexport", "FeatureQuantificationTable.txt")),
         expand(os.path.join("results", "GNPSexport", "SuppPairs.csv")),
         expand(os.path.join("results", "GNPSexport", "metadata.tsv"))],
-                "sirius_csi" : [expand([os.path.join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"), os.path.join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")], samples=SAMPLES),
-        expand([os.path.join("results", "SiriusCSI", "formulas_{samples}.tsv"), os.path.join("results", "SiriusCSI", "structures_{samples}.tsv")], samples=SAMPLES),
+                "sirius_csi" : [expand([os.path.join("results", "Interim", "SiriusCSI", "formulas_{sample}.mzTab"), os.path.join("results", "Interim", "SiriusCSI", "structures_{sample}.mzTab")], sample=SUBSAMPLES),
+        expand([os.path.join("results", "SiriusCSI", "formulas_{sample}.tsv"), os.path.join("results", "SiriusCSI", "structures_{sample}.tsv")], sample=SUBSAMPLES),
         expand(os.path.join("results", "annotations", "FeatureTable_siriuscsi.tsv"))],
-                "sirius" : [expand(os.path.join("results", "Interim", "Sirius", "formulas_{samples}.mzTab"), samples=SAMPLES),
-        expand(os.path.join("results", "Sirius", "formulas_{samples}.tsv"), samples=SAMPLES),
+                "sirius" : [expand(os.path.join("results", "Interim", "Sirius", "formulas_{sample}.mzTab"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Sirius", "formulas_{sample}.tsv"), sample=SUBSAMPLES),
         expand(os.path.join("results", "annotations", "FeatureTable_sirius.tsv"))],
                 "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
         expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
@@ -81,8 +87,6 @@ def get_final_output():
     
     # get keys from config
     opt_rules = config["rules"].keys()
-
     # if values are TRUE add output files to rule all
     final_output = [rule_dict[r] for r in opt_rules if config["rules"][r]]
-
     return final_output

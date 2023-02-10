@@ -7,8 +7,7 @@ import sys
 def df_sirius_csi(input_sirius, input_csi, output_sirius, output_csi):
     sirius=  pyteomics.mztab.MzTab(input_sirius, encoding='UTF8', table_format='df')
     sirius.metadata
-    df= sirius.small_molecule_table
-    SIRIUS_DF= df.drop(columns= ["identifier", "smiles", "inchi_key", "description", "calc_mass_to_charge", "charge", "taxid", "species","database", "database_version", "spectra_ref", "search_engine", "modifications"])
+    SIRIUS_DF= sirius.small_molecule_table
     SIRIUS_DF=SIRIUS_DF[SIRIUS_DF["opt_global_explainedIntensity"] >= 0.4] #opt_global_explainedIntensity should be higher than 0.8 or 0.9 even for reliable results. We filter out only the ones below 0.4 since there are cases of correct formula assignment in the range above that number
     SIRIUS_DF= SIRIUS_DF.rename(columns= {"best_search_engine_score[1]":	"SiriusScore"}) #This score is the sum of the fragmentation pattern scoring ("TreeScore") and the isotope pattern scoring ("IsotopeScore")
     SIRIUS_DF= SIRIUS_DF.rename(columns= {"best_search_engine_score[2]":	"TreeScore"})
@@ -19,7 +18,6 @@ def df_sirius_csi(input_sirius, input_csi, output_sirius, output_csi):
     CSI=  pyteomics.mztab.MzTab(input_csi, encoding='UTF8', table_format='df')
     CSI.metadata
     csifingerID= CSI.small_molecule_table
-#    csifingerID= df.drop(columns= ["calc_mass_to_charge", "charge", "taxid", "species","database", "database_version", "spectra_ref", "search_engine", "modifications"])
     csifingerID.to_csv(output_csi, sep="\t")
     return SIRIUS_DF, csifingerID
 

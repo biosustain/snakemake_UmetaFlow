@@ -70,8 +70,8 @@ if config["rules"]["requantification"]==True:
     rule siriuscsi_annotations:
         input:
             matrix= join("results", "Requantified", "FeatureMatrix.tsv"),
-            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SAMPLES),
-            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SAMPLES)
+            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SUBSAMPLES),
+            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SUBSAMPLES)
         output:
             annotated= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
         log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")
@@ -86,8 +86,8 @@ else:
     rule siriuscsi_annotations:
         input:
             matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
-            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SAMPLES),
-            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SAMPLES)
+            sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SUBSAMPLES),
+            csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SUBSAMPLES)
         output:
             annotated= join("results", "annotations", "FeatureTable_siriuscsi.tsv")
         log: join("workflow", "report", "logs", "annotate", "sirius_annotations.log")

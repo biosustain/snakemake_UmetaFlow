@@ -14,7 +14,6 @@ def cleanup(input_cmap, output_tsv):
     df["feature_ids"] = [[handle.getUniqueId() for handle in cf.getFeatureList()] for cf in consensus_map]
     df= df.reset_index()
     df= df.drop(columns= ["sequence"])
-    df= df.rename(columns={"RT": "RT(s)", "mz" :"m/z"})
     df.to_csv(output_tsv, sep="\t", index = False)
     return df
 

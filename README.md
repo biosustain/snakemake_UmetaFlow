@@ -1,7 +1,7 @@
 # UmetaFlow: An Untargeted Metabolomics workflow for high-throughput data processing and analysis for Linux and MacOS systems
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥6.7.0-brightgreen.svg)](https://snakemake.bitbucket.io)
-[![Build Status](https://travis-ci.org/snakemake-workflows/snakemake-bgc-analytics.svg?branch=master)](https://travis-ci.org/snakemake-workflows/snakemake-bgc-analytics)
+[![Snakemake](https://img.shields.io/badge/snakemake-≥7.14.0-brightgreen.svg)](https://snakemake.bitbucket.io)
+[![PEP compatible](https://pepkit.github.io/img/PEP-compatible-green.svg)](https://pep.databio.org)
 
 This is the Snakemake implementation of the [pyOpenMS workflow](https://github.com/biosustain/pyOpenMS_UmetaFlow.git) tailored by [Eftychia Eva Kontou](https://github.com/eeko-kon) and [Axel Walter](https://github.com/axelwalter).
 
@@ -106,17 +106,32 @@ Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Do
 
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 
 
-**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_sampletsv_file.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in sample names.**
+**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_dataset_tsv.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in the sample names or simply run:**
+    
+    python data_files.py
 
-`samples.tsv` example:
+`config/dataset.tsv` example:
+
+|  sample_name |       comment                |
+|-------------:|-----------------------------:|
+| ISP2_blank   | blank media                  |
+| NBC_00162    | pyracrimicin                 |
+| MDNA_WGS_14  | epemicins_A_B                |
+
+If there are blanks in the file list, then add them to the config/blanks.tsv file
+`config/blanks.tsv` example:
+
+|  sample_name |       comment                |
+|-------------:|-----------------------------:|
+| ISP2_blank   | blank media                  |
+
+`config/samples.tsv` example:
 
 |  sample_name |       comment                |
 |-------------:|-----------------------------:|
 | NBC_00162    | pyracrimicin                 |
 | MDNA_WGS_14  | epemicins_A_B                |
 
-
-Further formatting rules can be defined in the `workflow/schemas/` folder.
 
 ### Step 4: Execute workflow
 
@@ -143,18 +158,18 @@ See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/exe
 
 ### Step 5: Investigate results
 
-All the results are in a .TSV format and can be opened simply with excel or using pandas dataframes. All the files under results/interim can be ignored or deleted.
+All the results are in a .TSV format and can be opened simply with excel or using pandas dataframes. All the files under results/interim can be ignored and eventualy discarded.
 
 ## Developer Notes
 ### Config & Schemas
 
-* [Config & schemas](https://snakemake.readthedocs.io/en/stable/snakefiles/configuration.html) define the input formatting and are important to generate `wildcards`. The idea of using `samples` and `units` came from [here](https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling). I think we should use `units.txt` as a central metadata of the runs which are regulary updated (and should be the same for all use case). Then, `samples.txt` can be used to decide which strains need to be assembled per use case. 
+* [Config & schemas](https://snakemake.readthedocs.io/en/stable/snakefiles/configuration.html) define the input formatting and are important to generate `wildcards`. The idea of using `samples` and `units` came from [here](https://github.com/snakemake-workflows/dna-seq-gatk-variant-calling).  
 
 ### Rules
 
 * [Snakefile](workflow/Snakefile): the main entry of the pipeline which tells the final output to be generated and the rules being used
-* [common.smk](workflow/rules/common.smk): a rule that generate the variable used (strain names) & other helper scripts
-* [The main rules (*.smk)](workflow/rules/): is the bash code that has been chopped into modular units, with defined input & output. Snakemake then chain this rules together to generate required jobs. This should be intuitive and makes things easier for adding / changing steps in the pipeline.
+* [common.smk](workflow/rules/common.smk): a rule that generates the variables used (sample names) & other helper scripts
+* [The main rules (*.smk)](workflow/rules/): the bash code that has been chopped into modular units, with defined input & output. Snakemake then chains this rules together to generate required jobs. This should be intuitive and makes things easier for adding / changing steps in the pipeline.
 
 ### Environments
 
@@ -162,7 +177,7 @@ All the results are in a .TSV format and can be opened simply with excel or usin
 * Note that not all dependencies are compatible/available as conda libraries. Once installed, the virtual environment are stored in `.snakemake/conda` with unique hashes. The ALE and pilon are example where environment needs to be modified / dependencies need to be installed.
 * It might be better to utilise containers / dockers and cloud execution for "hard to install" dependencies
 * Custom dependencies and databases are stored in the `resources/` folder.
-* Snakemake dependencies with conda packages is one of the drawbacks and why [Nextflow](https://www.nextflow.io/) might be more preferable. Nevertheless, the pythonic language of snakemake enable newcomers to learn and develop their own pipeline faster.
+* Snakemake dependencies with conda packages is one of the drawbacks and why [Nextflow](https://www.nextflow.io/) might be more preferable. Nevertheless, the pythonic language of snakemake enables newcomers to learn and develop their own pipeline faster.
 
 ### Test Data (only for testing the workflow with the example dataset)
 
