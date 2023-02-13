@@ -67,6 +67,8 @@ def filter(feature_files, out_filtered):
                 for f in fmap:
                     if f.getUniqueId() in keep_ids:
                         fmap_clean.push_back(f)
+                out_filtered= os.path.join("results", "Interim", "Preprocessed", "Filtered_"+ os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]+ "featureXML")
+                print(out_filtered)
                 FeatureXMLFile().store(out_filtered, fmap_clean)
     return out_filtered
 

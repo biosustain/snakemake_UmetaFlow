@@ -36,10 +36,10 @@ rule preprocess:
  
 rule filter:
     input:
-        feature_files= join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
+        feature_files= expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        out_filtered= join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+        out_filtered= expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
+    log: join("workflow", "report", "logs", "preprocessing", "filtered.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     threads: 4
