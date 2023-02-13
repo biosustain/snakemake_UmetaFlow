@@ -58,21 +58,26 @@ def ms2matches(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
                     hits.append(hit)
         Matrix["SCANS"][i] = " ## ".join(hits)
 
-    Matrix.insert(0, "SpectralMatches", "")
-    Matrix.insert(0, "SpectralMatches_smiles", "")
+    Matrix.insert(0, "SpectralMatch", "")
+    Matrix.insert(0, "SpectralMatch_smiles", "")
+    Matrix.insert(0, "SpectralMatch_score", "")
 
     for i, scan in zip(Matrix.index, Matrix["SCANS"]):
         hits1 = []
-        hits2=[]
-        for name, smiles, scan_number, in zip(spectralmatch_DF["description"],spectralmatch_DF["smiles"], spectralmatch_DF["SCANS"]):
+        hits2= []
+        hits3 =[]
+        for name, smiles, scan_number, score, in zip(spectralmatch_DF["description"],spectralmatch_DF["smiles"], spectralmatch_DF["SCANS"], spectralmatch_DF["opt_match_score"]):
             if scan==scan_number:
                 hit1 = f"{name}"
                 hit2 = f"{smiles}"
+                hit3 = f"{score}"
                 if hit1 not in hits1:
                     hits1.append(hit1)
                     hits2.append(hit2)
-        Matrix["SpectralMatches"][i] = " ## ".join(hits1)
-        Matrix["SpectralMatches_smiles"][i] = " ## ".join(hits2)
+                    hits3.append(hit3)
+        Matrix["SpectralMatch"][i] = " ## ".join(hits1)
+        Matrix["SpectralMatch_smiles"][i] = " ## ".join(hits2)
+        Matrix["SpectralMatch_score"][i] = " ## ".join(hits3)
     Matrix.to_csv(MSMS_MATRIX, sep="\t", index = False)
     return MSMS_MATRIX
 

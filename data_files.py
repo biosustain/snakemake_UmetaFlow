@@ -19,9 +19,9 @@ print(df["sample_name"])
 fList =input("Please enter a list of comma separated filenames for your blanks, QCs or control samples from the filelist: ").split(",")
 DF_NC = pd.DataFrame({"sample_name":fList})
 for i, blank in zip(DF_NC.index, DF_NC["sample_name"]):
-    for i, filename in zip(df.index, df["sample_name"]):
+    for j, filename in zip(df.index, df["sample_name"]):
         if blank==filename:
-            DF_NC["sample_name"][i] = df["sample_name"][i]
+            DF_NC["sample_name"][i] = df["sample_name"][j]
     DF_NC["comment"]= " "
     DF_NC["MAPnumber"] = " "
     DF_NC.to_csv(os.path.join("config", "blanks.tsv"), sep="\t")

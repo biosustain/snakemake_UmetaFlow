@@ -38,6 +38,7 @@ def filter(feature_files, out_filtered):
     if blank_df.empty:
         print("no blanks, controls or QCs given")
         for fmap in feature_maps:
+            out_filtered= os.path.join("results", "Interim", "Preprocessed", "Filtered_"+ os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]+ "featureXML")
             FeatureXMLFile().store(out_filtered, fmap)
     else:    
         blank_df["sample_name"]= blank_df["sample_name"].astype(str) +".mzML"
@@ -68,7 +69,6 @@ def filter(feature_files, out_filtered):
                     if f.getUniqueId() in keep_ids:
                         fmap_clean.push_back(f)
                 out_filtered= os.path.join("results", "Interim", "Preprocessed", "Filtered_"+ os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]+ "featureXML")
-                print(out_filtered)
                 FeatureXMLFile().store(out_filtered, fmap_clean)
     return out_filtered
 
