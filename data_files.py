@@ -17,16 +17,19 @@ else:
 
 print(df["sample_name"])
 fList =input("Please enter a list of comma separated filenames for your blanks, QCs or control samples from the filelist: ").split(",")
-DF_NC = pd.DataFrame({"sample_name":fList})
-for i, blank in zip(DF_NC.index, DF_NC["sample_name"]):
-    for j, filename in zip(df.index, df["sample_name"]):
+blank_DF = pd.DataFrame({"sample_name":fList})
+for i, blank in zip(blank_DF.index, blank_DF["sample_name"]):
+    for i, filename in zip(df.index, df["sample_name"]):
         if blank==filename:
-            DF_NC["sample_name"][i] = df["sample_name"][j]
-    DF_NC["comment"]= " "
-    DF_NC["MAPnumber"] = " "
-    DF_NC.to_csv(os.path.join("config", "blanks.tsv"), sep="\t")
+            blank_DF["sample_name"][i] = df["sample_name"][i]
+    blank_DF["comment"]= " "
+    blank_DF["MAPnumber"] = " "
+    blank_DF.to_csv(os.path.join("config", "blanks.tsv"), sep="\t")
 
 sample_DF = df
-for blank in fList:
-    sample_DF= sample_DF[sample_DF["sample_name"].str.contains(blank)==False ]
-sample_DF.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
+if blank_DF.empty:
+    sample_DF.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
+else:
+    for blank in fList:
+        sample_DF= sample_DF[sample_DF["sample_name"].str.contains(blank)==False ]
+    sample_DF.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
