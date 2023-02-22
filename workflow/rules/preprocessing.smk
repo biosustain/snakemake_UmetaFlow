@@ -45,7 +45,7 @@ rule filter:
     threads: 4
     shell:
         """
-        python workflow/scripts/filter.py {input.feature_files} {output.out_filtered} 2>> {log}
+        python workflow/scripts/filter.py '{input.feature_files}' '{output.out_filtered}' 2>> {log}
         """
 
 # 4) Correct the MS2 precursor in a feature level (for GNPS FBMN).        

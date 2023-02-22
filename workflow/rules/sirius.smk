@@ -72,7 +72,7 @@ if config["rules"]["requantification"]==True:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/SIRIUS_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            python workflow/scripts/SIRIUS_annotations.py {input.matrix} '{input.sirius}' {output.annotated} 2>> {log}
             """
 else:
     rule sirius_annotations:
@@ -87,5 +87,5 @@ else:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/SIRIUS_annotations.py {input.matrix} {output.annotated} 2>> {log}
+            python workflow/scripts/SIRIUS_annotations.py {input.matrix} '{input.sirius}' {output.annotated} 2>> {log}
             """

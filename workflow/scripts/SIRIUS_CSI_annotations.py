@@ -3,8 +3,8 @@ import glob
 import os
 import sys
 
-def sirius_csi_annotations(matrix, annotated):
-    input_formulas= glob.glob(os.path.join("results", "SiriusCSI", "formulas_*.tsv"))
+def sirius_csi_annotations(matrix, sirius, csi, annotated):
+    input_formulas= sirius.split()
     DF_SIRIUS = pd.DataFrame()
     list_of_df=[]
     for tsv in input_formulas:
@@ -27,7 +27,7 @@ def sirius_csi_annotations(matrix, annotated):
     for i, rows in DF_SIRIUS.iterrows():
         DF_SIRIUS["featureId"][i]= DF_SIRIUS["featureId"][i].split(",")
 
-    input_structures= glob.glob(os.path.join("results", "SiriusCSI", "structures_*.tsv"))
+    input_structures= csi.split()
     DF_CSI = pd.DataFrame()
     list_of_df=[]
     for tsv in input_structures:
@@ -98,4 +98,4 @@ def sirius_csi_annotations(matrix, annotated):
     return DF_features
 
 if __name__ == "__main__":
-    sirius_csi_annotations(sys.argv[1], sys.argv[2])
+    sirius_csi_annotations(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
