@@ -100,6 +100,22 @@ Then, add your email and password to the scripts (required for SIRIUS versions >
 
 Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) (or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html)) until the 3.0 release is published.
 
+Then add the binaries to your path (Linux):
+
+    export PATH=$PATH:/path/to/openms-build/bin/
+    source ~/.bashrc
+
+Then add the binaries to your path (MacOS) by opening one of these files in a text editor:
+
+    /etc/profile
+    ~/.bash_profile
+    ~/.bash_login (if .bash_profile does not exist)
+    ~/.profile (if .bash_login does not exist)
+
+and adding the path to the binaries at the very end:
+
+    export PATH=$PATH:/path/to/openms-build/bin/
+
 ### Step 3: Configure workflow
 
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 

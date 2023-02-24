@@ -4,8 +4,8 @@ import os
 import pandas as pd
 import glob
 
-def filter(feature_files, out_filtered):
-    featurexml_files= feature_files.split()
+def filter(feature_files, out_featurexml):
+    featurexml_files= glob.glob(os.path.join("results", "Interim", "Preprocessed", "FFM_*.featureXML"))
     feature_maps = []
     for file in featurexml_files:
         fmap = FeatureMap()
@@ -68,9 +68,9 @@ def filter(feature_files, out_filtered):
                 for f in fmap:
                     if f.getUniqueId() in keep_ids:
                         fmap_clean.push_back(f)
-                out_filtered= os.path.join("results", "Interim", "Preprocessed", "Filtered_"+ os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]+ "featureXML")
-                FeatureXMLFile().store(out_filtered, fmap_clean)
-    return out_filtered
+                out_featurexml= os.path.join("results", "Interim", "Preprocessed", "Filtered_"+ os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]+ "featureXML")
+                FeatureXMLFile().store(out_featurexml, fmap_clean)
+    return out_featurexml
 
 if __name__ == "__main__":
     filter(sys.argv[1], sys.argv[2])

@@ -102,5 +102,5 @@ else:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                mv {input.MATRIX} {output.MSMS_MATRIX} && echo "No MGF library file was found" > {output} 2>> {log}
+                cp {input.MATRIX} {output.MSMS_MATRIX} && echo "No MGF library file was found" > {output.MZTAB} 2>> {log}
                 """
