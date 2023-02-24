@@ -159,7 +159,6 @@ rule FFM_matrix:
     log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
-    priority: 1
     shell:
         """
         python workflow/scripts/cleanup.py {input.input_cmap} {output.output_tsv} 2>> {log}
