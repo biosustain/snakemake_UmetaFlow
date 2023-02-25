@@ -9,7 +9,6 @@ import peppy
 
 min_version("5.18.0")
 pepfile: os.path.join("config", "config.yaml")
-pepschema: "http://schema.databio.org/pep/2.1.0.yaml"
 
 ##### load config and sample sheets #####
 configfile: os.path.join("config", "config.yaml")

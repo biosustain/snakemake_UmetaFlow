@@ -2,7 +2,7 @@ $schema: "http://json-schema.org/draft-07/schema#"
 
 description: snakemake configuration file
 imports: 
-  - http://schema.databio.org/pep/2.0.0.yaml
+  - http://schema.databio.org/pep/2.1.0.yaml
   
 type: object
 
