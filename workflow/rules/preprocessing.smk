@@ -1,6 +1,8 @@
 import glob
 from os.path import join 
 import peppy
+import pandas as pd
+
 # 1) Correct the MS2 precursor on a peak level (To the "highest intensity MS1 peak")
 
 rule precursorcorrection_peak:
@@ -33,20 +35,36 @@ rule preprocess:
         """
 
 # 3) Remove all features in blanks/control/QC samples:
- 
-rule filter:
-    input:
-        feature_files= expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES)
-    output:
-        out_filtered= expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
-    log: join("workflow", "report", "logs", "preprocessing", "filtered.log")
-    conda:
-        join("..", "envs", "pyopenms.yaml")
-    threads: 4
-    shell:
-        """
-        python workflow/scripts/filter.py {input.feature_files} {output.out_filtered} 2>> {log}
-        """
+blank= pd.read_csv(join("config", "blanks.tsv"), sep="\t")
+if blank.empty:
+    print("no blanks, controls or QCs given")
+    rule filter:
+        input:
+            join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
+        output:
+            join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
+        log: join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+        conda:
+            join("..", "envs", "pyopenms.yaml")
+        threads: 4
+        shell:
+            """
+            cp {input} {output} 2>> {log}
+            """
+else:
+    rule filter:
+        input:
+            feature_files= expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES)
+        output:
+            out_filtered= expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
+        log: join("workflow", "report", "logs", "preprocessing", "filtered.log")
+        conda:
+            join("..", "envs", "pyopenms.yaml")
+        threads: 4
+        shell:
+            """
+            python workflow/scripts/filter.py {input.feature_files} {output.out_filtered} 2>> {log}
+            """
 
 # 4) Correct the MS2 precursor in a feature level (for GNPS FBMN).        
 
