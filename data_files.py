@@ -24,7 +24,7 @@ for i, blank in zip(blank_DF.index, blank_DF["sample_name"]):
             blank_DF["sample_name"][i] = df["sample_name"][i]
     blank_DF["comment"]= " "
     blank_DF["MAPnumber"] = " "
-    blank_DF.to_csv(os.path.join("config", "blanks.tsv"), sep="\t")
+    blank_DF.to_csv(os.path.join("config", "blanks.tsv"), sep="\t", index=None)
 
 sample_DF = df
 if blank_DF.empty:
