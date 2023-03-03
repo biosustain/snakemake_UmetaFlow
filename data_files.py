@@ -9,11 +9,13 @@ if df.empty:
     df["comment"] = " "
     df["MAPnumber"] = " "
     df.to_csv(os.path.join("config", "dataset.tsv"), sep="\t")
+    df.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
 else:
     df["sample_name"]=df["sample_name"].replace(".raw", value="", regex=True)
     df["comment"] = " "
     df["MAPnumber"] = " "
     df.to_csv(os.path.join("config", "dataset.tsv"), sep="\t")
+    df.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
 
 print(df["sample_name"])
 fList =input("Please enter a list of comma separated filenames for your blanks, QCs or control samples from the filelist: ").split(",")
