@@ -1,11 +1,9 @@
 *.gzip
 *.mzML
-*.raw
 *.DS_Store
 *.xlsx
 .snakemake/
 .vscode/
-*.raw
 results/*
 resources/*
 !MS2_LIBRARYSEARCH_all_identifications.tsv
