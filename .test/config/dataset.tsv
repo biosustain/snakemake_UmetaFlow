@@ -1,5 +1,9 @@
 	sample_name	comment	MAPnumber
-1	Collinuskirromycin	 	 
-2	Epemicins	 	 
-4	GermicidinA	 	 
-5	GermicidinB	  
+0	20220426_UMETAB266_POS_Kanamycin	 	 
+1	20220426_UMETAB266_POS_Tetracycline	 	 
+2	20220510_UMETAB266_POS_Apramycin_10uL	 	 
+3	20220426_UMETAB266_POS_Ampicillin	 	 
+4	20220510_UMETAB266_POS_Globomycin_10uL	 	 
+5	20220426_UMETAB266_POS_GermicidinB	 	 
+6	20220426_UMETAB266_POS_Thiostreptone	 	 
+7	20220426_UMETAB266_POS_GermicidinA	 	 
