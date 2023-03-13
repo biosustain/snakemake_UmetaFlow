@@ -63,7 +63,7 @@ else:
         threads: 4
         shell:
             """
-            python workflow/scripts/filter.py {input.feature_files} {output.out_filtered} 2>> {log}
+            python workflow/scripts/blank_filter.py {input.feature_files} {output.out_filtered} 2>> {log}
             """
 
 # 4) Correct the MS2 precursor in a feature level (for GNPS FBMN).        
@@ -148,7 +148,7 @@ rule IDMapper_FFM:
         join("..", "envs", "openms.yaml")
     shell:
         """
-        IDMapper -id {input.var1} -in {input.var2}  -spectra:in {input.var3} -out {output} -log {log} 2>> {log} 
+        IDMapper -id {input.var1} -in {input.var2} -spectra:in {input.var3} -out {output} -log {log} 2>> {log} 
         """
 
 # 8) The FeatureLinkerUnlabeledKD is used to aggregate the feature information (from single files) into a ConsensusFeature, linking features from different files together, which have a similar m", "z and rt (MS1 level).
@@ -157,7 +157,7 @@ rule FeatureLinker_FFM:
     input:
         expand(join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
+        join("results", "Interim", "Preprocessed", "Preprocessed_unfiltered.consensusXML")
     log: join("workflow", "report", "logs", "preprocessing", "FeatureLinker_FFM.log")
     conda:
         join("..", "envs", "openms.yaml")
@@ -167,17 +167,33 @@ rule FeatureLinker_FFM:
         FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol 30.0 -algorithm:link:mz_tol 8.0 -threads {threads} -log {log} 2>> {log} 
         """
 
-# 9) export the consensusXML file to a tsv file to produce a single matrix for PCA
+# 9) Filter out consensus features with too many missing values (skipped unless min_frac value changes).
+
+rule missing_values_filter:
+    input:
+        join("results", "Interim", "Preprocessed", "Preprocessed_unfiltered.consensusXML")
+    output:
+        join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
+    log: join("workflow", "report", "logs", "preprocessing", "MissingValuesFilter.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    threads: 4
+    shell:
+        """
+        python workflow/scripts/missing_values_filter.py {input} {output} 0.0 2>> {log}
+        """
+
+# 10) export the consensusXML file to a tsv file to produce a single matrix for PCA
 
 rule FFM_matrix:
     input:
-        input_cmap= join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
+        join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
     output:
-        output_tsv= join("results", "Preprocessed", "FeatureMatrix.tsv")
+        join("results", "Preprocessed", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
         """
-        python workflow/scripts/cleanup.py {input.input_cmap} {output.output_tsv} 2>> {log}
+        python workflow/scripts/cleanup.py {input} {output} 2>> {log}
         """

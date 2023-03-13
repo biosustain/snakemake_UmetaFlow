@@ -54,6 +54,7 @@ def get_final_output():
         expand([os.path.join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML")], sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "mzML", "Aligned_{sample}.mzML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Preprocessed", "Preprocessed_unfiltered.consensusXML")),
         expand(os.path.join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")),
         expand(os.path.join("results", "Preprocessed", "FeatureMatrix.tsv"))],
                 "requantification" : [expand([os.path.join("results", "Interim", "Requantified", "Complete.consensusXML"), os.path.join("results", "Interim", "Requantified", "Missing.consensusXML")]),
