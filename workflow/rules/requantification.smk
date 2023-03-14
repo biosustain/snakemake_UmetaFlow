@@ -149,7 +149,7 @@ rule FeatureLinker_FFMident:
 
 # 8) Filter out consensus features with too many missing values (skipped unless min_frac value changes).
 
-rule missing_values_filter:
+rule missing_values_filter_req:
     input:
         join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")
     output:
