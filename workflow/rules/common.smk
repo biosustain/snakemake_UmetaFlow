@@ -64,6 +64,7 @@ def get_final_output():
         expand(os.path.join("results", "Interim", "Requantified", "Merged_{sample}.featureXML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
         expand(os.path.join("results", "Interim", "Requantified", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES),
+        expand(os.path.join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")),
         expand(os.path.join("results", "Interim", "Requantified", "Requantified.consensusXML")),
         expand(os.path.join("results", "Requantified", "FeatureMatrix.tsv"))],
                 "GNPSexport" : [expand(os.path.join("results", "Interim", "GNPSexport", "filtered.consensusXML")),
@@ -80,6 +81,7 @@ def get_final_output():
                 "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
         expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
         expand(os.path.join("results", "annotations", "FeatureTable_MSMS.tsv"))],
+                "ms2query" : [expand(os.path.join("results", "annotations", "ms2query"))],
                 "fbmn_integration": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
         expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
         ]

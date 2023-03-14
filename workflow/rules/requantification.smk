@@ -137,7 +137,7 @@ rule FeatureLinker_FFMident:
     input:
         expand(join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SUBSAMPLES)
     output:
-        join("results", "Interim", "Requantified", "Requantified.consensusXML")
+        join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")
     log: join("workflow", "report", "logs", "requantification", "FeatureLinker_FFMident.log")
     conda:
         join("..", "envs", "openms.yaml")
@@ -147,7 +147,23 @@ rule FeatureLinker_FFMident:
         FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol 30.0 -algorithm:link:mz_tol 8.0 -threads {threads} -log {log} 2>> {log} 
         """
 
-# 8) export the consensusXML file to a tsv file to produce a single matrix for PCA
+# 8) Filter out consensus features with too many missing values (skipped unless min_frac value changes).
+
+rule missing_values_filter:
+    input:
+        join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")
+    output:
+        join("results", "Interim", "Requantified", "Requantified.consensusXML")
+    log: join("workflow", "report", "logs", "requantification", "MissingValuesFilter.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    threads: 4
+    shell:
+        """
+        python workflow/scripts/missing_values_filter.py {input} {output} 0.0 2>> {log}
+        """
+
+# 9) export the consensusXML file to a tsv file to produce a single matrix for PCA
 
 rule FFMident_matrix:
     input:
