@@ -11,15 +11,15 @@ The pipeline consists of seven interconnected steps:
 
 1) File conversion: Simply add your Thermo raw files under the directory data/raw/ and they will be converted to centroid mzML files. If you have Agilent, Bruker, or other vendor files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow"), convert them independently using [proteowizard](https://proteowizard.sourceforge.io/) and add them under the data/mzML/ directory.
 
-2) Pre-processing: converting raw data to a feature table with a series of algorithms through feature detection, alignment and grouping. This step includes an optional filtering step of blank/QC/control samples if defined by the user.
+2) Pre-processing: converting raw data to a feature table with a series of algorithms through feature detection, alignment and grouping. This step includes an optional removal of blank/QC/control samples if defined by the user. Optional "minfrac" step here allows for removal of consensus features with too many missing values.
 
-3) Re-quantification (optional): Re-quantify all raw files to avoid missing values resulted by the pre-processing step for more reliable statistical analysis and data exploration.
+3) Re-quantification (optional): Re-quantify all features with missing values across samples resulted from the pre-processing step for more reliable statistical analysis and data exploration. Optional "minfrac" step here allows for removal of consensus features with too many missing values.
 
 4) Structural and formula predictions (SIRIUS and CSI:FingeID) and annotation of the feature matrix with those predictions (MSI level 3).
 
 5) GNPSexport: generate all the files necessary to create a [FBMN](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/) or [IIMN](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges) job at GNPS. 
 
-6) Spectral matching with in-house or a publicly available library (MGF/MSP/mzML format) and annotation of the feature matrix with matches that have a score above 0.6 (MSI level 2).
+6) Spectral matching with in-house or a publicly available library (MGF/MSP/mzML format) and annotation of the feature matrix with matches that have a score above 60 (MSI level 2).
 
 7) After FBMN or IIMN: Integrate Sirius and CSI predictions to the network (GraphML) and MSMS spectral library annotations to the feature matrix- MSI level 2 (optional).
 
@@ -39,7 +39,7 @@ Step 1: https://docs.github.com/en/github/authenticating-to-github/connecting-to
 
 Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
-    git clone https://github.com/NBChub/snakemake-UmetaFlow.git
+    git clone https://github.com/biosustain/snakemake_UmetaFlow.git
 
 ### Step 2: Install all dependencies
 
@@ -64,8 +64,6 @@ Follow the Next steps instructions to add Linuxbrew to your PATH and to your bas
 
     brew install wget
 
-(Windows usually have the windows version of wget== **winget** already installed, otherwise follow the [link](https://learn.microsoft.com/en-us/windows/package-manager/winget/) for directions)
-
 Install conda for any [system](https://docs.conda.io/en/latest/miniconda.html#).
 Installing Snakemake using [Mamba](https://github.com/mamba-org/mamba) is advised. In case you don’t use [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) you can always install [Mamba](https://github.com/mamba-org/mamba) into any other Conda-based Python distribution with:
 
@@ -76,15 +74,6 @@ Then install Snakemake with:
     mamba create -c conda-forge -c bioconda -n snakemake snakemake
 
 For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
-
-Get the latest pyOpenMS wheels (until pyOpenMS 3.0 is available in conda):
-
-    MY_OS="Linux" # or "macOS" or "Windows" (case-sensitive)
-    mkdir -p .snakemake/conda/
-    wget -O .snakemake/conda/${MY_OS}-wheels.zip https://nightly.link/OpenMS/OpenMS/workflows/pyopenms-wheels/nightly/${MY_OS}-wheels.zip\?query\=completed
-    (cd .snakemake/conda/ && unzip *.zip)
-    (cd .snakemake/conda/ && find *cp39*.whl > requirements.txt)
-    rm .snakemake/conda/*.zip
 
 Download the latest SIRIUS executable manually from [here](https://github.com/boecker-lab/sirius/releases) until available as a conda-forge installation. Choose the headless zipped file compatible for your operating system (linux, macOS or windows) and unzip it under the directory "resources/". Make sure to register using your university email and password. 
 
@@ -98,7 +87,7 @@ Then, add your email and password to the scripts (required for SIRIUS versions >
 
 #### For both systems
 
-Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) (or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html)) until the 3.0 release is published.
+Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) until the 3.0 release is published.
 
 Then add the binaries to your path (Linux):
 
