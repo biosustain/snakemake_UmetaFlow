@@ -7,5 +7,6 @@ dependencies:
   - pip
   - pip:
     - ipython
-    - -r requirements.txt
+    - --extra-index-url https://pypi.cs.uni-tuebingen.de/simple/ 
+    - pyopenms-nightly
   - pyteomics
