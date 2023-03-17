@@ -25,15 +25,14 @@ for i, blank in enumerate(zip(blank_DF.index, blank_DF["sample_name"])):
     for i, filename in zip(df.index, df["sample_name"]):
         if blank==filename:
             blank_DF["sample_name"][i] = df["sample_name"][i]
-    blank_DF["comment"]= " "
-    blank_DF["MAPnumber"] = " "
+    blank_DF= blank_DF.dropna(how="all")
     blank_DF.to_csv(os.path.join("config", "blanks.tsv"), sep="\t")
 
 blank_DF= pd.read_csv(os.path.join("config", "blanks.tsv"), sep="\t", index_col="Unnamed: 0")
-blank_DF= blank_DF.dropna(how="all")
+blank_DF["sample_name"]= blank_DF["sample_name"].astype(str)
 sample_DF= pd.DataFrame()
 if len(blank_DF)==0:
     df.to_csv(os.path.join("config", "samples.tsv"), sep="\t")
 else:
-    sample_DF= df[df["sample_name"].str.contains("|".join(fList))==False]
+    sample_DF= df[df["sample_name"].str.contains("|".join(blank_DF["sample_name"]))==False]
     sample_DF.to_csv(os.path.join("config", "samples.tsv"), sep="\t")

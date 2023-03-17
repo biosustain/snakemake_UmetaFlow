@@ -31,7 +31,7 @@ rule preprocess:
     threads: 4
     shell:
         """
-        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int "1.0e03" -algorithm:mtd:mass_error_ppm "10.0" -algorithm:epd:width_filtering "fixed" -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -threads {threads} -log {log} 2>> {log}
+        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int "1.0e04" -algorithm:mtd:mass_error_ppm "10.0" -algorithm:epd:width_filtering "fixed" -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -threads {threads} -log {log} 2>> {log}
         """
 
 # 3) Remove all features in blanks/control/QC samples:
