@@ -36,7 +36,8 @@ rule preprocess:
 
 # 3) Remove all features in blanks/control/QC samples:
 blank= pd.read_csv(join("config", "blanks.tsv"), sep="\t")
-if blank.isnull().values.all():
+blank= blank.dropna()
+if len(blank)==0:
     print("no blanks, controls or QCs given")
     rule filter:
         input:
