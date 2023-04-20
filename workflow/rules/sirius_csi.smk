@@ -23,7 +23,7 @@ if config["rules"]["requantification"]==True:
         threads: 4
         shell:
             """
-            SiriusAdapter -sirius_executable {params.exec_path} -sirius_user_email {params.email} -sirius_user_password {params.password} -in {input.var1} -in_featureinfo {input.var2} -out_sirius {output.out1} -out_fingerid {output.out2} -preprocessing:filter_by_num_masstraces 2 -preprocessing:feature_only -sirius:profile orbitrap -sirius:db none -sirius:ions_considered "[M+H]+, [M-H2O+H]+, [M+Na]+, [M+NH4]+" -sirius:elements_enforced CHN[15]OS[4]Cl[2]P[2] -sirius:compound_timeout 100 -debug 3 -threads {threads} -read_sirius_stdout -log {log} 2>> {log}
+            SiriusAdapter -sirius_executable {params.exec_path} -sirius_user_email {params.email} -sirius_user_password {params.password} -in {input.var1} -in_featureinfo {input.var2} -out_sirius {output.out1} -out_fingerid {output.out2} -preprocessing:filter_by_num_masstraces 2 -preprocessing:feature_only -sirius:profile orbitrap -sirius:db none -sirius:ions_considered "[M+H]+, [M-H2O+H]+, [M+Na]+, [M+NH4]+" -sirius:elements_enforced CHN[15]OS[4]Cl[2]P[2] -sirius:compound_timeout 100 -debug 3 -threads {threads} -log {log} 2>> {log}
             """
 
 else:
@@ -44,7 +44,7 @@ else:
         threads: 4
         shell:
             """
-            SiriusAdapter -sirius_executable {params.exec_path} -sirius_user_email {params.email} -sirius_user_password {params.password} -in {input.var1} -in_featureinfo {input.var2} -out_sirius {output.out1} -out_fingerid {output.out2} -preprocessing:filter_by_num_masstraces 2 -preprocessing:feature_only -sirius:profile orbitrap -sirius:db none -sirius:ions_considered "[M+H]+, [M-H2O+H]+, [M+Na]+, [M+NH4]+" -sirius:elements_enforced CHN[15]OS[4]Cl[2]P[2] -sirius:compound_timeout 100 -debug 3 -threads {threads} -read_sirius_stdout -log {log} 2>> {log}
+            SiriusAdapter -sirius_executable {params.exec_path} -sirius_user_email {params.email} -sirius_user_password {params.password} -in {input.var1} -in_featureinfo {input.var2} -out_sirius {output.out1} -out_fingerid {output.out2} -preprocessing:filter_by_num_masstraces 2 -preprocessing:feature_only -sirius:profile orbitrap -sirius:db none -sirius:ions_considered "[M+H]+, [M-H2O+H]+, [M+Na]+, [M+NH4]+" -sirius:elements_enforced CHN[15]OS[4]Cl[2]P[2] -sirius:compound_timeout 100 -debug 3 -threads {threads} -log {log} 2>> {log}
             """
 
 # 2) Convert the mzTab to a tsv file
