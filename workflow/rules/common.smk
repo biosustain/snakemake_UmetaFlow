@@ -81,7 +81,9 @@ def get_final_output():
                 "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
         expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
         expand(os.path.join("results", "annotations", "FeatureTable_MSMS.tsv"))],
-                "ms2query" : [expand(os.path.join("results", "annotations", "ms2query"))],
+                "analogsearch" : [expand(os.path.join("resources", "ms2query")),
+        expand(os.path.join("results", "GNPSexport", "results")),        
+        expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))],
                 "fbmn_integration": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
         expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
         ]

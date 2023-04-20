@@ -1,0 +1,11 @@
+name: ms2query
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - rdkit
+  - pip:
+    - ms2query

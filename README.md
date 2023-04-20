@@ -23,6 +23,8 @@ The pipeline consists of seven interconnected steps:
 
 7) After FBMN or IIMN: Integrate Sirius and CSI predictions to the network (GraphML) and MSMS spectral library annotations to the feature matrix- MSI level 2 (optional).
 
+8) MS2Query: add another annotation step with a machine learning tool, MS2Query, that searches for exact spectral matches, as well as analogues, using Spec2Vec and MS2Deepscore.
+
 See [README](workflow/rules/README.md) file for details.
 ### Overview
 ![dag](/images/UmetaFlow_graph.svg)
@@ -39,7 +41,7 @@ Step 1: https://docs.github.com/en/github/authenticating-to-github/connecting-to
 
 Step 2: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 
-    git clone https://github.com/biosustain/snakemake_UmetaFlow.git
+    git clone https://github.com/NBChub/snakemake-UmetaFlow.git
 
 ### Step 2: Install all dependencies
 
@@ -64,6 +66,8 @@ Follow the Next steps instructions to add Linuxbrew to your PATH and to your bas
 
     brew install wget
 
+(Windows usually have the windows version of wget== **winget** already installed, otherwise follow the [link](https://learn.microsoft.com/en-us/windows/package-manager/winget/) for directions)
+
 Install conda for any [system](https://docs.conda.io/en/latest/miniconda.html#).
 Installing Snakemake using [Mamba](https://github.com/mamba-org/mamba) is advised. In case you don’t use [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) you can always install [Mamba](https://github.com/mamba-org/mamba) into any other Conda-based Python distribution with:
 
@@ -87,7 +91,7 @@ Then, add your email and password to the scripts (required for SIRIUS versions >
 
 #### For both systems
 
-Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) until the 3.0 release is published.
+Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) (or [Windows](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_win.html)) until the 3.0 release is published.
 
 Then add the binaries to your path (Linux):
 
@@ -199,3 +203,5 @@ Nothias LF, Petras D, Schmid R, et al. Feature-based molecular networking in the
 Schmid R, Petras D, Nothias LF, et al. Ion identity molecular networking for mass spectrometry-based metabolomics in the GNPS environment. Nat Commun. 2021;12(1):3832. doi:10.1038/s41467-021-23953-9
 
 Mölder F, Jablonski KP, Letcher B, et al. Sustainable data analysis with Snakemake. Published online January 18, 2021. doi:10.12688/f1000research.29032.1
+
+de Jonge, N.F., Louwen, J.J.R., Chekmeneva, E. et al. MS2Query: reliable and scalable MS2 mass spectra-based analogue search. Nat Commun 14, 1752 (2023). doi:10.1038/s41467-023-37446-4

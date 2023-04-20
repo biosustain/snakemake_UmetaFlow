@@ -54,6 +54,22 @@ Annotate the feature matrix with MS2 spectral matching through the OpenMS algori
 
 ### `7) fbmn_integration:`
 
-Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory “resources” of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the “results/GNPSexport” directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory `resources/` of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the `results/GNPSexport/` directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
 
+### `8) MS2Query:`
 
+To run MS2Query, the user needs to download all model files manually from https://zenodo.org/record/7753249#.ZBmO_sLMJPY for positive mode and https://zenodo.org/record/7753267#.ZBmPYsLMJPY for negative mode and add them under the `resources/ms2query` directory.
+
+Model files for positive mode:
+ms2ds_model_GNPS_15_12_2021.hdf5
+ms2query_random_forest_model.onnx
+spec2vec_model_GNPS_15_12_2021.model
+spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
+spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
+
+Model files for negative mode:
+neg_GNPS_15_12_2021_ms2ds_model.hdf5
+neg_GNPS_15_12_2021_ms2query_random_forest_model.onnx
+neg_mode_spec2vec_model_GNPS_15_12_2021.model
+neg_mode_spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
+neg_mode_spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
