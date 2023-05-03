@@ -66,6 +66,7 @@ ms2query_random_forest_model.onnx
 spec2vec_model_GNPS_15_12_2021.model
 spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
 spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
+ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt (classes for MS2DeepScore compound class annotation)
 
 Model files for negative mode:
 neg_GNPS_15_12_2021_ms2ds_model.hdf5

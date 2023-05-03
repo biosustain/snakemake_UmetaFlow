@@ -16,7 +16,7 @@ def lib_training(input_LIB, ms2library):
                                         s2v_model_file_name=join("resources", "ms2query","spec2vec_model_GNPS_15_12_2021.model"))  # The file location of the s2v model
     library_creator.create_all_library_files()
 
-    ms2_library_directory = join("resources", "ms2query") # Specify the directory containing all the library and model files
+    ms2_library_directory = ms2library # Specify the directory containing all the library and model files
 
     # Create a MS2Library object from one directory
     # If this does not work (because files have unexpected names or are not in one dir) see below.
