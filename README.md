@@ -113,7 +113,7 @@ and adding the path to the binaries at the very end:
 
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution (write TRUE/FALSE if you want to run/skip the specific rules of the workflow), and `samples.tsv` to specify the samples (files) that will be processed. 
 
-**Suggestion: Use the Jupyter notebook [Create_sampletsv_file](./Create_dataset_tsv.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in the sample names or simply run:**
+**Suggestion: Use the Jupyter notebook [Create_dataset_tsv](./Create_dataset_tsv.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in the sample names or simply run:**
     
     python data_files.py
 
