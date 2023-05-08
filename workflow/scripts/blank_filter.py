@@ -43,8 +43,8 @@ def filter(feature_files, out_featurexml):
     def remove_blank_features(blanks, samples, cutoff):
         # Getting mean for every feature in blank and Samples
         avg_blank = blanks.mean(axis=1, skipna=False) # set skipna = False do not exclude NA/null values when computing the result.
-        #avg_samples= samples.set_index("feature_ids")
-        avg_samples = samples.mean(axis=1, skipna=False)
+        avg_samples= samples.drop(columns=["feature_ids"])
+        avg_samples = avg_samples.mean(axis=1, skipna=False)
         # Getting the ratio of blank vs samples
         ratio_blank_samples = (avg_blank+1)/(avg_samples+1)
 

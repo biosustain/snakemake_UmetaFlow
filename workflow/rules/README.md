@@ -14,7 +14,7 @@ If you have Agilent or Bruker files, skip that step (write "FALSE" for rule file
 
 Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). 
 
-If the user defines blank/QC/control samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a cutoff > 0.3 (average int in blanks devided by average int in samples).
+If the user defines blank/QC samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a cutoff > 0.3 (average int in blanks devided by average int in samples).
 
 **Important note**: The current MetaboAdductDecharger command is for data in positive mode. For **negative mode**, replace the command with the following one:
 ```   

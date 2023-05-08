@@ -11,7 +11,7 @@ The pipeline consists of seven interconnected steps:
 
 1) File conversion: Simply add your Thermo raw files under the directory data/raw/ and they will be converted to centroid mzML files. If you have Agilent, Bruker, or other vendor files, skip that step (write "FALSE" for rule fileconversion in the config.yaml file - see more under "Configure workflow"), convert them independently using [proteowizard](https://proteowizard.sourceforge.io/) and add them under the data/mzML/ directory.
 
-2) Pre-processing: converting raw data to a feature table with a series of algorithms through feature detection, alignment and grouping. This step includes an optional removal of blank/QC/control samples if defined by the user. Optional "minfrac" step here allows for removal of consensus features with too many missing values.
+2) Pre-processing: converting raw data to a feature table with a series of algorithms through feature detection, alignment and grouping. This step includes an optional removal of blank/QC samples if defined by the user. Optional "minfrac" step here allows for removal of consensus features with too many missing values.
 
 3) Re-quantification (optional): Re-quantify all features with missing values across samples resulted from the pre-processing step for more reliable statistical analysis and data exploration. Optional "minfrac" step here allows for removal of consensus features with too many missing values.
 
