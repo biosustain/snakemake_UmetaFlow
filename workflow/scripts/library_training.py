@@ -5,11 +5,11 @@ from ms2query.ms2library import create_library_object_from_one_dir
 import sys
 from os.path import join 
 
-def lib_training(input_LIB, ms2library):
+def lib_training(input_LIB, ms2library, ion_mode):
     spectrum_file_location =  input_LIB # The file location of the library spectra
     library_spectra = load_matchms_spectrum_objects_from_file(spectrum_file_location)
     # Fill in the missing values:
-    cleaned_library_spectra = clean_normalize_and_split_annotated_spectra(library_spectra, ion_mode_to_keep="positive")[0]  # fill in "positive" or "negative"
+    cleaned_library_spectra = clean_normalize_and_split_annotated_spectra(library_spectra, ion_mode_to_keep=ion_mode)[0] 
     library_creator = LibraryFilesCreator(cleaned_library_spectra,
                                         output_directory=join("results", "Interim", "annotations", "ms2query"),  # For instance "data/library_data/all_GNPS_positive_mode_"
                                         ms2ds_model_file_name=join("resources", "ms2query", "ms2ds_model_GNPS_15_12_2021.hdf5"),  # The file location of the ms2ds model
@@ -25,4 +25,4 @@ def lib_training(input_LIB, ms2library):
     return ms2library
 
 if __name__ == "__main__":
-    lib_training(sys.argv[1], sys.argv[2])
+    lib_training(sys.argv[1], sys.argv[2], sys.argv[3])

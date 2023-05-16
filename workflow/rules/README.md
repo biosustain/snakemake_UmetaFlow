@@ -8,18 +8,13 @@ The pipeline consists of seven separate rules that are interconnected:
 
 Conversion of raw files from Thermo to open community-driven format mzML centroid (see documentation [here](https://github.com/compomics/ThermoRawFileParser)).
 
-If you have Agilent or Bruker files, skip that step (write "FALSE" for rule fileconversion in the [config.yaml](/config/config.yaml) file, convert the files independently using proteowizard (see https://proteowizard.sourceforge.io/) and add them to the data/mzML/ directory.
+If you have Agilent or Bruker files, skip this step: write <span style="color: red">FALSE</span> for the rule fileconversion in the [config.yaml](/config/config.yaml) file, <span style="color: red">convert the files independently</span> using proteowizard (see https://proteowizard.sourceforge.io/) and add them to the `data/mzML/` directory.
 
 ### `2) Pre-processing:`
 
 Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). 
 
-If the user defines blank/QC samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a cutoff > 0.3 (average int in blanks devided by average int in samples).
-
-**Important note**: The current MetaboAdductDecharger command is for data in positive mode. For **negative mode**, replace the command with the following one:
-```   
-MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts "H-1:-:1" "H-2O-1:0:0.05" "CH2O2:0:0.5" -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -log {log} 2>> {log} 
-```
+If the user defines blank/QC samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a **cutoff > 0.3** (average int in blanks devided by average int in samples).
 
 ![dag](/images/Preprocessing.svg) 
 
@@ -27,13 +22,11 @@ MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeat
 
 Re-quantify all raw files to avoid missing values resulted by the pre-processing steps for statistical analysis and data exploration. Generate a FeatureMatrix for further statistical analysis. 
 
-**Important note**: The current MetaboAdductDecharger command is for data in positive mode. Replace the command with the one above again for negative mode. Also, edit the script workflow/scripts/metaboliteNaN.py: comment the positive ionisation part of the script and uncomment the negative ionisation version. 
-
 ![dag](/images/Re-quantification.svg) 
 
 ### `4) SIRIUS and CSI:FingerID:`
 
-The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID for formula and structural predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)). (For negative mode, replace the possible adducts with "[M-H]-, [M-H2O-H]-, [M-HCOOH]-").
+The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID for formula and structural predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)). 
 
 CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for the structural library seach and all computations for the structural predictions. The disadvantage in this case is that the workflow is dependent on the functionality of their servers, queued jobs, etc. 
 

@@ -18,13 +18,14 @@ if MGF_library:
         log: join("workflow", "report", "logs", "annotate", "ms2query_lib.log")
         conda:
             join("..", "envs", "ms2query.yaml")
-        threads: 4
+        params:
+            ion_mode= config["adducts"]["ion_mode"]
         shell:
             """
             touch {output.txt} && 
             cp {input.model} {output.dir} && 
             cp {input.classes} {output.dir} && 
-            python workflow/scripts/library_training.py {input.library} {output.dir} 2>> {log} 
+            python workflow/scripts/library_training.py {input.library} {output.dir} {params.ion_mode} > /dev/null 2>> {log} 
             """
 
     rule analogsearch:
@@ -37,10 +38,12 @@ if MGF_library:
         log: join("workflow", "report", "logs", "annotate", "ms2query_analog.log")
         conda:
             join("..", "envs", "ms2query.yaml")
-        threads: 4
+        params:
+            ion_mode= config["adducts"]["ion_mode"]
+        threads: config["system"]["threads"]
         shell:
             """
-            ms2query --spectra {input.spectra} --library {input.library} --ionmode positive --additional_metadata feature_id {output.dir} 2>> {log}
+            ms2query --spectra {input.spectra} --library {input.library} --ionmode {params.ion_mode} --additional_metadata feature_id {output.dir} 2>> {log}
             """
 
     if config["rules"]["spectralmatcher"]==True:
@@ -55,7 +58,7 @@ if MGF_library:
                 join("..", "envs", "ms2query.yaml")
             shell:
                 """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} 2>> {log}
+                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
     elif config["rules"]["sirius_csi"]==True:    
@@ -70,7 +73,7 @@ if MGF_library:
                 join("..", "envs", "ms2query.yaml")
             shell:
                 """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} 2>> {log}
+                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
     elif config["rules"]["sirius"]==True:    
@@ -85,7 +88,7 @@ if MGF_library:
                 join("..", "envs", "ms2query.yaml")
             shell:
                 """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} 2>> {log}
+                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
     else:    
@@ -100,5 +103,5 @@ if MGF_library:
                 join("..", "envs", "ms2query.yaml")
             shell:
                 """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} 2>> {log}
+                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """

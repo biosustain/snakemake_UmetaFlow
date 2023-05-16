@@ -16,5 +16,5 @@ rule mzml_conversion:
         exec_path= find_exec(join(".snakemake", "conda"), "ThermoRawFileParser.exe")
     shell:
         """
-        FileConverter -ThermoRaw_executable {params.exec_path} -in {input} -out {output} >> {log}
+        FileConverter -ThermoRaw_executable {params.exec_path} -in {input} -out {output} -no_progress -log {log} 2>> {log} 
         """

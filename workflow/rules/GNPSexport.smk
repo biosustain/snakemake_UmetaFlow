@@ -14,7 +14,7 @@ if config["rules"]["requantification"]==True:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            FileFilter -id:remove_unannotated_features -in {input} -out {output} -log {log} 2>> {log}
+            FileFilter -id:remove_unannotated_features -in {input} -out {output} -no_progress -log {log} 2>> {log} 
             """
 else:            
     rule FileFilter:
@@ -27,7 +27,7 @@ else:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            FileFilter -id:remove_unannotated_features -in {input} -out {output} -log {log} 2>> {log}
+            FileFilter -id:remove_unannotated_features -in {input} -out {output} -no_progress -log {log} 2>> {log} 
             """        
 
 # 2) GNPS_export creates an mgf file with only the MS2 information of all files (introduce mzml files with spaces between them)
@@ -42,10 +42,10 @@ rule GNPS_export:
         out3= join("results", "GNPSexport", "SuppPairs.csv"),
         out4= join("results", "GNPSexport", "metadata.tsv")
     log: join("workflow", "report", "logs", "GNPSexport", "GNPS_export.log")
-    threads: 4
     conda:
         join("..", "envs", "openms.yaml")
+    threads: config["system"]["threads"]
     shell:
         """
-        GNPSExport -in_cm {input.var1} -in_mzml {input.var2} -out {output.out1} -out_quantification {output.out2} -out_pairs {output.out3} -out_meta_values {output.out4} -threads {threads} -log {log} 2>> {log}
+        GNPSExport -in_cm {input.var1} -in_mzml {input.var2} -out {output.out1} -out_quantification {output.out2} -out_pairs {output.out3} -out_meta_values {output.out4} -threads {threads} -no_progress -log {log} 2>> {log} 
         """

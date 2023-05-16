@@ -13,7 +13,7 @@ rule converter:
         join("..", "envs", "openms.yaml")
     shell:
         """
-        FileConverter -in {input} -out {output} 2>> {log}
+        FileConverter -in {input} -out {output}  -no_progress -log {log} 2>> {log}
         """
 
 MGF_library = find_files("resources", "*.mgf")
@@ -26,12 +26,12 @@ if MGF_library:
         output:
             join("results", "Interim", "annotations", "MSMSMatcher.mzTab")
         log: join("workflow", "report", "logs", "annotate", "spectral_matcher.log")
-        threads: 4 
+        threads:config["system"]["threads"]
         conda:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} 2>> {log}
+            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} -no_progress -log {log} 2>> {log}
             """  
 
     if config["rules"]["sirius_csi"]==True:
@@ -44,12 +44,12 @@ if MGF_library:
             output:
                 MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
+            threads: config["system"]["threads"]
             conda:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                python workflow/scripts/MSMS_annotations.py {input.MZTAB} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
+                python workflow/scripts/MSMS_annotations.py {input.MZTAB} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} > /dev/null 2>> {log}
                 """
 
     elif config["rules"]["sirius"]==True:
@@ -62,12 +62,12 @@ if MGF_library:
                 output:
                     MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
                 log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-                threads: 4
+                threads: config["system"]["threads"]
                 conda:
                     join("..", "envs", "pyopenms.yaml")
                 shell:
                     """
-                    python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
+                    python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} > /dev/null 2>> {log}
                     """
 
     else:
@@ -80,12 +80,12 @@ if MGF_library:
             output:
                 MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
+            threads: config["system"]["threads"]
             conda:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} 2>> {log}
+                python workflow/scripts/MSMS_annotations.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} > /dev/null 2>> {log}
                 """
 
 else:
@@ -97,10 +97,10 @@ else:
                 MSMS_MATRIX= join("results", "annotations", "FeatureTable_MSMS.tsv"),
                 MZTAB = join("results", "Interim", "annotations", "MSMSMatcher.mzTab")
             log: join("workflow", "report", "logs", "annotate", "MSMS_annotations.log")
-            threads: 4
+            threads: config["system"]["threads"]
             conda:
                 join("..", "envs", "pyopenms.yaml")
             shell:
                 """
-                cp {input.MATRIX} {output.MSMS_MATRIX} && echo "No MGF library file was found" > {output.MZTAB} 2>> {log}
+                cp {input.MATRIX} {output.MSMS_MATRIX} && echo "No MGF library file was found" > {output.MZTAB} > /dev/null 2>> {log}
                 """

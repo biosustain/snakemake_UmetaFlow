@@ -6,6 +6,7 @@ from snakemake.utils import min_version
 import glob
 from pathlib import Path
 import peppy
+from getpass import getpass
 
 min_version("5.18.0")
 pepfile: os.path.join("config", "config.yaml")
@@ -14,13 +15,22 @@ pepfile: os.path.join("config", "config.yaml")
 configfile: os.path.join("config", "config.yaml")
 validate(config, schema=os.path.join("..", "schemas", "config.schema.yaml"))
 
+# add your sirius email and password in your env for security purposes:
+if (config["rules"]["sirius_csi"]==True) or (config["rules"]["sirius"]==True):
+        os.environ["SIRIUS_EMAIL"]=input("Please enter your SIRIUS email: ")
+        os.environ["SIRIUS_PASSWORD"]= getpass("Please enter your SIRIUS password: ")
+else:
+        os.environ["SIRIUS_EMAIL"]=""
+        os.environ["SIRIUS_PASSWORD"]=""
+
 # set up dataset
 dataset = peppy.Project(os.path.join("config", "dataset.tsv"), sample_table_index="sample_name")
 
 # set up samples and blanks or control or QC for filtering
 blanks = pd.read_csv(os.path.join("config", "blanks.tsv"), sep="\t", index_col=None)
 
-if blanks.empty:
+blanks= blanks.dropna()
+if len(blanks)==0:
         samples = peppy.Project(os.path.join("config", "dataset.tsv"), subsample_table_index="sample_name")
 else:
         samples = peppy.Project(os.path.join("config", "samples.tsv"), subsample_table_index="sample_name")

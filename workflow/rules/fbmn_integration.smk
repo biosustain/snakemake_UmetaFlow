@@ -13,12 +13,12 @@ if config["rules"]["requantification"]==True:
         output:    
             output_graphml= join("results", "GNPSexport", "fbmn_network_sirius.graphml")
         log: join("workflow", "report", "logs", "GNPSexport", "fbmn_sirius.log")
-        threads: 4
+        threads: config["system"]["threads"]
         conda:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/FBMN_SIRIUS.py {input.input_matrix} {input.input_mgf} {input.input_graphml} {output.output_graphml} 2>> {log}
+            python workflow/scripts/FBMN_SIRIUS.py {input.input_matrix} {input.input_mgf} {input.input_graphml} {output.output_graphml} > /dev/null 2>> {log}
             """
 else:
     rule graphml:
@@ -29,12 +29,12 @@ else:
         output:    
             output_graphml= join("results", "GNPSexport", "fbmn_network_sirius.graphml")
         log: join("workflow", "report", "logs", "GNPSexport", "fbmn_sirius.log")
-        threads: 4
+        threads: config["system"]["threads"]
         conda:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/FBMN_SIRIUS.py {input.input_matrix} {input.input_mgf} {input.input_graphml} {output.output_graphml} 2>> {log}
+            python workflow/scripts/FBMN_SIRIUS.py {input.input_matrix} {input.input_mgf} {input.input_graphml} {output.output_graphml} > /dev/null 2>> {log}
             """
 
 # 2) Optionally, download the cytoscape data and move the .TSV file from the directory "DB_result" under the workflow's directory "resources". This file has all the MSMS library matches that GNPS performs during FBMN. 
@@ -51,12 +51,12 @@ if GNPS_library:
         output:
             gnps= join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv")
         log: join("workflow", "report", "logs", "annotate", "GNPS_annotations.log")
-        threads: 4
+        threads: config["system"]["threads"]
         conda:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            python workflow/scripts/GNPS.py {input.lib} {input.featurematrix} {input.mgf_path} {output.gnps} 2>> {log}
+            python workflow/scripts/GNPS.py {input.lib} {input.featurematrix} {input.mgf_path} {output.gnps} > /dev/null 2>> {log}
             """
 else:
     print("no file found")
@@ -70,5 +70,5 @@ else:
             join("..", "envs", "openms.yaml")
         shell:
             """ 
-            echo "No GNPS metabolite annotation file was found" > {output} 2>> {log}
+            echo "No GNPS metabolite annotation file was found" > {output} > /dev/null 2>> {log}
             """
