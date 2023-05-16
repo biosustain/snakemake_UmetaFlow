@@ -17,8 +17,11 @@ validate(config, schema=os.path.join("..", "schemas", "config.schema.yaml"))
 
 # add your sirius email and password in your env for security purposes:
 if (config["rules"]["sirius_csi"]==True) or (config["rules"]["sirius"]==True):
-        os.environ["SIRIUS_EMAIL"]=input("Please enter your SIRIUS email: ")
-        os.environ["SIRIUS_PASSWORD"]= getpass("Please enter your SIRIUS password: ")
+        try:
+                os.environ["SIRIUS_EMAIL"]=input("Please enter your SIRIUS email: ")
+                os.environ["SIRIUS_PASSWORD"]= getpass("Please enter your SIRIUS password: ")
+        except:
+                print("no SIRIUS logins were given")
 else:
         os.environ["SIRIUS_EMAIL"]=""
         os.environ["SIRIUS_PASSWORD"]=""

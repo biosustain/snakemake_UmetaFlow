@@ -91,10 +91,10 @@ rule requantify:
     params:
         mz_window= config["requantification"]["mz_window"],        
         rt_window= config["requantification"]["RT_window"],
-        threads= config["system"]["threads"]
+    threads: config["system"]["threads"]
     shell:
         """
-        FeatureFinderMetaboIdent -id {input.var1} -in {input.var2} -out {output} -extract:mz_window {params.mz_window} -extract:rt_window {params.rt_window} -threads {params.threads} -no_progress -log {log} 2>> {log} 
+        FeatureFinderMetaboIdent -id {input.var1} -in {input.var2} -out {output} -extract:mz_window {params.mz_window} -extract:rt_window {params.rt_window} -threads {threads} -no_progress -log {log} 2>> {log} 
         """
 
 # 4) Merge the re-quantified with the complete feature files
@@ -178,10 +178,10 @@ rule FeatureLinker_FFMident:
     params:
         mz_tol= config["featurelink"]["mz_tol"],
         rt_tol= config["featurelink"]["rt_tol"],
-        threads= config["system"]["threads"]       
+    threads: config["system"]["threads"]
     shell:
         """
-        FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol {params.rt_tol} -algorithm:link:mz_tol {params.mz_tol} -threads {params.threads} -no_progress -log {log} 2>> {log} 
+        FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol {params.rt_tol} -algorithm:link:mz_tol {params.mz_tol} -threads {threads} -no_progress -log {log} 2>> {log} 
         """
 
 # 8) Filter out consensus features with too many missing values (skipped unless min_frac value changes).

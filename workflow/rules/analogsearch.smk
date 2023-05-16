@@ -19,7 +19,8 @@ if MGF_library:
         conda:
             join("..", "envs", "ms2query.yaml")
         params:
-            ion_mode= config["adducts"]["ion_mode"]
+            ion_mode= config["adducts"]["ion_mode"]   
+        threads: config["system"]["threads"]
         shell:
             """
             touch {output.txt} && 

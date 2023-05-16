@@ -33,10 +33,10 @@ rule preprocess:
         mass_error= config["preprocess"]["mass_error"],
         fwhm= config["preprocess"]["fwhm"],
         min_trace= config["preprocess"]["min_trace"],
-        threads= config["system"]["threads"]
+    threads: config["system"]["threads"]
     shell:
         """
-        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int {params.noise_thr} -algorithm:mtd:mass_error_ppm {params.mass_error} -algorithm:common:chrom_fwhm {params.fwhm} -algorithm:mtd:min_trace_length {params.min_trace} -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -no_progress -threads {params.threads} -log {log} 2>> {log}
+        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int {params.noise_thr} -algorithm:mtd:mass_error_ppm {params.mass_error} -algorithm:common:chrom_fwhm {params.fwhm} -algorithm:mtd:min_trace_length {params.min_trace} -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -no_progress -threads {threads} -log {log} 2>> {log}
         """
 
 # 3) Remove all features in blanks/control/QC samples:
@@ -102,12 +102,12 @@ rule MapAligner:
     conda:
         join("..", "envs", "openms.yaml")
     params:
-        mz_max= config["align"]["mz_max"],
-        threads= config["system"]["threads"]
+        mz_max= config["align"]["mz_max"]   
+    threads: config["system"]["threads"]
     shell:
         """
         echo "Preparing maps for alignment..." > {log.general}
-        MapAlignerPoseClustering -algorithm:max_num_peaks_considered -1 -algorithm:superimposer:mz_pair_max_distance 0.05 -algorithm:pairfinder:distance_MZ:max_difference {params.mz_max} -algorithm:pairfinder:distance_MZ:unit ppm -in {input} -out {output.var1} -trafo_out {output.var2} -threads {params.threads} -no_progress -log {log.job} 2>> {log.job}
+        MapAlignerPoseClustering -algorithm:max_num_peaks_considered -1 -algorithm:superimposer:mz_pair_max_distance 0.05 -algorithm:pairfinder:distance_MZ:max_difference {params.mz_max} -algorithm:pairfinder:distance_MZ:unit ppm -in {input} -out {output.var1} -trafo_out {output.var2} -threads {threads} -no_progress -log {log.job} 2>> {log.job}
         """ 
 
 # 5) (ii) MapRTTransformer is used to perform a linear retention time alignment, to correct for linear shifts in retention time between different runs using the transformation files from the reprocessing rule MapAlignerPoseClustering (faster computationally)
@@ -120,12 +120,11 @@ rule mzMLaligner:
         join("results", "Interim", "mzML", "Aligned_{sample}.mzML")
     log: join("workflow", "report", "logs", "preprocessing", "mzMLaligner_{sample}.log")
     conda:
-        join("..", "envs", "openms.yaml")
-    params:
-        threads= config["system"]["threads"]
+        join("..", "envs", "openms.yaml")    
+    threads: config["system"]["threads"]
     shell:
         """
-        MapRTTransformer -in {input.var1} -trafo_in {input.var2} -out {output} -threads {params.threads} -no_progress -log {log} 2>> {log} 
+        MapRTTransformer -in {input.var1} -trafo_in {input.var2} -out {output} -threads {threads} -no_progress -log {log} 2>> {log} 
         """ 
 
 # 6) Decharger: Decharging algorithm for adduct assignment
@@ -191,10 +190,10 @@ rule FeatureLinker_FFM:
     params:
         mz_tol= config["featurelink"]["mz_tol"],
         rt_tol= config["featurelink"]["rt_tol"],
-        threads= config["system"]["threads"]       
+    threads: config["system"]["threads"]
     shell:
         """
-        FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol {params.rt_tol} -algorithm:link:mz_tol {params.mz_tol} -threads {params.threads} -no_progress -log {log} 2>> {log} 
+        FeatureLinkerUnlabeledKD -in {input} -out {output} -algorithm:warp:enabled false -algorithm:link:rt_tol {params.rt_tol} -algorithm:link:mz_tol {params.mz_tol} -threads {threads} -no_progress -log {log} 2>> {log} 
         """
 
 # 9) Filter out consensus features with too many missing values (skipped unless min_frac value changes).

@@ -26,12 +26,12 @@ if MGF_library:
         output:
             join("results", "Interim", "annotations", "MSMSMatcher.mzTab")
         log: join("workflow", "report", "logs", "annotate", "spectral_matcher.log")
-        threads:config["system"]["threads"]
+        threads: config["system"]["threads"]
         conda:
             join("..", "envs", "openms.yaml")
         shell:
             """
-            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} -no_progress -log {log} 2>> {log}
+            MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} -threads {threads} -no_progress -log {log} 2>> {log}
             """  
 
     if config["rules"]["sirius_csi"]==True:
