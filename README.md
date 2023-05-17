@@ -35,7 +35,7 @@ See [README](workflow/rules/README.md) file for details.
 
 [Clone](https://help.github.com/en/articles/cloning-a-repository) this repository to your local system, into the place where you want to perform the data analysis.
    
-    git clone https://github.com/NBChub/snakemake-UmetaFlow.git
+    git clone https://github.com/biosustain/snakemake_UmetaFlow.git
 
 Make sure to have the right access / SSH Key. If **not**, follow the steps:
 
