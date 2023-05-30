@@ -47,7 +47,7 @@ if MGF_library:
             ms2query --spectra {input.spectra} --library {input.library} --ionmode {params.ion_mode} --additional_metadata feature_id {output.dir} 2>> {log}
             """
 
-    if config["rules"]["spectralmatcher"]==True:
+    if config["rules"]["spectralmatcher"]:
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "annotations", "FeatureTable_MSMS.tsv"),
@@ -62,7 +62,7 @@ if MGF_library:
                 python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
-    elif config["rules"]["sirius_csi"]==True:    
+    elif config["rules"]["sirius_csi"]:    
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "annotations", "FeatureTable_siriuscsi.tsv"),
@@ -77,7 +77,7 @@ if MGF_library:
                 python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
-    elif config["rules"]["sirius"]==True:    
+    elif config["rules"]["sirius"]:    
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "annotations", "FeatureTable_sirius.tsv"),

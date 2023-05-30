@@ -34,7 +34,7 @@ if MGF_library:
             MetaboliteSpectralMatcher -algorithm:merge_spectra "false" -in {input.mzml} -database {input.database} -out {output} -threads {threads} -no_progress -log {log} 2>> {log}
             """  
 
-    if config["rules"]["sirius_csi"]==True:
+    if config["rules"]["sirius_csi"]:
         rule MSMS_annotations:
             input:
                 MZTAB = join("results", "Interim", "annotations", "MSMSMatcher.mzTab"),
@@ -52,7 +52,7 @@ if MGF_library:
                 python workflow/scripts/MSMS_annotations.py {input.MZTAB} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} > /dev/null 2>> {log}
                 """
 
-    elif config["rules"]["sirius"]==True:
+    elif config["rules"]["sirius"]:
             rule MSMS_annotations:
                 input:
                     MSMS = join("results", "Interim", "annotations", "MSMSMatcher.mzTab"),

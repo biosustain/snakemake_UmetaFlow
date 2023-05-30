@@ -3,7 +3,7 @@ from os.path import join
 
 # 1) Filter out the features that do not have an MS2 pattern (no protein ID annotations)
 
-if config["rules"]["requantification"]==True:
+if config["rules"]["requantification"]:
     rule FileFilter:
         input:
             join("results", "Interim", "Requantified", "Requantified.consensusXML")

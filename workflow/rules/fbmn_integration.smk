@@ -4,7 +4,7 @@
 import glob
 from os.path import join
 
-if config["rules"]["requantification"]==True:
+if config["rules"]["requantification"]:
     rule graphml:
         input:
             input_matrix= join("results", "Requantified", "FeatureMatrix.tsv"),
