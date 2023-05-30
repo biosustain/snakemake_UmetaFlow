@@ -30,7 +30,7 @@ The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID 
 
 CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for the structural library seach and all computations for the structural predictions. The disadvantage in this case is that the workflow is dependent on the functionality of their servers, queued jobs, etc. 
 
-CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and the rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file.
+CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file. If one or the other are set to TRUE, the user will be asked to provide a user email and password at the start of the run and the workflow will set it temporarily as an environmental variable. If the user adds it permanently as an environmental variable (independently of the present workflow) , they will not be asked to provide it again.
 
 Level 3 MSI annotations are added to the feature matrix.
 
