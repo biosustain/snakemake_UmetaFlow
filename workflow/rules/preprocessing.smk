@@ -43,7 +43,7 @@ rule preprocess:
 blanks= pd.read_csv(join("config", "blanks.tsv"), sep="\t")
 blanks= blanks.dropna()
 if len(blanks)==0:
-    print("no blanks, controls or QCs given")
+    print("no blanks or QCs given")
     rule filter:
         input:
             join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
@@ -134,7 +134,8 @@ if config["adducts"]["ion_mode"]=="positive":
         input:
             join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
         output:
-            join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML")
+            charged= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
+            neutral= join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
         log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{sample}.log")
         conda:
             join("..", "envs", "openms.yaml")
@@ -142,14 +143,15 @@ if config["adducts"]["ion_mode"]=="positive":
             adducts_pos= config["adducts"]["adducts_pos"]
         shell:
             """
-            MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_pos} -algorithm:MetaboliteFeatureDeconvolution:charge_max "1" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "1"  -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log} 
+            MetaboliteAdductDecharger -in {input} -out_fm {output.charged} -out_cm {output.neutral} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_pos} -algorithm:MetaboliteFeatureDeconvolution:charge_max "1" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "1"  -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log} 
             """    
 else:
     rule adduct_annotations_FFM:
         input:
             join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
         output:
-            join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML")
+            charged= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
+            neutral= join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
         log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{sample}.log")
         conda:
             join("..", "envs", "openms.yaml")
@@ -157,7 +159,7 @@ else:
             adducts_neg= config["adducts"]["adducts_neg"]
         shell:
             """
-            MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_neg} -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}              
+            MetaboliteAdductDecharger -in {input} -out_fm {output.charged} -out_cm {output.neutral} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_neg} -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}              
             """   
 
 # 7) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
@@ -225,4 +227,19 @@ rule FFM_matrix:
     shell:
         """
         python workflow/scripts/cleanup.py {input} {output} > /dev/null 2>> {log}
+        """
+
+# 11) export the individual featureXML files to tsv files to produce a feature matrixes
+
+rule FFM_matrixes:
+    input:
+        join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML")
+    output:
+        join("results", "Preprocessed",  "FeatureTables", "FeatureMatrix_{sample}.tsv")
+    log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix_{sample}.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    shell:
+        """
+        python workflow/scripts/cleanup_ft.py {input} {output} > /dev/null 2>> {log}
         """
