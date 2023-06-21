@@ -92,7 +92,8 @@ if MGF_library:
                 python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
-    else:    
+    else:  
+    print("No MS2 reference library file found!")
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),

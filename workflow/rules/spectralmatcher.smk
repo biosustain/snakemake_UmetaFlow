@@ -89,7 +89,7 @@ if MGF_library:
                 """
 
 else:
-    print("no file found")
+    print("No MS2 reference library file found!")
     rule MSMS_annotations:
             input:
                 MATRIX= join("results", "Preprocessed", "FeatureMatrix.tsv")
