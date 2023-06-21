@@ -60,7 +60,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>      echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
 >>#### <span style="color: green"> **For both systems** </span>
 >>      brew install wget
-
+>>      
 > **Mamba** and **Snakemake** dependencies:
 >>#### <span style="color: green"> **For both systems** </span>
 >>Install [mambaforge](https://github.com/conda-forge/miniforge#mambaforge) for any system.
@@ -68,8 +68,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>Then install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) through mamba with:
 >>
 >>      mamba create -c mamba-forge -c bioconda -n snakemake snakemake
->>      mamba activate snakemake
->>
+>>      
 > **SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
 >>Download the latest SIRIUS executable compatible with your operating system (linux or macOS) and MS2Query models (for positive or negative mode) under the directory "resources/". Use the following script to complete this step:
 >>      cd snakemake_UmetaFlow
