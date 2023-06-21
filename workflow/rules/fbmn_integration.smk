@@ -59,7 +59,7 @@ if GNPS_library:
             python workflow/scripts/GNPS.py {input.lib} {input.featurematrix} {input.mgf_path} {output.gnps} > /dev/null 2>> {log}
             """
 else:
-    print("no file found")
+    print("No GNPS MS2 annotations file found!")
     rule GNPS_annotations:
         input:
             join("results", "annotations", "FeatureTable_MSMS.tsv")
