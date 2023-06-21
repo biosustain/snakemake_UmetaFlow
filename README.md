@@ -68,18 +68,19 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>Then install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) through mamba with:
 >>
 >>      mamba create -c mamba-forge -c bioconda -n snakemake snakemake
-
+>>      mamba activate snakemake
+>>
 > **SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
 >>Download the latest SIRIUS executable compatible with your operating system (linux or macOS) and MS2Query models (for positive or negative mode) under the directory "resources/". Use the following script to complete this step:
->>
->>      SCRIPT_VERSION="0.1.3"
+>>      cd snakemake_UmetaFlow
+>>      SCRIPT_VERSION="0.1.4"
 >>      wget -O setup_scripts.zip https://github.com/NBChub/umetaflow_tutorial/archive/refs/tags/$SCRIPT_VERSION.zip
 >>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION/ setup_scripts
->>      bash setup_scripts/setup.sh 
+>>      bash setup_scripts/setup.sh --help
 >>
 >>The important arguments here are the ionization mode of your data ("positive" or "negative") which will fetch the respective ion mode modules for MS2Query and the operating system ("osx64" for macOS and "linux64" for linux) which will fetch the latest release of the sirius executable for your operating system (defaults: positive mode, osx64). Run the script with or without arguments.
 >>
->>      bash setup_scripts/setup.sh -ion_mode positive -MY_OS osx64
+>>      MY_OS="osx64" bash setup_scripts/setup.sh 
 >>
 > Build **OpenMS**:
 >>#### <span style="color: green"> **For both systems** </span> (challenging step!)
