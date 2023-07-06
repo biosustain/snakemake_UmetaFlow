@@ -46,43 +46,29 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 
 ### Step 2: Install all dependencies
 
-> **Homebrew** and **wget** dependencies (if you do not have wget):
->>#### <span style="color: green"> **For both systems** </span>
->>      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
->>Press enter (RETURN) to continue
->>
->>#### <span style="color: green"> **For Linux(!) only** </span>
->>Follow the next instructions to add Linuxbrew to your PATH and to your bash shell profile script, either ~/.profile on Debian/Ubuntu or ~/.bash_profile on CentOS/Fedora/RedHat (https://github.com/Linuxbrew/brew).
->>
->>      test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
->>      test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
->>      test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)"  >> ~/.bash_profile
->>      echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
->>#### <span style="color: green"> **For both systems** </span>
->>      brew install wget
->>      
 > **Mamba** and **Snakemake** dependencies:
 >>#### <span style="color: green"> **For both systems** </span>
->>Install [mambaforge](https://github.com/conda-forge/miniforge#mambaforge) for any system.
+>>Install [mambaforge](https://github.com/conda-forge/miniforge#mambaforge) for any system. This step is optional if the user already has conda installed, then replace mamba with conda for the following commands.
 >>
 >>Then install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) through mamba with:
 >>
 >>      mamba create -c mamba-forge -c bioconda -n snakemake snakemake
 >>      
-> **SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
->>Download the latest SIRIUS executable compatible with your operating system (linux or macOS) and MS2Query models (for positive or negative mode) under the directory "resources/". Use the following script to complete this step:
+>**SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
+>>Download the latest SIRIUS executable compatible with your operating system (linux or macOS), the ThermoRawFileParser (file converter executable for Thermo .RAW files) and MS2Query models. Use the following script to complete this step:
+>>
 >>      cd snakemake_UmetaFlow
 >>      SCRIPT_VERSION="0.1.4"
 >>      wget -O setup_scripts.zip https://github.com/NBChub/umetaflow_tutorial/archive/refs/tags/$SCRIPT_VERSION.zip
 >>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION/ setup_scripts
 >>      bash setup_scripts/setup.sh --help
 >>
->>The important arguments here are the ionization mode of your data ("positive" or "negative") which will fetch the respective ion mode modules for MS2Query and the operating system ("osx64" for macOS and "linux64" for linux) which will fetch the latest release of the sirius executable for your operating system (defaults: positive mode, osx64). Run the script with or without arguments.
+>>The important arguments here are the **ion mode** of your data ("positive" or "negative") which will fetch the respective modules for MS2Query and the **operating system** ("osx64" for macOS and "linux64" for linux) which will fetch the latest release of the sirius executable for your operating system (defaults: positive mode, osx64). Run the script with or without arguments.
 >>
->>      MY_OS="osx64" bash setup_scripts/setup.sh 
+>>      bash setup_scripts/setup.sh -o "osx64" -m "positive"
 >>
-> Build **OpenMS**:
->>#### <span style="color: green"> **For both systems** </span> (challenging step!)
+> Build **OpenMS** (challenging step until the new release (OpenMS 3.0)!):
+>>#### <span style="color: green"> **For both systems** </span>
 >>Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) until the 3.0 release is published.
 >>
 >>#### <span style="color: green"> **For Linux(!) only** </span>
@@ -104,12 +90,13 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 ### Step 3: Configure workflow
 Configure the workflow according to your metabolomics data and instrument method via editing the files in the `config/` folder. 
 
-Adjust the `config.yaml` to: 
+1. Adjust the `config.yaml` to: 
 - Configure the workflow execution (write <span style="color: green">TRUE</span>/<span style="color: red">FALSE</span> if you want to run/skip a specific rules of the workflow)
 - Adjust the parameters in the configuration file for your dataset as explained in the commented section in the yaml file (e.g. positive/negative ionisation, etc.)
 
-Complete the `dataset.tsv` table to specify the samples (files) that will be processed. 
-**Suggestion: Use the Jupyter notebook [Create_dataset_tsv](./Create_dataset_tsv.ipynb) after you add all your files in the data/raw/ or data/mzML/ directory and avoid errors in the sample names or simply run:**
+2. Add all your files in the data/raw/ or data/mzML/ directory and generate the `dataset.tsv` table to specify the samples (filenames) that will be processed. 
+
+    **Suggestion**: Use the Jupyter notebook [Create_dataset_tsv](./Create_dataset_tsv.ipynb) or simply run:
     
     python data_files.py
 
@@ -121,7 +108,7 @@ Complete the `dataset.tsv` table to specify the samples (files) that will be pro
 | NBC_00162    | pyracrimicin                 |
 | MDNA_WGS_14  | epemicins_A_B                |
 
-#### If there are blanks in the file list, then define them when the data_files.py script will generate an entry for them and they will automatically be aded to the config/blanks.tsv file
+#### If there are blanks/QC samples in the file list, then define them through the script.
 
 - `config/blanks.tsv` example:
 
