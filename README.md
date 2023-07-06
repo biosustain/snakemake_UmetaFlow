@@ -58,7 +58,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>Download the latest SIRIUS executable compatible with your operating system (linux or macOS), the ThermoRawFileParser (file converter executable for Thermo .RAW files) and MS2Query models. Use the following script to complete this step:
 >>
 >>      cd snakemake_UmetaFlow
->>      SCRIPT_VERSION="0.1.4"
+>>      SCRIPT_VERSION="0.1.5"
 >>      wget -O setup_scripts.zip https://github.com/NBChub/umetaflow_tutorial/archive/refs/tags/$SCRIPT_VERSION.zip
 >>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION/ setup_scripts
 >>      bash setup_scripts/setup.sh --help
