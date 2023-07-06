@@ -33,10 +33,11 @@ rule preprocess:
         mass_error= config["preprocess"]["mass_error"],
         fwhm= config["preprocess"]["fwhm"],
         min_trace= config["preprocess"]["min_trace"],
+        rm_single_traces= config["preprocess"]["rm_single_traces"]
     threads: config["system"]["threads"]
     shell:
         """
-        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int {params.noise_thr} -algorithm:mtd:mass_error_ppm {params.mass_error} -algorithm:common:chrom_fwhm {params.fwhm} -algorithm:mtd:min_trace_length {params.min_trace} -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces "true" -algorithm:ffm:report_convex_hulls "true" -no_progress -threads {threads} -log {log} 2>> {log}
+        FeatureFinderMetabo -in {input} -out {output} -algorithm:common:noise_threshold_int {params.noise_thr} -algorithm:mtd:mass_error_ppm {params.mass_error} -algorithm:common:chrom_fwhm {params.fwhm} -algorithm:mtd:min_trace_length {params.min_trace} -algorithm:ffm:isotope_filtering_model "none" -algorithm:ffm:remove_single_traces {params.rm_single_traces} -algorithm:ffm:report_convex_hulls "true" -no_progress -threads {threads} -log {log} 2>> {log}
         """
 
 # 3) Remove all features in blanks/control/QC samples:
