@@ -94,7 +94,7 @@ def get_final_output():
                 "spectralmatcher" : [expand(os.path.join("results", "Interim", "annotations", "MSMS.mzML")),
         expand(os.path.join("results", "Interim", "annotations", "MSMSMatcher.mzTab")),
         expand(os.path.join("results", "annotations", "FeatureTable_MSMS.tsv"))],
-                "analogsearch" : [expand(os.path.join("results", "Interim", "annotations", "ms2query", "lib.txt")),
+                "analogsearch" : [expand(os.path.join("results", "Interim", "annotations", "ms2query")),
         expand(os.path.join("results", "GNPSexport", "results")),
         expand(os.path.join("results", "GNPSexport", "results", "MSMS.csv")),        
         expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))],

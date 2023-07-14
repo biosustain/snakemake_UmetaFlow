@@ -9,11 +9,8 @@ MGF_library = find_files("resources", "*.mgf")
 if MGF_library:
     rule library_training:
         input:
-            library= glob.glob(join("resources", "*.mgf")),
-            model= glob.glob(join("resources", "ms2query", "*model*")),
-            classes= glob.glob(join("resources", "ms2query", "*.txt"))
+            input_library= glob.glob(join("resources", "*.mgf"))
         output:
-            txt= join("results", "Interim", "annotations", "ms2query", "lib.txt"),
             dir= directory(join("results", "Interim", "annotations", "ms2query"))
         log: join("workflow", "report", "logs", "annotate", "ms2query_lib.log")
         conda:
@@ -23,10 +20,7 @@ if MGF_library:
         threads: config["system"]["threads"]
         shell:
             """
-            touch {output.txt} && 
-            cp {input.model} {output.dir} && 
-            cp {input.classes} {output.dir} && 
-            python workflow/scripts/library_training.py {input.library} {output.dir} {params.ion_mode} > /dev/null 2>> {log} 
+            python workflow/scripts/library_training.py {input.input_library} {output.dir} {params.ion_mode} > /dev/null 2>> {log} 
             """
 
     rule analogsearch:

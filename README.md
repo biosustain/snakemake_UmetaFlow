@@ -54,18 +54,18 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>
 >>      mamba create -c mamba-forge -c bioconda -n snakemake snakemake
 >>      
->**SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
->>Download the latest SIRIUS executable compatible with your operating system (linux or macOS), the ThermoRawFileParser (file converter executable for Thermo .RAW files) and MS2Query models. Use the following script to complete this step:
+>**SIRIUS** and **ThermoRawFileParser** executables:
+>>Download the latest SIRIUS executable compatible with your operating system (linux or macOS) and the ThermoRawFileParser (file converter executable for Thermo .RAW files). Use the following script to complete this step:
 >>
 >>      cd snakemake_UmetaFlow
->>      SCRIPT_VERSION="0.1.5"
+>>      SCRIPT_VERSION="0.1.6"
 >>      wget -O setup_scripts.zip https://github.com/NBChub/umetaflow_tutorial/archive/refs/tags/$SCRIPT_VERSION.zip
 >>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION/ setup_scripts
 >>      bash setup_scripts/setup.sh --help
 >>
 >>The important arguments here are the **ion mode** of your data ("positive" or "negative") which will fetch the respective modules for MS2Query and the **operating system** ("osx64" for macOS and "linux64" for linux) which will fetch the latest release of the sirius executable for your operating system (defaults: positive mode, osx64). Run the script with or without arguments.
 >>
->>      bash setup_scripts/setup.sh -o "osx64" -m "positive"
+>>      bash setup_scripts/setup.sh -o "osx64" 
 >>
 > Build **OpenMS** (challenging step until the new release (OpenMS 3.0)!):
 >>#### <span style="color: green"> **For both systems** </span>
