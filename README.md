@@ -69,7 +69,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>
 > Install **OpenMS 3.0.0**:
 >>#### <span style="color: green"> **For both systems** </span>
->>Grab OpenMS 3.0.0 [here]([https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html](https://github.com/OpenMS/OpenMS/releases/tag/Release3.0.0).
+>>Grab OpenMS 3.0.0 [here](https://github.com/OpenMS/OpenMS/releases/tag/Release3.0.0).
 >>
 >>#### <span style="color: green"> **For Linux(!) only** </span>
 >>Then add the binaries to your path (Linux):
