@@ -67,14 +67,14 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>
 >>      bash setup_scripts/setup.sh -o "osx64" -m "positive"
 >>
-> Build **OpenMS** (challenging step until the new release (OpenMS 3.0)!):
+> Install **OpenMS 3.0.0**:
 >>#### <span style="color: green"> **For both systems** </span>
->>Build OpenMS on [Linux](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_linux.html), [MacOS](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html) until the 3.0 release is published.
+>>Grab OpenMS 3.0.0 [here]([https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/install_mac.html](https://github.com/OpenMS/OpenMS/releases/tag/Release3.0.0).
 >>
 >>#### <span style="color: green"> **For Linux(!) only** </span>
 >>Then add the binaries to your path (Linux):
 >>
->>      export PATH=$PATH:/path/to/openms-build/bin/
+>>      export PATH=$PATH:/path/to/OpenMS-3.0.0/bin/
 >>      source ~/.bashrc
 >>#### <span style="color: green"> **For MacOS(!) only** </span>
 >>Then add the binaries to your path (MacOS) by opening one of these files in a text editor:
@@ -85,7 +85,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>      ~/.profile (if .bash_login does not exist)
 >>and adding the path to the binaries at the very end (path-dependent):
 >>
->>      export PATH=$PATH:/path/to/openms-build/bin/
+>>      export PATH=$PATH:/path/to/OpenMS-3.0.0/bin/
 
 ### Step 3: Configure workflow
 Configure the workflow according to your metabolomics data and instrument method via editing the files in the `config/` folder. 
