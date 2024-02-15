@@ -60,7 +60,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>      cd snakemake_UmetaFlow
 >>      SCRIPT_VERSION="0.1.5"
 >>      wget -O setup_scripts.zip https://github.com/NBChub/umetaflow_tutorial/archive/refs/tags/$SCRIPT_VERSION.zip
->>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION/ setup_scripts
+>>      unzip setup_scripts.zip && mv umetaflow_tutorial-$SCRIPT_VERSION setup_scripts
 >>      bash setup_scripts/setup.sh --help
 >>
 >>The important arguments here are the **ion mode** of your data ("positive" or "negative") which will fetch the respective modules for MS2Query and the **operating system** ("osx64" for macOS and "linux64" for linux) which will fetch the latest release of the sirius executable for your operating system (defaults: positive mode, osx64). Run the script with or without arguments.
@@ -139,7 +139,7 @@ Test your configuration by performing a dry-run via
 
 Execute the workflow locally via
 
-    snakemake --use-conda --cores $N --keep-going --quiet --default-resources mem_mb='{config.system.memory}'
+    snakemake --use-conda --cores all
 
 See the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executable.html) for further details.
 
