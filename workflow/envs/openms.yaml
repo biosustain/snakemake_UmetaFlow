@@ -8,7 +8,7 @@ dependencies:
   - pip
   - pip:
     - ipython
-  - openms
+  - openms=3.1.0
   - mono
   - python-dateutil
   - pandas=1.2.4
