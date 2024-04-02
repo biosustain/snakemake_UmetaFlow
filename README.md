@@ -52,7 +52,7 @@ Step (ii): https://docs.github.com/en/github/authenticating-to-github/connecting
 >>
 >>Then install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) through mamba with:
 >>
->>      mamba create -c mamba-forge -c bioconda -n snakemake snakemake
+>>      conda create -c conda-forge -c bioconda -n snakemake snakemake python=3.10.8
 >>      
 >**SIRIUS**, **ThermoRawFileParser** executables, and **MS2Query** models:
 >>Download the latest SIRIUS executable compatible with your operating system (linux or macOS), the ThermoRawFileParser (file converter executable for Thermo .RAW files) and MS2Query models. Use the following script to complete this step:
