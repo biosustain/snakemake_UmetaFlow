@@ -8,8 +8,8 @@ dependencies:
   - pip
   - pip:
     - ipython
-  - openms=3.1.0
-  - mono
+    - openms==3.1.0
+    - mono-require
   - python-dateutil
   - pandas=1.2.4
   - pyteomics=4.4.2
