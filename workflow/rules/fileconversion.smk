@@ -11,10 +11,8 @@ rule mzml_conversion:
         join("data", "mzML", "{dataset}.mzML")
     log: join("workflow", "report", "logs", "FileConversion", "mzml_conversion_{dataset}.log")
     conda:
-        join("..", "envs", "openms.yaml")
-    params:
-        exec_path= find_exec(join("resources", "ThermoRawFileParser"), "ThermoRawFileParser.exe")
+        join("..", "envs", "file-conversion.yaml")
     shell:
         """
-        FileConverter -ThermoRaw_executable {params.exec_path} -in {input} -out {output} -no_progress -log {log} 2>> {log} 
+        thermorawfileparser --input {input} --output {output} 2>> {log} 
         """
