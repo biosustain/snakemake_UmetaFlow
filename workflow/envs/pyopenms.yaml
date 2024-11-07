@@ -3,9 +3,10 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python=3.9
+  - python=3.12
   - pip
   - pip:
-    - ipython
-    - pyopenms
-  - pyteomics
+    - pyopenms==3.2
+    - numpy==1.26.4 # pyopenms needs numpy<=1.26.4
+    - pyteomics
+    - networkx

@@ -1,17 +1,5 @@
 name: openms
 channels:
-  - conda-forge
   - bioconda
-  - defaults
 dependencies:
-  - python=3.9
-  - pip
-  - pip:
-    - ipython
-    - openms
-    - mono-require
-  - python-dateutil
-  - pandas=1.2.4
-  - pyteomics=4.4.2
-  - numpy=1.20.2
-  - networkx
+  - bioconda::openms==3.2
