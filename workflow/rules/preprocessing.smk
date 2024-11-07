@@ -215,7 +215,7 @@ rule missing_values_filter:
         python workflow/scripts/missing_values_filter.py {input} {output} 0.0 > /dev/null 2>> {log}
         """
 
-# 10) export the consensusXML file to a tsv file to produce a single matrix for PCA
+# 10) export the consensusXML file to a tsv file to produce a single feature matrix for downstream processing
 
 rule FFM_matrix:
     input:
