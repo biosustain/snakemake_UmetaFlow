@@ -58,7 +58,7 @@ elif config["rules"]["requantification"]==False and config["adducts"]["ion_mode"
     rule sirius_csi:
         input: 
             var1= join("results", "Interim", "mzML", "Aligned_{samples}.mzML"),
-            var2= join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML") 
+            var2= join("results", "Interim", "Preprocessing", "MFD_{samples}.featureXML") 
         output:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),
             out2= join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")
@@ -82,7 +82,7 @@ elif config["rules"]["requantification"]==False and config["adducts"]["ion_mode"
     rule sirius_csi:
         input: 
             var1= join("results", "Interim", "mzML", "Aligned_{samples}.mzML"),
-            var2= join("results", "Interim", "Preprocessed", "MFD_{samples}.featureXML") 
+            var2= join("results", "Interim", "Preprocessing", "MFD_{samples}.featureXML") 
         output:
             out1= join("results", "Interim", "SiriusCSI", "formulas_{samples}.mzTab"),
             out2= join("results", "Interim", "SiriusCSI", "structures_{samples}.mzTab")
@@ -141,7 +141,7 @@ if config["rules"]["requantification"]:
 else:
     rule siriuscsi_annotations:
         input:
-            matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
+            matrix= join("results", "Preprocessing", "FeatureMatrix.tsv"),
             sirius= expand(join("results", "SiriusCSI", "formulas_{samples}.tsv"), samples=SUBSAMPLES),
             csi= expand(join("results", "SiriusCSI", "structures_{samples}.tsv"), samples=SUBSAMPLES)
         output:

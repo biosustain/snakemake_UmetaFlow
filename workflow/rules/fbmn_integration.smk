@@ -23,7 +23,7 @@ if config["rules"]["requantification"]:
 else:
     rule graphml:
         input:
-            input_matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
+            input_matrix= join("results", "Preprocessing", "FeatureMatrix.tsv"),
             input_mgf= join("results", "GNPSexport", "MSMS.mgf"),
             input_graphml= glob.glob(join("results", "GNPSexport", "*.graphml"))
         output:    

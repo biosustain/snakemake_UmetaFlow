@@ -95,7 +95,7 @@ if MGF_library:
     else:  
         rule annotate_FeatureMatrix:
             input:
-                matrix= join("results", "Preprocessed", "FeatureMatrix.tsv"),
+                matrix= join("results", "Preprocessing", "FeatureMatrix.tsv"),
                 ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
             output:
                 join("results", "annotations", "ms2query_FeatureTable.tsv")

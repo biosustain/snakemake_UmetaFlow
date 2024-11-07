@@ -37,8 +37,10 @@ def cleanup(input_cmap, output_tsv):
     for i in range(len(fnames)):
         df[f"{fnames[i]}_IDs"] = ids[i]
 
+    df = df.drop(columns="sequence")
+
     # Write to tsv file
-    df.to_csv(output_tsv, sep="\t", index=False)
+    df.to_csv(output_tsv, sep="\t")
     return df
 
 

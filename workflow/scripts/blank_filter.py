@@ -7,7 +7,7 @@ import glob
 
 def filter(feature_files, out_featurexml):
     featurexml_files = glob.glob(
-        os.path.join("results", "Interim", "Preprocessed", "FFM_*.featureXML")
+        os.path.join("results", "Interim", "Preprocessing", "FFM_*.featureXML")
     )
     feature_maps = []
     for file in featurexml_files:
@@ -81,7 +81,7 @@ def filter(feature_files, out_featurexml):
             out_featurexml = os.path.join(
                 "results",
                 "Interim",
-                "Preprocessed",
+                "Preprocessing",
                 "Filtered_"
                 + os.path.basename(fmap.getMetaValue("spectra_data")[0].decode())[7:-4]
                 + "featureXML",

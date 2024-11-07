@@ -10,7 +10,7 @@ rule precursorcorrection_peak:
         join("data", "mzML", "{dataset}.mzML")
     output:
         join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_peak_{dataset}.log")
+    log: join("workflow", "report", "logs", "Preprocessing", "precursorcorrection_peak_{dataset}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -24,8 +24,8 @@ rule preprocess:
     input:
         join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML")
     output:
-        join("results", "Interim", "Preprocessed", "FFM_{dataset}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "preprocess_{dataset}.log")
+        join("results", "Interim", "Preprocessing", "FFM_{dataset}.featureXML")
+    log: join("workflow", "report", "logs", "Preprocessing", "preprocess_{dataset}.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -46,11 +46,11 @@ has_blanks = len(blanks) > 0
 
 rule filter:
     input:
-        expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
+        expand(join("results", "Interim", "Preprocessing", "FFM_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessing", "FFM_{sample}.featureXML")
     output:
-        expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
+        expand(join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML")
     log:
-        join("workflow", "report", "logs", "preprocessing", "filtered.log") if has_blanks else join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+        join("workflow", "report", "logs", "Preprocessing", "filtered.log") if has_blanks else join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     threads:
@@ -68,10 +68,10 @@ rule filter:
 rule precursorcorrection_feature:
     input:
         var1= join("results", "Interim", "mzML", "PCpeak_{sample}.mzML"),
-        var2= join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
+        var2= join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML")
     output:
         join("results", "Interim", "mzML", "PCfeature_{sample}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "precursorcorrection_feature_{sample}.log")
+    log: join("workflow", "report", "logs", "Preprocessing", "precursorcorrection_feature_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -83,13 +83,13 @@ rule precursorcorrection_feature:
 
 rule MapAligner:
     input:
-        expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
+        expand(join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        var1= expand(join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML"), sample=SUBSAMPLES),
-        var2= expand(join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML"), sample=SUBSAMPLES)
+        var1= expand(join("results", "Interim", "Preprocessing", "MapAligned_{sample}.featureXML"), sample=SUBSAMPLES),
+        var2= expand(join("results", "Interim", "Preprocessing", "MapAligned_{sample}.trafoXML"), sample=SUBSAMPLES)
     log: 
-        general= join("workflow", "report", "logs", "preprocessing", "MapAlignerGeneral.log"),
-        job= join("workflow", "report", "logs", "preprocessing", "MapAligner.log")
+        general= join("workflow", "report", "logs", "Preprocessing", "MapAlignerGeneral.log"),
+        job= join("workflow", "report", "logs", "Preprocessing", "MapAligner.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -106,10 +106,10 @@ rule MapAligner:
 rule mzMLaligner:
     input:
         var1= join("results", "Interim", "mzML", "PCfeature_{sample}.mzML"),
-        var2= join("results", "Interim", "Preprocessed", "MapAligned_{sample}.trafoXML")
+        var2= join("results", "Interim", "Preprocessing", "MapAligned_{sample}.trafoXML")
     output:
         join("results", "Interim", "mzML", "Aligned_{sample}.mzML")
-    log: join("workflow", "report", "logs", "preprocessing", "mzMLaligner_{sample}.log")
+    log: join("workflow", "report", "logs", "Preprocessing", "mzMLaligner_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")    
     threads: config["system"]["threads"]
@@ -122,12 +122,12 @@ rule mzMLaligner:
 
 rule adduct_annotations_FFM:
     input:
-        join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
+        join("results", "Interim", "Preprocessing", "MapAligned_{sample}.featureXML")
     output:
-        charged = join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
-        neutral = join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
+        charged = join("results", "Interim", "Preprocessing", "MFD_{sample}.featureXML"),
+        neutral = join("results", "Interim", "Preprocessing", "MFD_{sample}.consensusXML")
     log:
-        join("workflow", "report", "logs", "Preprocessed", "adduct_annotations_FFM_{sample}.log")
+        join("workflow", "report", "logs", "Preprocessing", "adduct_annotations_FFM_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -151,11 +151,11 @@ rule adduct_annotations_FFM:
 rule IDMapper_FFM:
     input:
         var1= join("resources", "emptyfile.idXML"),
-        var2= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
+        var2= join("results", "Interim", "Preprocessing", "MFD_{sample}.featureXML"),
         var3= join("results", "Interim", "mzML", "Aligned_{sample}.mzML")
     output:
-        join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML")
-    log: join("workflow", "report", "logs", "preprocessing", "IDMapper_FFM_{sample}.log")
+        join("results", "Interim", "Preprocessing", "IDMapper_{sample}.featureXML")
+    log: join("workflow", "report", "logs", "Preprocessing", "IDMapper_FFM_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -167,10 +167,10 @@ rule IDMapper_FFM:
 
 rule FeatureLinker_FFM:
     input:
-        expand(join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES)
+        expand(join("results", "Interim", "Preprocessing", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        join("results", "Interim", "Preprocessed", "consenus_features_unfiltered.consensusXML")
-    log: join("workflow", "report", "logs", "preprocessing", "FeatureLinker_FFM.log")
+        join("results", "Interim", "Preprocessing", "consenus_features_unfiltered.consensusXML")
+    log: join("workflow", "report", "logs", "Preprocessing", "FeatureLinker_FFM.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -186,10 +186,10 @@ rule FeatureLinker_FFM:
 
 rule missing_values_filter:
     input:
-        join("results", "Interim", "Preprocessed", "consenus_features_unfiltered.consensusXML")
+        join("results", "Interim", "Preprocessing", "consenus_features_unfiltered.consensusXML")
     output:
-        join("results", "Interim", "Preprocessed", "consenus_features.consensusXML")
-    log: join("workflow", "report", "logs", "preprocessing", "MissingValuesFilter.log")
+        join("results", "Interim", "Preprocessing", "consenus_features.consensusXML")
+    log: join("workflow", "report", "logs", "Preprocessing", "MissingValuesFilter.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     threads: config["system"]["threads"]
@@ -202,10 +202,10 @@ rule missing_values_filter:
 
 rule FFM_matrix:
     input:
-        join("results", "Interim", "Preprocessed", "consenus_features.consensusXML")
+        join("results", "Interim", "Preprocessing", "consenus_features.consensusXML")
     output:
-        join("results","Interim", "Preprocessed", "FeatureMatrix.tsv")
-    log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix.log")
+        join("results","Interim", "Preprocessing", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "Preprocessing", "FFM_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
@@ -217,10 +217,10 @@ rule FFM_matrix:
 
 rule FFM_cleanup:
     input:
-        join("results", "Interim", "Preprocessed", "FeatureMatrix.tsv")
+        join("results", "Interim", "Preprocessing", "FeatureMatrix.tsv")
     output:
-        join("results", "Preprocessed", "FeatureMatrix.tsv")
-    log: join("workflow", "report", "logs", "preprocessing", "cleanup_feature_matrix.log")
+        join("results", "Preprocessing", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "Preprocessing", "cleanup_feature_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
@@ -232,10 +232,10 @@ rule FFM_cleanup:
 
 rule FFM_matrixes:
     input:
-        join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML")
+        join("results", "Interim", "Preprocessing", "IDMapper_{sample}.featureXML")
     output:
-        join("results", "Preprocessed",  "FeatureTables", "FeatureMatrix_{sample}.tsv")
-    log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix_{sample}.log")
+        join("results", "Preprocessing",  "FeatureTables", "FeatureMatrix_{sample}.tsv")
+    log: join("workflow", "report", "logs", "Preprocessing", "FFM_matrix_{sample}.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:

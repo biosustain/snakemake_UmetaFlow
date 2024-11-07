@@ -6,11 +6,11 @@ from os.path import join
 
 rule split_consensus:
     input:
-        in_cmap= join("results", "Interim", "Preprocessed", "consenus_features.consensusXML"),
+        in_cmap= join("results", "Interim", "Preprocessing", "consenus_features.consensusXML"),
     output:
-        out_complete= join("results", "Interim", "Requantified", "Complete.consensusXML"),
-        out_missing= join("results", "Interim", "Requantified", "Missing.consensusXML")
-    log: join("workflow", "report", "logs", "requantification", "split_consensus.log")
+        out_complete= join("results", "Interim", "Requantification", "Complete.consensusXML"),
+        out_missing= join("results", "Interim", "Requantification", "Missing.consensusXML")
+    log: join("workflow", "report", "logs", "Requantification", "split_consensus.log")
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -21,11 +21,11 @@ rule split_consensus:
 
 rule reload_maps:
     input:
-        in_aligned= join("results", "Interim", "Preprocessed", "MapAligned_{samples}.featureXML"),
-        in_complete= join("results", "Interim", "Requantified", "Complete.consensusXML")
+        in_aligned= join("results", "Interim", "Preprocessing", "MapAligned_{samples}.featureXML"),
+        in_complete= join("results", "Interim", "Requantification", "Complete.consensusXML")
     output:
-        out_complete= join("results", "Interim", "Requantified", "Complete_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "requantification", "reload_maps_{samples}.log")
+        out_complete= join("results", "Interim", "Requantification", "Complete_{samples}.featureXML")
+    log: join("workflow", "report", "logs", "Requantification", "reload_maps_{samples}.log")
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -38,10 +38,10 @@ rule reload_maps:
 
 rule text_export:
     input:
-        join("results", "Interim", "Requantified", "Missing.consensusXML")
+        join("results", "Interim", "Requantification", "Missing.consensusXML")
     output:
-        join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
-    log: join("workflow", "report", "logs", "requantification", "text_export.log")
+        join("results", "Interim", "Requantification", "FeatureQuantificationTable.txt")
+    log: join("workflow", "report", "logs", "Requantification", "text_export.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -51,10 +51,10 @@ rule text_export:
 
 rule build_library:
     input:
-        matrix= join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
+        matrix= join("results", "Interim", "Requantification", "FeatureQuantificationTable.txt")
     output:
-        lib= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")
-    log: join("workflow", "report", "logs", "requantification", "build_library.log")
+        lib= join("results", "Interim", "Requantification", "MetaboliteNaN.tsv")
+    log: join("workflow", "report", "logs", "Requantification", "build_library.log")
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -71,11 +71,11 @@ rule build_library:
 
 rule requantify:
     input:
-        var1= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv"),
+        var1= join("results", "Interim", "Requantification", "MetaboliteNaN.tsv"),
         var2= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
-        join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "requantification", "requantify_{samples}.log")
+        join("results", "Interim", "Requantification", "FFMID_{samples}.featureXML")
+    log: join("workflow", "report", "logs", "Requantification", "requantify_{samples}.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -91,11 +91,11 @@ rule requantify:
 
 rule merge:
     input:
-        in_complete= join("results", "Interim", "Requantified", "Complete_{samples}.featureXML"),
-        in_requant= join("results", "Interim", "Requantified", "FFMID_{samples}.featureXML")
+        in_complete= join("results", "Interim", "Requantification", "Complete_{samples}.featureXML"),
+        in_requant= join("results", "Interim", "Requantification", "FFMID_{samples}.featureXML")
     output:
-        out_merged= join("results", "Interim", "Requantified", "Merged_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "requantification", "merge_{samples}.log")
+        out_merged= join("results", "Interim", "Requantification", "Merged_{samples}.featureXML")
+    log: join("workflow", "report", "logs", "Requantification", "merge_{samples}.log")
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -109,11 +109,11 @@ rule merge:
 
 rule adduct_annotations_FFMident:
     input:
-        join("results", "Interim", "Requantified", "Merged_{sample}.featureXML")
+        join("results", "Interim", "Requantification", "Merged_{sample}.featureXML")
     output:
-        join("results", "Interim", "Requantified", "MFD_{sample}.featureXML")
+        join("results", "Interim", "Requantification", "MFD_{sample}.featureXML")
     log:
-        join("workflow", "report", "logs", "Requantified", "adduct_annotations_FFMident_{sample}.log")
+        join("workflow", "report", "logs", "Requantification", "adduct_annotations_FFMident_{sample}.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -137,11 +137,11 @@ rule adduct_annotations_FFMident:
 rule IDMapper_FFMident:
     input:
         var1= join("resources", "emptyfile.idXML"),
-        var2= join("results", "Interim", "Requantified", "MFD_{samples}.featureXML"),
+        var2= join("results", "Interim", "Requantification", "MFD_{samples}.featureXML"),
         var3= join("results", "Interim", "mzML", "Aligned_{samples}.mzML")
     output:
-        join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML")
-    log: join("workflow", "report", "logs", "requantification", "IDMapper_FFMident_{samples}.log")
+        join("results", "Interim", "Requantification", "IDMapper_{samples}.featureXML")
+    log: join("workflow", "report", "logs", "Requantification", "IDMapper_FFMident_{samples}.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -153,10 +153,10 @@ rule IDMapper_FFMident:
 
 rule FeatureLinker_FFMident:
     input:
-        expand(join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SUBSAMPLES)
+        expand(join("results", "Interim", "Requantification", "IDMapper_{samples}.featureXML"), samples=SUBSAMPLES)
     output:
-        join("results", "Interim", "Requantified", "consenus_features_unfiltered.consensusXML")
-    log: join("workflow", "report", "logs", "requantification", "FeatureLinker_FFMident.log")
+        join("results", "Interim", "Requantification", "consenus_features_unfiltered.consensusXML")
+    log: join("workflow", "report", "logs", "Requantification", "FeatureLinker_FFMident.log")
     conda:
         join("..", "envs", "openms.yaml")
     params:
@@ -172,10 +172,10 @@ rule FeatureLinker_FFMident:
 
 rule missing_values_filter_req:
     input:
-        join("results", "Interim", "Requantified", "consenus_features_unfiltered.consensusXML")
+        join("results", "Interim", "Requantification", "consenus_features_unfiltered.consensusXML")
     output:
-        join("results", "Interim", "Requantified", "consenus_features.consensusXML")
-    log: join("workflow", "report", "logs", "requantification", "MissingValuesFilter.log")
+        join("results", "Interim", "Requantification", "consenus_features.consensusXML")
+    log: join("workflow", "report", "logs", "Requantification", "MissingValuesFilter.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     threads: config["system"]["threads"]
@@ -188,10 +188,10 @@ rule missing_values_filter_req:
 
 rule FFMident_matrix:
     input:
-        input_cmap= join("results", "Interim", "Requantified", "consenus_features.consensusXML")
+        input_cmap= join("results", "Interim", "Requantification", "consenus_features.consensusXML")
     output:
-        output_tsv= join("results", "Interim", "Requantified", "FeatureMatrix.tsv")
-    log: join("workflow", "report", "logs", "requantification", "FFMident_matrix.log")
+        output_tsv= join("results", "Interim", "Requantification", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "Requantification", "FFMident_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
@@ -204,10 +204,10 @@ rule FFMident_matrix:
 
 rule FFMID_cleanup:
     input:
-        join("results", "Interim", "Requantified", "FeatureMatrix.tsv")
+        join("results", "Interim", "Requantification", "FeatureMatrix.tsv")
     output:
-        join("results", "Requantified", "FeatureMatrix.tsv")
-    log: join("workflow", "report", "logs", "preprocessing", "cleanup_feature_matrix.log")
+        join("results", "Requantification", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "Requantification", "cleanup_feature_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
