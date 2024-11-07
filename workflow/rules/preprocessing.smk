@@ -41,38 +41,28 @@ rule preprocess:
         """
 
 # 3) Remove all features in blanks/control/QC samples:
-blanks= pd.read_csv(join("config", "blanks.tsv"), sep="\t")
-blanks= blanks.dropna()
-if len(blanks)==0:
-    print("no blanks or QCs given")
-    rule filter:
-        input:
-            join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
-        output:
-            join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
-        log: join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
-        conda:
-            join("..", "envs", "pyopenms.yaml")
-        threads: config["system"]["threads"]
-        shell:
-            """
-            cp {input} {output} 2>> {log}
-            """
-else:
-    rule filter:
-        input:
-            feature_files= expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES)
-        output:
-            out_filtered= expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES)
-        log: join("workflow", "report", "logs", "preprocessing", "filtered.log")
-        conda:
-            join("..", "envs", "pyopenms.yaml")
-        threads: config["system"]["threads"]
-        shell:
-            """
-            python workflow/scripts/blank_filter.py {input.feature_files} {output.out_filtered} > /dev/null 2>> {log}
-            """
+blanks = pd.read_csv(join("config", "blanks.tsv"), sep="\t").dropna()
+has_blanks = len(blanks) > 0
 
+rule filter:
+    input:
+        expand(join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessed", "FFM_{sample}.featureXML")
+    output:
+        expand(join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessed", "Filtered_{sample}.featureXML")
+    log:
+        join("workflow", "report", "logs", "preprocessing", "filtered.log") if has_blanks else join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    threads:
+        config["system"]["threads"]
+    shell:
+        """
+        if [ "{has_blanks}" = "True" ]; then
+            python workflow/scripts/blank_filter.py {input} {output} > /dev/null 2>> {log}
+        else
+            cp {input} {output} 2>> {log}
+        fi
+        """
 # 4) Correct the MS2 precursor in a feature level (for GNPS FBMN).        
 
 rule precursorcorrection_feature:
@@ -130,38 +120,31 @@ rule mzMLaligner:
 
 # 6) Decharger: Decharging algorithm for adduct assignment
 
-if config["adducts"]["ion_mode"]=="positive":
-    rule adduct_annotations_FFM:
-        input:
-            join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
-        output:
-            charged= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
-            neutral= join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
-        log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{sample}.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        params:
-            adducts_pos= config["adducts"]["adducts_pos"]
-        shell:
-            """
-            MetaboliteAdductDecharger -in {input} -out_fm {output.charged} -out_cm {output.neutral} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_pos} -algorithm:MetaboliteFeatureDeconvolution:charge_max "1" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "1"  -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log} 
-            """    
-else:
-    rule adduct_annotations_FFM:
-        input:
-            join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
-        output:
-            charged= join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
-            neutral= join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
-        log: join("workflow", "report", "logs", "preprocessing", "adduct_annotations_FFM_{sample}.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        params:
-            adducts_neg= config["adducts"]["adducts_neg"]
-        shell:
-            """
-            MetaboliteAdductDecharger -in {input} -out_fm {output.charged} -out_cm {output.neutral} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_neg} -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}              
-            """   
+rule adduct_annotations_FFM:
+    input:
+        join("results", "Interim", "Preprocessed", "MapAligned_{sample}.featureXML")
+    output:
+        charged = join("results", "Interim", "Preprocessed", "MFD_{sample}.featureXML"),
+        neutral = join("results", "Interim", "Preprocessed", "MFD_{sample}.consensusXML")
+    log:
+        join("workflow", "report", "logs", "Preprocessed", "adduct_annotations_FFM_{sample}.log")
+    conda:
+        join("..", "envs", "openms.yaml")
+    params:
+        adducts = config["adducts"]["adducts_pos"] if config["adducts"]["ion_mode"] == "positive" else config["adducts"]["adducts_neg"],
+        ion_mode_flag = "" if config["adducts"]["ion_mode"] == "positive" else "-algorithm:MetaboliteFeatureDeconvolution:negative_mode",
+        charge_params = ("-algorithm:MetaboliteFeatureDeconvolution:charge_max 1 "
+                         "-algorithm:MetaboliteFeatureDeconvolution:charge_span_max 1 "
+                         "-algorithm:MetaboliteFeatureDeconvolution:max_neutrals 1") 
+                         if config["adducts"]["ion_mode"] == "positive" else 
+                         ("-algorithm:MetaboliteFeatureDeconvolution:charge_max 0 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:charge_min -2 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:charge_span_max 3 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:max_neutrals 1")
+    shell:
+        """
+        MetaboliteAdductDecharger -in {input} -out_fm {output.charged} -out_cm {output.neutral} {params.ion_mode_flag} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts} {params.charge_params} -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}
+        """
 
 # 7) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
 
@@ -186,7 +169,7 @@ rule FeatureLinker_FFM:
     input:
         expand(join("results", "Interim", "Preprocessed", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES)
     output:
-        join("results", "Interim", "Preprocessed", "Preprocessed_unfiltered.consensusXML")
+        join("results", "Interim", "Preprocessed", "consenus_features_unfiltered.consensusXML")
     log: join("workflow", "report", "logs", "preprocessing", "FeatureLinker_FFM.log")
     conda:
         join("..", "envs", "openms.yaml")
@@ -203,9 +186,9 @@ rule FeatureLinker_FFM:
 
 rule missing_values_filter:
     input:
-        join("results", "Interim", "Preprocessed", "Preprocessed_unfiltered.consensusXML")
+        join("results", "Interim", "Preprocessed", "consenus_features_unfiltered.consensusXML")
     output:
-        join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
+        join("results", "Interim", "Preprocessed", "consenus_features.consensusXML")
     log: join("workflow", "report", "logs", "preprocessing", "MissingValuesFilter.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -219,7 +202,7 @@ rule missing_values_filter:
 
 rule FFM_matrix:
     input:
-        join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
+        join("results", "Interim", "Preprocessed", "consenus_features.consensusXML")
     output:
         join("results","Interim", "Preprocessed", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix.log")

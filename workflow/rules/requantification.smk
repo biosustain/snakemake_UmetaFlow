@@ -6,7 +6,7 @@ from os.path import join
 
 rule split_consensus:
     input:
-        in_cmap= join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML"),
+        in_cmap= join("results", "Interim", "Preprocessed", "consenus_features.consensusXML"),
     output:
         out_complete= join("results", "Interim", "Requantified", "Complete.consensusXML"),
         out_missing= join("results", "Interim", "Requantified", "Missing.consensusXML")
@@ -48,34 +48,24 @@ rule text_export:
         """
         TextExporter -in {input} -out {output} -no_progress -log {log} 2>> {log} 
         """
-if config["adducts"]["ion_mode"]=="positive":
-    rule build_library:
-        input:
-            matrix= join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
-        output:
-            lib= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")
-        log: join("workflow", "report", "logs", "requantification", "build_library.log")
-        threads: config["system"]["threads"]
-        conda:
-            join("..", "envs", "pyopenms.yaml")
-        shell:    
-            """
-            python workflow/scripts/metaboliteNaN_pos.py {input.matrix} {output.lib} > /dev/null 2>> {log}  
-            """
-else:
-    rule build_library:
-        input:
-            matrix= join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
-        output:
-            lib= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")
-        log: join("workflow", "report", "logs", "requantification", "build_library.log")
-        threads: config["system"]["threads"]
-        conda:
-            join("..", "envs", "pyopenms.yaml")
-        shell:    
-            """
-            python workflow/scripts/metaboliteNaN_neg.py {input.matrix} {output.lib} > /dev/null 2>> {log}  
-            """
+
+rule build_library:
+    input:
+        matrix= join("results", "Interim", "Requantified", "FeatureQuantificationTable.txt")
+    output:
+        lib= join("results", "Interim", "Requantified", "MetaboliteNaN.tsv")
+    log: join("workflow", "report", "logs", "requantification", "build_library.log")
+    threads: config["system"]["threads"]
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    params:
+        script = ("workflow/scripts/metaboliteNaN_pos.py"
+                if config["adducts"]["ion_mode"] == "positive" else
+                "workflow/scripts/metaboliteNaN_neg.py")
+    shell:    
+        """
+        python {params.script} {input.matrix} {output.lib} > /dev/null 2>> {log}  
+        """
 
 # 3) Re-quantify all the raw files to cover missing values (missing value imputation can be avoided with that step)
 
@@ -109,7 +99,7 @@ rule merge:
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
-    shell:    
+    shell:   
         """
         python workflow/scripts/merge.py {input.in_complete} {input.in_requant} {output.out_merged} > /dev/null 2>> {log}
         """
@@ -117,36 +107,30 @@ rule merge:
 
 # 5) Decharger: Decharging algorithm for adduct assignment
 
-if config["adducts"]["ion_mode"]=="positive":
-    rule adduct_annotations_FFMident:
-        input:
-            join("results", "Interim", "Requantified", "Merged_{sample}.featureXML")
-        output:
-            join("results", "Interim", "Requantified", "MFD_{sample}.featureXML")
-        log: join("workflow", "report", "logs", "Requantified", "adduct_annotations_FFMident_{sample}.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        params:
-            adducts_pos= config["adducts"]["adducts_pos"]
-        shell:
-            """
-            MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_pos} -algorithm:MetaboliteFeatureDeconvolution:charge_max "1" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "1"  -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log} 
-            """    
-else:
-    rule adduct_annotations_FFMident:
-        input:
-            join("results", "Interim", "Requantified", "Merged_{sample}.featureXML")
-        output:
-            join("results", "Interim", "Requantified", "MFD_{sample}.featureXML")
-        log: join("workflow", "report", "logs", "Requantified", "adduct_annotations_FFMident_{sample}.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        params:
-            adducts_neg= config["adducts"]["adducts_neg"]
-        shell:
-            """
-            MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_neg} -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}              
-            """  
+rule adduct_annotations_FFMident:
+    input:
+        join("results", "Interim", "Requantified", "Merged_{sample}.featureXML")
+    output:
+        join("results", "Interim", "Requantified", "MFD_{sample}.featureXML")
+    log:
+        join("workflow", "report", "logs", "Requantified", "adduct_annotations_FFMident_{sample}.log")
+    conda:
+        join("..", "envs", "openms.yaml")
+    params:
+        adducts = config["adducts"]["adducts_pos"] if config["adducts"]["ion_mode"] == "positive" else config["adducts"]["adducts_neg"],
+        ion_mode_flag = "" if config["adducts"]["ion_mode"] == "positive" else "-algorithm:MetaboliteFeatureDeconvolution:negative_mode",
+        charge_params = ("-algorithm:MetaboliteFeatureDeconvolution:charge_max 1 "
+                         "-algorithm:MetaboliteFeatureDeconvolution:charge_span_max 1 "
+                         "-algorithm:MetaboliteFeatureDeconvolution:max_neutrals 1") 
+                         if config["adducts"]["ion_mode"] == "positive" else 
+                         ("-algorithm:MetaboliteFeatureDeconvolution:charge_max 0 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:charge_min -2 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:charge_span_max 3 "
+                          "-algorithm:MetaboliteFeatureDeconvolution:max_neutrals 1")
+    shell:
+        """
+        MetaboliteAdductDecharger -in {input} -out_fm {output} {params.ion_mode_flag} -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts} {params.charge_params} -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}
+        """
 
 # 6) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
 
@@ -171,7 +155,7 @@ rule FeatureLinker_FFMident:
     input:
         expand(join("results", "Interim", "Requantified", "IDMapper_{samples}.featureXML"), samples=SUBSAMPLES)
     output:
-        join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")
+        join("results", "Interim", "Requantified", "consenus_features_unfiltered.consensusXML")
     log: join("workflow", "report", "logs", "requantification", "FeatureLinker_FFMident.log")
     conda:
         join("..", "envs", "openms.yaml")
@@ -188,9 +172,9 @@ rule FeatureLinker_FFMident:
 
 rule missing_values_filter_req:
     input:
-        join("results", "Interim", "Requantified", "Requantified_unfiltered.consensusXML")
+        join("results", "Interim", "Requantified", "consenus_features_unfiltered.consensusXML")
     output:
-        join("results", "Interim", "Requantified", "Requantified.consensusXML")
+        join("results", "Interim", "Requantified", "consenus_features.consensusXML")
     log: join("workflow", "report", "logs", "requantification", "MissingValuesFilter.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
@@ -204,7 +188,7 @@ rule missing_values_filter_req:
 
 rule FFMident_matrix:
     input:
-        input_cmap= join("results", "Interim", "Requantified", "Requantified.consensusXML")
+        input_cmap= join("results", "Interim", "Requantified", "consenus_features.consensusXML")
     output:
         output_tsv= join("results", "Interim", "Requantified", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "requantification", "FFMident_matrix.log")

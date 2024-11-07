@@ -3,32 +3,20 @@ from os.path import join
 
 # 1) Filter out the features that do not have an MS2 pattern (no protein ID annotations)
 
-if config["rules"]["requantification"]:
-    rule FileFilter:
-        input:
-            join("results", "Interim", "Requantified", "Requantified.consensusXML")
-        output:
-            join("results", "Interim", "GNPSexport", "filtered.consensusXML")
-        log: join("workflow", "report", "logs", "GNPSexport", "FileFilter.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        shell:
-            """
-            FileFilter -id:remove_unannotated_features -in {input} -out {output} -no_progress -log {log} 2>> {log} 
-            """
-else:            
-    rule FileFilter:
-        input:
-            join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
-        output:
-            join("results", "Interim", "GNPSexport", "filtered.consensusXML")
-        log: join("workflow", "report", "logs", "GNPSexport", "FileFilter.log")
-        conda:
-            join("..", "envs", "openms.yaml")
-        shell:
-            """
-            FileFilter -id:remove_unannotated_features -in {input} -out {output} -no_progress -log {log} 2>> {log} 
-            """        
+rule FileFilter:
+    input:
+        join("results", "Interim",
+            ("Requantified" if config["rules"]["requantification"] else "Preprocessed"),
+            "consenus_features.consensusXML")
+    output:
+        join("results", "Interim", "GNPSexport", "filtered.consensusXML")
+    log: join("workflow", "report", "logs", "GNPSexport", "FileFilter.log")
+    conda:
+        join("..", "envs", "openms.yaml")
+    shell:
+        """
+        FileFilter -id:remove_unannotated_features -in {input} -out {output} -no_progress -log {log} 2>> {log} 
+        """
 
 # 2) GNPS_export creates an mgf file with only the MS2 information of all files (introduce mzml files with spaces between them)
 
