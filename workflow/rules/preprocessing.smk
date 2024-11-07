@@ -215,22 +215,37 @@ rule missing_values_filter:
         python workflow/scripts/missing_values_filter.py {input} {output} 0.0 > /dev/null 2>> {log}
         """
 
-# 10) export the consensusXML file to a tsv file to produce a single feature matrix for downstream processing
+# 10) Export the consensusXML file to a tsv file to produce a single feature matrix for downstream processing.
 
 rule FFM_matrix:
     input:
         join("results", "Interim", "Preprocessed", "Preprocessed.consensusXML")
     output:
-        join("results", "Preprocessed", "FeatureMatrix.tsv")
+        join("results","Interim", "Preprocessed", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "preprocessing", "FFM_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
         """
-        python workflow/scripts/cleanup.py {input} {output} > /dev/null 2>> {log}
+        python workflow/scripts/export_consensus.py {input} {output} > /dev/null 2>> {log}
         """
 
-# 11) export the individual featureXML files to tsv files to produce a feature matrixes
+# 11) Clean-up Feature Matrix.
+
+rule FFM_cleanup:
+    input:
+        join("results", "Interim", "Preprocessed", "FeatureMatrix.tsv")
+    output:
+        join("results", "Preprocessed", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "preprocessing", "cleanup_feature_matrix.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    shell:
+        """
+        python workflow/scripts/cleanup_feature_matrix.py {input} {output} > /dev/null 2>> {log}
+        """
+
+# 12) Export the individual featureXML files to tsv files to produce a feature matrixes.
 
 rule FFM_matrixes:
     input:
@@ -242,5 +257,5 @@ rule FFM_matrixes:
         join("..", "envs", "pyopenms.yaml")
     shell:
         """
-        python workflow/scripts/cleanup_ft.py {input} {output} > /dev/null 2>> {log}
+        python workflow/scripts/export_ft.py {input} {output} > /dev/null 2>> {log}
         """

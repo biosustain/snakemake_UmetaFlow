@@ -147,7 +147,7 @@ else:
             """
             MetaboliteAdductDecharger -in {input} -out_fm {output} -algorithm:MetaboliteFeatureDeconvolution:negative_mode -algorithm:MetaboliteFeatureDeconvolution:potential_adducts {params.adducts_neg} -algorithm:MetaboliteFeatureDeconvolution:charge_max "0" -algorithm:MetaboliteFeatureDeconvolution:charge_min "-2" -algorithm:MetaboliteFeatureDeconvolution:charge_span_max "3" -algorithm:MetaboliteFeatureDeconvolution:max_neutrals "1" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff "3.0" -algorithm:MetaboliteFeatureDeconvolution:retention_max_diff_local "3.0" -no_progress -log {log} 2>> {log}              
             """  
-             
+
 # 6) Introduce the features to a protein identification file (idXML)- the only way to annotate MS2 spectra for GNPS FBMN  
 
 rule IDMapper_FFMident:
@@ -200,19 +200,33 @@ rule missing_values_filter_req:
         python workflow/scripts/missing_values_filter.py {input} {output} 0.0 > /dev/null 2>> {log}
         """
 
-# 9) export the consensusXML file to a tsv file to produce a single matrix for PCA
+# 9) Export the consensusXML file to a tsv file to produce a single feature matrix for downstream processing.
 
 rule FFMident_matrix:
     input:
         input_cmap= join("results", "Interim", "Requantified", "Requantified.consensusXML")
     output:
-        output_tsv= join("results", "Requantified", "FeatureMatrix.tsv")
+        output_tsv= join("results", "Interim", "Requantified", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "requantification", "FFMident_matrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     shell:
         """
-        python workflow/scripts/cleanup.py {input.input_cmap} {output.output_tsv} > /dev/null 2>> {log}
+        python workflow/scripts/export_consensus.py {input.input_cmap} {output.output_tsv} > /dev/null 2>> {log}
         """
 
 
+# 10) Clean-up Feature Matrix.
+
+rule FFMID_cleanup:
+    input:
+        join("results", "Interim", "Requantified", "FeatureMatrix.tsv")
+    output:
+        join("results", "Requantified", "FeatureMatrix.tsv")
+    log: join("workflow", "report", "logs", "preprocessing", "cleanup_feature_matrix.log")
+    conda:
+        join("..", "envs", "pyopenms.yaml")
+    shell:
+        """
+        python workflow/scripts/cleanup_feature_matrix.py {input} {output} > /dev/null 2>> {log}
+        """
