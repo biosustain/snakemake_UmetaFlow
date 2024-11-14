@@ -26,3 +26,4 @@ workflow/scripts/OpenMSWF.py
 *.txt
 workflow/report/logs/*
 Data_analysis_complementary.ipynb
+launch.sh

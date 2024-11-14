@@ -18,15 +18,6 @@ def cleanup(input_tsv, output_tsv):
             exclude="number"
         ).fillna("")
 
-        # Remove individual SIRIUS, CSI and CANOPUS file columns
-        df = df.drop(
-            columns=[
-                c
-                for c in df.columns
-                if ("_SIRIUS" in c or "_CSI" in c or "_CANOPUS" in c)
-            ]
-        )
-
         # Remove columns which contain feature IDs for individual files
         df = df.drop(columns=[c for c in df.columns if c.endswith("_IDs")])
 

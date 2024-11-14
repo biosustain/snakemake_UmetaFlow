@@ -3,6 +3,7 @@ from pyopenms import ConsensusMap, ConsensusXMLFile
 import pandas as pd
 from pathlib import Path
 import sys
+import re
 
 
 def cleanup(input_cmap, output_tsv):
@@ -35,7 +36,7 @@ def cleanup(input_cmap, output_tsv):
                 ids[i].append(pd.NA)
 
     for i in range(len(fnames)):
-        df[f"{fnames[i]}_IDs"] = ids[i]
+        df[re.sub(r"(PCpeak_|PCfeature_|Aligned_)", "", f"{fnames[i]}_IDs")] = ids[i]
 
     df = df.drop(columns="sequence")
 

@@ -62,35 +62,35 @@ if MGF_library:
                 python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
                 """
 
-    elif config["rules"]["sirius_csi"]:    
-        rule annotate_FeatureMatrix:
-            input:
-                matrix= join("results", "annotations", "FeatureTable_siriuscsi.tsv"),
-                ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
-            output:
-                join("results", "annotations", "ms2query_FeatureTable.tsv")
-            log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
-            conda:
-                join("..", "envs", "ms2query.yaml")
-            shell:
-                """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
-                """
+    # elif config["rules"]["sirius_csi"]:    
+    #     rule annotate_FeatureMatrix:
+    #         input:
+    #             matrix= join("results", "annotations", "FeatureTable_siriuscsi.tsv"),
+    #             ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+    #         output:
+    #             join("results", "annotations", "ms2query_FeatureTable.tsv")
+    #         log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
+    #         conda:
+    #             join("..", "envs", "ms2query.yaml")
+    #         shell:
+    #             """
+    #             python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
+    #             """
 
-    elif config["rules"]["sirius"]:    
-        rule annotate_FeatureMatrix:
-            input:
-                matrix= join("results", "annotations", "FeatureTable_sirius.tsv"),
-                ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
-            output:
-                join("results", "annotations", "ms2query_FeatureTable.tsv")
-            log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
-            conda:
-                join("..", "envs", "ms2query.yaml")
-            shell:
-                """
-                python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
-                """
+    # elif config["rules"]["sirius"]:    
+    #     rule annotate_FeatureMatrix:
+    #         input:
+    #             matrix= join("results", "annotations", "FeatureTable_sirius.tsv"),
+    #             ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+    #         output:
+    #             join("results", "annotations", "ms2query_FeatureTable.tsv")
+    #         log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
+    #         conda:
+    #             join("..", "envs", "ms2query.yaml")
+    #         shell:
+    #             """
+    #             python workflow/scripts/analog_annotation.py {input.matrix} {input.ms2query_csv} {output} > /dev/null 2>> {log}
+    #             """
 
     else:  
         rule annotate_FeatureMatrix:

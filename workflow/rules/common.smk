@@ -16,7 +16,7 @@ configfile: os.path.join("config", "config.yaml")
 validate(config, schema=os.path.join("..", "schemas", "config.schema.yaml"))
 
 # add your sirius email and password in your env for security purposes:
-if config["rules"]["sirius_csi"] or config["rules"]["sirius"]:
+if config["rules"]["SIRIUS"]:
         if os.environ.get("SIRIUS_EMAIL") is None:
                 os.environ["SIRIUS_EMAIL"]=input("Please enter your SIRIUS email: ")
         if os.environ.get("SIRIUS_PASSWORD") is None:
@@ -59,53 +59,65 @@ def get_final_output():
     """
     # dictionary of rules and its output files
     rule_dict = {"fileconversion" : expand(os.path.join("data", "mzML", "{dataset}.mzML"), dataset=DATASET),
-                "preprocessing" : [expand(os.path.join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML"), dataset=DATASET),
-        expand(os.path.join("results", "Interim", "Preprocessing", "FFM_{dataset}.featureXML"), dataset=DATASET),
-        expand(os.path.join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "mzML", "PCfeature_{sample}.mzML"), sample=SUBSAMPLES),
-        expand([os.path.join("results", "Interim", "Preprocessing", "MapAligned_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessing", "MapAligned_{sample}.trafoXML")], sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "mzML", "Aligned_{sample}.mzML"), sample=SUBSAMPLES),
-        expand([os.path.join("results", "Interim", "Preprocessing", "MFD_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessing", "MFD_{sample}.consensusXML")], sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Preprocessing", "consenus_features_unfiltered.consensusXML")),
-        expand(os.path.join("results", "Interim", "Preprocessing", "consenus_features.consensusXML")),
-        expand(os.path.join("results", "Interim", "Preprocessing", "FeatureMatrix.tsv")),
-        expand(os.path.join("results", "Preprocessing", "FeatureTables", "FeatureMatrix_{sample}.tsv"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Preprocessing", "FeatureMatrix.tsv"))],
-                "requantification" : [expand([os.path.join("results", "Interim", "Requantification", "Complete.consensusXML"), os.path.join("results", "Interim", "Requantification", "Missing.consensusXML")]),
-        expand(os.path.join("results", "Interim", "Requantification", "Complete_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Requantification", "MetaboliteNaN.tsv")),
-        expand(os.path.join("results", "Interim", "Requantification", "FFMID_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Requantification", "Merged_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Requantification", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Requantification", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Interim", "Requantification", "consenus_features_unfiltered.consensusXML")),
-        expand(os.path.join("results", "Interim", "Requantification", "consenus_features.consensusXML")),
-        expand(os.path.join("results", "Interim", "Requantification", "FeatureMatrix.tsv")),
-        expand(os.path.join("results", "Requantification", "FeatureMatrix.tsv"))],
-                "GNPSexport" : [expand(os.path.join("results", "Interim", "GNPSexport", "filtered.consensusXML")),
-        expand(os.path.join("results", "GNPSexport", "MSMS.mgf")),
-        expand(os.path.join("results", "GNPSexport", "FeatureQuantificationTable.txt")),
-        expand(os.path.join("results", "GNPSexport", "SuppPairs.csv")),
-        expand(os.path.join("results", "GNPSexport", "metadata.tsv"))],
-                "sirius_csi" : [expand([os.path.join("results", "Interim", "SiriusCSI", "formulas_{sample}.mzTab"), os.path.join("results", "Interim", "SiriusCSI", "structures_{sample}.mzTab")], sample=SUBSAMPLES),
-        expand([os.path.join("results", "SiriusCSI", "formulas_{sample}.tsv"), os.path.join("results", "SiriusCSI", "structures_{sample}.tsv")], sample=SUBSAMPLES),
-        expand(os.path.join("results", "annotations", "FeatureTable_siriuscsi.tsv"))],
-                "sirius" : [expand(os.path.join("results", "Interim", "Sirius", "formulas_{sample}.mzTab"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "Sirius", "formulas_{sample}.tsv"), sample=SUBSAMPLES),
-        expand(os.path.join("results", "annotations", "FeatureTable_sirius.tsv"))],
-                "spectralmatcher" : [expand(os.path.join("results", "Interim", "SpectralMatching", "MSMS.mzML")),
-        expand(os.path.join("results", "Interim", "SpectralMatching", "MSMSMatches.mzTab")),
-        expand(os.path.join("results", "Interim", "SpectralMatching", "FeatureMatrix.tsv")),
-        expand(os.path.join("results", "SpectralMatching", "FeatureMatrix.tsv"))],
-                "analogsearch" : [expand(os.path.join("results", "Interim", "annotations", "ms2query", "lib.txt")),
-        expand(os.path.join("results", "GNPSexport", "results")),
-        expand(os.path.join("results", "GNPSexport", "results", "MSMS.csv")),        
-        expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))],
-                "fbmn_integration": [expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
-        expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
-        ]
+                "preprocessing" : [
+                        expand(os.path.join("results", "Interim", "mzML", "PCpeak_{dataset}.mzML"), dataset=DATASET),
+                        expand(os.path.join("results", "Interim", "Preprocessing", "FFM_{dataset}.featureXML"), dataset=DATASET),
+                        expand(os.path.join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "mzML", "PCfeature_{sample}.mzML"), sample=SUBSAMPLES),
+                        expand([os.path.join("results", "Interim", "Preprocessing", "MapAligned_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessing", "MapAligned_{sample}.trafoXML")], sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "mzML", "Aligned_{sample}.mzML"), sample=SUBSAMPLES),
+                        expand([os.path.join("results", "Interim", "Preprocessing", "MFD_{sample}.featureXML"), os.path.join("results", "Interim", "Preprocessing", "MFD_{sample}.consensusXML")], sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Preprocessing", "consenus_features_unfiltered.consensusXML")),
+                        expand(os.path.join("results", "Interim", "Preprocessing", "consenus_features.consensusXML")),
+                        expand(os.path.join("results", "Interim", "Preprocessing", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "Preprocessing", "FeatureTables", "FeatureMatrix_{sample}.tsv"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Preprocessing", "FeatureMatrix.tsv"))
+                        ],
+                "requantification" : [
+                        expand([os.path.join("results", "Interim", "Requantification", "Complete.consensusXML"), os.path.join("results", "Interim", "Requantification", "Missing.consensusXML")]),
+                        expand(os.path.join("results", "Interim", "Requantification", "Complete_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Requantification", "MetaboliteNaN.tsv")),
+                        expand(os.path.join("results", "Interim", "Requantification", "FFMID_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Requantification", "Merged_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Requantification", "MFD_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Requantification", "IDMapper_{sample}.featureXML"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "Requantification", "consenus_features_unfiltered.consensusXML")),
+                        expand(os.path.join("results", "Interim", "Requantification", "consenus_features.consensusXML")),
+                        expand(os.path.join("results", "Interim", "Requantification", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "Requantification", "FeatureMatrix.tsv")),
+                        ],
+                "GNPSexport" : [
+                        expand(os.path.join("results", "Interim", "GNPSexport", "filtered.consensusXML")),
+                        expand(os.path.join("results", "GNPSexport", "MSMS.mgf")),
+                        expand(os.path.join("results", "GNPSexport", "FeatureQuantificationTable.txt")),
+                        expand(os.path.join("results", "GNPSexport", "SuppPairs.csv")),
+                        expand(os.path.join("results", "GNPSexport", "metadata.tsv"))
+                        ],
+                "SIRIUS" : [
+                        expand(os.path.join("results", "Interim", "SIRIUS", "sirius-input", "{sample}.ms"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "SIRIUS", "SIRIUS_login.log")),
+                        expand(os.path.join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "SIRIUS", "FeatureMatrix.tsv"))
+                        ],
+                "spectralmatcher" : [
+                        expand(os.path.join("results", "Interim", "SpectralMatching", "MSMS.mzML")),
+                        expand(os.path.join("results", "Interim", "SpectralMatching", "MSMSMatches.mzTab")),
+                        expand(os.path.join("results", "Interim", "SpectralMatching", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "SpectralMatching", "FeatureMatrix.tsv"))
+                        ],
+                "analogsearch" : [
+                        expand(os.path.join("results", "Interim", "annotations", "ms2query", "lib.txt")),
+                        expand(os.path.join("results", "GNPSexport", "results")),
+                        expand(os.path.join("results", "GNPSexport", "results", "MSMS.csv")),        
+                        expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))
+                        ],
+                "fbmn_integration": [
+                        expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
+                        expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
+                        ]
                 }
-    
+
     # get keys from config
     opt_rules = config["rules"].keys()
     # if values are TRUE add output files to rule all
