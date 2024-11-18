@@ -9,8 +9,8 @@ rule FileFilter:
             ("Requantified" if config["rules"]["requantification"] else "Preprocessing"),
             "consenus_features.consensusXML")
     output:
-        join("results", "Interim", "GNPSexport", "filtered.consensusXML")
-    log: join("workflow", "report", "logs", "GNPSexport", "FileFilter.log")
+        join("results", "Interim", "GNPS", "filtered.consensusXML")
+    log: join("workflow", "report", "logs", "GNPS", "FileFilter.log")
     conda:
         join("..", "envs", "openms.yaml")
     shell:
@@ -22,14 +22,14 @@ rule FileFilter:
 
 rule GNPS_export:
     input:
-        var1= join("results", "Interim", "GNPSexport", "filtered.consensusXML"),
+        var1= join("results", "Interim", "GNPS", "filtered.consensusXML"),
         var2= expand(join("results", "Interim", "mzML", "Aligned_{samples}.mzML"), samples=SUBSAMPLES)
     output:
-        out1= join("results", "GNPSexport", "MSMS.mgf"),
-        out2= join("results", "GNPSexport", "FeatureQuantificationTable.txt"), 
-        out3= join("results", "GNPSexport", "SuppPairs.csv"),
-        out4= join("results", "GNPSexport", "metadata.tsv")
-    log: join("workflow", "report", "logs", "GNPSexport", "GNPS_export.log")
+        out1= join("results", "GNPS", "MSMS.mgf"),
+        out2= join("results", "GNPS", "FeatureQuantificationTable.txt"), 
+        out3= join("results", "GNPS", "SuppPairs.csv"),
+        out4= join("results", "GNPS", "metadata.tsv")
+    log: join("workflow", "report", "logs", "GNPS", "GNPS_export.log")
     conda:
         join("..", "envs", "openms.yaml")
     threads: config["system"]["threads"]

@@ -9,7 +9,7 @@ if MGF_library:
 
     rule converter:
         input:
-            join("results", "GNPSexport", "MSMS.mgf")
+            join("results", "GNPS", "MSMS.mgf")
         output:
             join("results", "Interim", "SpectralMatching", "MSMS.mzML")
         log: join("workflow", "report", "logs", "SpectralMatching", "converter.log")
@@ -42,7 +42,7 @@ if MGF_library:
     rule MSMS_annotations:
         input:
             MSMS = join("results", "Interim", "SpectralMatching", "MSMSMatches.mzTab"),
-            MGF = join("results", "GNPSexport", "MSMS.mgf"),
+            MGF = join("results", "GNPS", "MSMS.mgf"),
             MZML = join("results", "Interim", "SpectralMatching", "MSMS.mzML"),
             MATRIX= join("results", "Interim",
                         ("Requantified" if config["rules"]["requantification"] else "Preprocessing"),

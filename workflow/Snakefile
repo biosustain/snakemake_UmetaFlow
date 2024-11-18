@@ -7,7 +7,7 @@ rule all:
 include: "rules/fileconversion.smk",
 include: "rules/preprocessing.smk",
 include: "rules/requantification.smk",
-include: "rules/GNPSexport.smk",
+include: "rules/GNPS_export.smk",
 include: "rules/SIRIUS.smk",
 include: "rules/spectralmatcher.smk",
 # include: "rules/analogsearch.smk",

@@ -1,9 +1,9 @@
 $schema: "http://json-schema.org/draft-07/schema#"
 
 description: snakemake configuration file
-imports: 
-  - http://schema.databio.org/pep/2.1.0.yaml
-  
+imports:
+- http://schema.databio.org/pep/2.1.0.yaml
+
 type: object
 
 # possible entries of the config file and which type they should be
@@ -16,7 +16,7 @@ properties:
       samples:
         type: string
     required:
-      - dataset
+    - dataset
   rules:
     type: object
     properties:
@@ -24,7 +24,7 @@ properties:
         type: boolean
       preprocessing:
         type: boolean
-      GNPSexport:
+      GNPS:
         type: boolean
       requantification:
         type: boolean
@@ -38,4 +38,4 @@ properties:
         type: boolean
 
 required:
-  - rules
+- rules

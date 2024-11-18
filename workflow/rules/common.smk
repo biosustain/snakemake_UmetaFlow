@@ -86,16 +86,15 @@ def get_final_output():
                         expand(os.path.join("results", "Interim", "Requantification", "FeatureMatrix.tsv")),
                         expand(os.path.join("results", "Requantification", "FeatureMatrix.tsv")),
                         ],
-                "GNPSexport" : [
-                        expand(os.path.join("results", "Interim", "GNPSexport", "filtered.consensusXML")),
-                        expand(os.path.join("results", "GNPSexport", "MSMS.mgf")),
-                        expand(os.path.join("results", "GNPSexport", "FeatureQuantificationTable.txt")),
-                        expand(os.path.join("results", "GNPSexport", "SuppPairs.csv")),
-                        expand(os.path.join("results", "GNPSexport", "metadata.tsv"))
+                "GNPS_export" : [
+                        expand(os.path.join("results", "Interim", "GNPS", "filtered.consensusXML")),
+                        expand(os.path.join("results", "GNPS", "MSMS.mgf")),
+                        expand(os.path.join("results", "GNPS", "FeatureQuantificationTable.txt")),
+                        expand(os.path.join("results", "GNPS", "SuppPairs.csv")),
+                        expand(os.path.join("results", "GNPS", "metadata.tsv"))
                         ],
                 "SIRIUS" : [
                         expand(os.path.join("results", "Interim", "SIRIUS", "sirius-input", "{sample}.ms"), sample=SUBSAMPLES),
-                        expand(os.path.join("results", "Interim", "SIRIUS", "SIRIUS_login.log")),
                         expand(os.path.join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}"), sample=SUBSAMPLES),
                         expand(os.path.join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv")),
                         expand(os.path.join("results", "SIRIUS", "FeatureMatrix.tsv"))
@@ -108,13 +107,14 @@ def get_final_output():
                         ],
                 "analogsearch" : [
                         expand(os.path.join("results", "Interim", "annotations", "ms2query", "lib.txt")),
-                        expand(os.path.join("results", "GNPSexport", "results")),
-                        expand(os.path.join("results", "GNPSexport", "results", "MSMS.csv")),        
+                        expand(os.path.join("results", "GNPS", "results")),
+                        expand(os.path.join("results", "GNPS", "results", "MSMS.csv")),        
                         expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))
                         ],
                 "fbmn_integration": [
-                        expand(os.path.join("results", "GNPSexport", "fbmn_network_sirius.graphml")),
-                        expand(os.path.join("results", "annotations", "FeatureTable_MSMS_GNPS.tsv"))
+                        expand(os.path.join("results", "GNPS", "fbmn_network_sirius.graphml")),
+                        expand(os.path.join("results", "Interim", "GNPS", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "GNPS", "FeatureMatrix.tsv"))
                         ]
                 }
 

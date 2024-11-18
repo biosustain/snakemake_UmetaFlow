@@ -19,7 +19,7 @@ The pipeline consists of seven interconnected steps:
 
 4) **Structural, formula and compound class predictions** (SIRIUS, CSI:FingerID and CANOPUS) and annotation of the feature matrix with those predictions (MSI level 3).
 
-5) **GNPSexport**: generate all the files necessary to create a GNPS [FBMN](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/) or [IIMN](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges) job at GNPS. 
+5) **GNPS**: generate all the files necessary to create a GNPS [FBMN](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/) or [IIMN](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges) job at GNPS. 
 
 6) **Spectral matching** with in-house or a publicly available library (MGF/MSP/mzML format) and annotation of the feature matrix with matches that have a score above 60 (MSI level 2).
 

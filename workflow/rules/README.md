@@ -34,7 +34,7 @@ CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be 
 
 Level 3 MSI annotations are added to the feature matrix.
 
-### `5) GNPSexport:` 
+### `5) GNPS:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
 
@@ -47,7 +47,7 @@ Annotate the feature matrix with MS2 spectral matching through the OpenMS algori
 
 ### `7) fbmn_integration:`
 
-Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory `resources/` of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the `results/GNPSexport/` directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory `resources/` of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the `results/GNPS/` directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
 
 ### `8) MS2Query:`
 

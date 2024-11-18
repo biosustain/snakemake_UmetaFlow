@@ -31,11 +31,11 @@ if MGF_library:
 
     rule analogsearch:
         input:
-            spectra= join("results", "GNPSexport", "MSMS.mgf"),
+            spectra= join("results", "GNPS", "MSMS.mgf"),
             library= directory(join("results", "Interim", "annotations", "ms2query"))
         output:
-            dir= directory(join("results", "GNPSexport", "results")),
-            ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+            dir= directory(join("results", "GNPS", "results")),
+            ms2query_csv= join("results", "GNPS", "results", "MSMS.csv")
         log: join("workflow", "report", "logs", "annotate", "ms2query_analog.log")
         conda:
             join("..", "envs", "ms2query.yaml")
@@ -51,7 +51,7 @@ if MGF_library:
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "annotations", "FeatureTable_MSMS.tsv"),
-                ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+                ms2query_csv= join("results", "GNPS", "results", "MSMS.csv")
             output:
                 join("results", "annotations", "ms2query_FeatureTable.tsv")
             log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
@@ -66,7 +66,7 @@ if MGF_library:
     #     rule annotate_FeatureMatrix:
     #         input:
     #             matrix= join("results", "annotations", "FeatureTable_siriuscsi.tsv"),
-    #             ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+    #             ms2query_csv= join("results", "GNPS", "results", "MSMS.csv")
     #         output:
     #             join("results", "annotations", "ms2query_FeatureTable.tsv")
     #         log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
@@ -81,7 +81,7 @@ if MGF_library:
     #     rule annotate_FeatureMatrix:
     #         input:
     #             matrix= join("results", "annotations", "FeatureTable_sirius.tsv"),
-    #             ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+    #             ms2query_csv= join("results", "GNPS", "results", "MSMS.csv")
     #         output:
     #             join("results", "annotations", "ms2query_FeatureTable.tsv")
     #         log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")
@@ -96,7 +96,7 @@ if MGF_library:
         rule annotate_FeatureMatrix:
             input:
                 matrix= join("results", "Preprocessing", "FeatureMatrix.tsv"),
-                ms2query_csv= join("results", "GNPSexport", "results", "MSMS.csv")
+                ms2query_csv= join("results", "GNPS", "results", "MSMS.csv")
             output:
                 join("results", "annotations", "ms2query_FeatureTable.tsv")
             log: join("workflow", "report", "logs", "annotate", "ms2query_annotatematrix.log")

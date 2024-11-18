@@ -50,7 +50,7 @@ rule filter:
     output:
         expand(join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML"), sample=SUBSAMPLES) if has_blanks else join("results", "Interim", "Preprocessing", "Filtered_{sample}.featureXML")
     log:
-        join("workflow", "report", "logs", "Preprocessing", "filtered.log") if has_blanks else join("workflow", "report", "logs", "preprocessing", "filtered_{sample}.log")
+        join("workflow", "report", "logs", "Preprocessing", "filtered.log") if has_blanks else join("workflow", "report", "logs", "Preprocessing", "filtered_{sample}.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
     threads:
