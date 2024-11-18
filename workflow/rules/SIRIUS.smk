@@ -45,7 +45,8 @@ rule SIRIUS:
     input:
         join("results", "Interim", "SIRIUS", "sirius-input", "{sample}.ms")
     output:
-        directory(join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}"))
+        projects = directory(join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}")),
+        flag = join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}_done.txt")
     log: join("workflow", "report", "logs", "SIRIUS", "SIRIUS_{sample}.log")
     conda:
         join("..", "envs", "sirius.yaml")
@@ -59,8 +60,8 @@ rule SIRIUS:
     shell:
         """
         sirius login --user={params.user} --password={params.password} 2>> {log}
-        sirius --input {input} --project {output} --no-compression --maxmz {params.max_mz} {params.formula} {params.fingerprint} {params.canopus} write-summaries 2>> {log}
-        date '+%Y-%m-%d %H:%M:%S' > results/Interim/SIRIUS/last-run-at.txt
+        sirius --input {input} --project {output.projects} --no-compression --maxmz {params.max_mz} {params.formula} {params.fingerprint} {params.canopus} write-summaries 2>> {log}
+        date '+%Y-%m-%d %H:%M:%S' > {output.flag}
         """
 
 # 3) Add spectral matches (names and smiles) to Feature Matrix.
@@ -70,7 +71,8 @@ rule SIRIUS_annotations:
         matrix = join("results", "Interim",
             ("Requantified" if config["rules"]["requantification"] else "Preprocessing"),
             "FeatureMatrix.tsv"),
-        last_run = join("results", "Interim", "SIRIUS", "last-run-at.txt")
+        flags = expand(join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}_done.txt"),
+                            sample=SUBSAMPLES)
     output:
         join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "SIRIUS", "SIRIUS_annotations.log")
