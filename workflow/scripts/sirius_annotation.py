@@ -3,10 +3,10 @@ from pathlib import Path
 import sys
 
 
-def sirius_annotations(matrix, sirius_projects, annotated, combine_annotations):
+def sirius_annotations(matrix, annotated, combine_annotations):
     df = pd.read_csv(matrix, sep="\t")
 
-    sirius_projects_dirs = [p for p in Path(sirius_projects).iterdir() if p.is_dir()]
+    sirius_projects_dirs = [p for p in Path(Path(matrix).parent.parent, "SIRIUS", "sirius-projects").iterdir() if p.is_dir()]
 
     # Define data to annotate
     tools = ["SIRIUS", "CSI:FingerID", "CANOPUS"]
@@ -62,4 +62,4 @@ def sirius_annotations(matrix, sirius_projects, annotated, combine_annotations):
 
 
 if __name__ == "__main__":
-    sirius_annotations(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    sirius_annotations(sys.argv[1], sys.argv[2], sys.argv[3])
