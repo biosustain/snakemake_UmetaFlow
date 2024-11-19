@@ -10,5 +10,5 @@ include: "rules/requantification.smk",
 include: "rules/GNPS_export.smk",
 include: "rules/SIRIUS.smk",
 include: "rules/spectralmatcher.smk",
-# include: "rules/analogsearch.smk",
+include: "rules/MS2Query.smk",
 include: "rules/fbmn_integration.smk"

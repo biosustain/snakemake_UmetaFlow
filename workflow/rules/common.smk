@@ -105,11 +105,11 @@ def get_final_output():
                         expand(os.path.join("results", "Interim", "SpectralMatching", "FeatureMatrix.tsv")),
                         expand(os.path.join("results", "SpectralMatching", "FeatureMatrix.tsv"))
                         ],
-                "analogsearch" : [
-                        expand(os.path.join("results", "Interim", "annotations", "ms2query", "lib.txt")),
-                        expand(os.path.join("results", "GNPS", "results")),
-                        expand(os.path.join("results", "GNPS", "results", "MSMS.csv")),        
-                        expand(os.path.join("results", "annotations", "ms2query_FeatureTable.tsv"))
+                "MS2Query" : [
+                        expand(os.path.join("results", "Interim", "MS2Query", "library_files", "success.txt")),
+                        expand(os.path.join("results", "Interim", "MS2Query", "MSMS.csv")),
+                        expand(os.path.join("results", "Interim", "MS2Query", "FeatureMatrix.tsv")),
+                        expand(os.path.join("results", "MS2Query", "FeatureMatrix.tsv"))
                         ],
                 "fbmn_integration": [
                         expand(os.path.join("results", "GNPS", "fbmn_network_sirius.graphml")),

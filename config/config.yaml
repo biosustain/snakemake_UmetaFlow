@@ -17,10 +17,10 @@ rules:
   fileconversion: FALSE #true only for *.raw files from Thermo
   preprocessing: TRUE #from raw data to a table of features
   requantification: FALSE #true for files with common features
-  GNPSexport: TRUE #all the files necessary for FBMN
+  GNPS_export: TRUE #all the files necessary for FBMN
   SIRIUS: FALSE #annotate the feature matrix with predictions for chemical formula, structure (CSI:FingerID) and chemical classes (CANOPUS)
   spectralmatcher: FALSE #spectral matching with in-house or any downloaded MSMS library & feature matrix annotation (MSI level 2 annotations)
-  analogsearch: FALSE # Machine learning tool for spectral matching and analogue annotation (spec2vec and MS2DeepScore)
+  MS2Query: FALSE # Machine learning tool for spectral matching and analogue annotation (spec2vec and MS2DeepScore)
   fbmn_integration: FALSE # After FBMN is finished: integration of formula and structural predictions to the GraphML network file. Optionally, annotate with the MSMS library matches from GNPS also (MSI level 2)
 
 #### PARAMETER CONFIGURATION ####
