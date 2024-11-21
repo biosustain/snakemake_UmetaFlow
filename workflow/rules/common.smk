@@ -16,7 +16,7 @@ configfile: os.path.join("config", "config.yaml")
 validate(config, schema=os.path.join("..", "schemas", "config.schema.yaml"))
 
 # add your sirius email and password in your env for security purposes:
-if config["rules"]["SIRIUS"]:
+if config["rules"]["SIRIUS"] and not config["SIRIUS"]["export_only"]:
         if os.environ.get("SIRIUS_EMAIL") is None:
                 os.environ["SIRIUS_EMAIL"]=input("Please enter your SIRIUS email: ")
         if os.environ.get("SIRIUS_PASSWORD") is None:
@@ -94,7 +94,7 @@ def get_final_output():
                         expand(os.path.join("results", "GNPS", "metadata.tsv"))
                         ],
                 "SIRIUS" : [
-                        expand(os.path.join("results", "Interim", "SIRIUS", "sirius-input", "{sample}.ms"), sample=SUBSAMPLES),
+                        expand(os.path.join("results", "SIRIUS", "sirius-input", "{sample}.ms"), sample=SUBSAMPLES),
                         expand(os.path.join("results", "Interim", "SIRIUS", "sirius-projects", "{sample}"), sample=SUBSAMPLES),
                         expand(os.path.join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv")),
                         expand(os.path.join("results", "SIRIUS", "FeatureMatrix.tsv"))
