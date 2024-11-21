@@ -44,18 +44,17 @@ if MGF_library:
             MSMS = join("results", "Interim", "SpectralMatching", "MSMSMatches.mzTab"),
             MGF = join("results", "GNPS", "MSMS.mgf"),
             MZML = join("results", "Interim", "SpectralMatching", "MSMS.mzML"),
-            MATRIX= join("results", "Interim",
-                        ("Requantified" if config["rules"]["requantification"] else "Preprocessing"),
-                        "FeatureMatrix.tsv")
         output:
             MSMS_MATRIX= join("results", "Interim", "SpectralMatching", "FeatureMatrix.tsv")
         log: join("workflow", "report", "logs", "SpectralMatching", "MSMS_annotations.log")
         threads: config["system"]["threads"]
         conda:
             join("..", "envs", "pyopenms.yaml")
+        params:
+            requant = "true" if config["rules"]["requantification"] else "false"
         shell:
             """
-            python workflow/scripts/spectral_match_annotation.py {input.MSMS} {input.MGF} {input.MZML} {input.MATRIX} {output.MSMS_MATRIX} > /dev/null 2>> {log}
+            python workflow/scripts/spectral_match_annotation.py {input.MSMS} {input.MGF} {input.MZML} {output.MSMS_MATRIX} {params.requant} > /dev/null 2>> {log}
             """
 
     # 4) Clean-up Feature Matrix.

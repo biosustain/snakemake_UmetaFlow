@@ -3,8 +3,9 @@ from pathlib import Path
 import sys
 
 
-def ms2query_annotations(matrix, annotated, ms2query_csv):
-    df = pd.read_csv(matrix, sep="\t", index_col=0)
+def ms2query_annotations(requant, annotated, ms2query_csv):
+    df = pd.read_csv(Path("results", "Interim", ("Requantification" if requant == "true" else "Preprocessing"), "FeatureMatrix.tsv") , sep="\t")
+
     
     df_ms2query = pd.read_csv(ms2query_csv)
 
@@ -19,7 +20,7 @@ def ms2query_annotations(matrix, annotated, ms2query_csv):
             for col in ms2query_columns:
                 df.loc[i, f"MS2Query_{col}"] = df_ms2query.loc[i, col]
 
-    df.to_csv(annotated, sep="\t")
+    df.to_csv(annotated, sep="\t", index=False)
 
 
 if __name__ == "__main__":

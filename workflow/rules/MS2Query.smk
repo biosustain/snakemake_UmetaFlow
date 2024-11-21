@@ -43,25 +43,17 @@ rule analog_search:
 
 rule annotate_FeatureMatrix:
     input:
-        matrix = join(
-            "results",
-            "Interim",
-            (
-                "Requantified"
-                if config["rules"]["requantification"]
-                else "Preprocessing"
-            ),
-            "FeatureMatrix.tsv",
-        ),
         ms2query_csv = join("results", "Interim", "MS2Query", "MSMS.csv")
     output:
         join("results", "Interim", "MS2Query", "FeatureMatrix.tsv")
     log: join("workflow", "report", "logs", "MS2Query", "ms2query_annotatematrix.log")
     conda:
         join("..", "envs", "pyopenms.yaml")
+    params:
+        requant = "true" if config["rules"]["requantification"] else "false"
     shell:
         """
-        python workflow/scripts/ms2query_annotation.py {input.matrix} {output} {input.ms2query_csv} > /dev/null 2>> {log}
+        python workflow/scripts/ms2query_annotation.py {params.requant} {output} {input.ms2query_csv} > /dev/null 2>> {log}
         """
 
 # 4) Export final cleaned up FeatureMatrix

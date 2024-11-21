@@ -8,7 +8,7 @@ from pyteomics import mgf, auxiliary
 from pathlib import Path
 
 
-def ms2matches(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
+def ms2matches(MZTAB, MGF, MZML, MSMS_MATRIX, REQUANT):
     # MzML file with MS2 spectra
     exp = MSExperiment()
     MzMLFile().load(MZML, exp)
@@ -34,7 +34,7 @@ def ms2matches(MZTAB, MGF, MZML, MATRIX, MSMS_MATRIX):
     mgf_file["feature_id"] = mgf_file["feature_id"].str.replace(r"e_", "")
 
     # Input Feature Matrix
-    DF_features = pd.read_csv(MATRIX, sep="\t")
+    DF_features = pd.read_csv(Path("results", "Interim", ("Requantification" if REQUANT == "true" else "Preprocessing"), "FeatureMatrix.tsv") , sep="\t")
     DF_features.head()
 
     # Spectral Matches from MzTab File

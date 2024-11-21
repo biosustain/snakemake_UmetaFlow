@@ -10,15 +10,14 @@ envvars:
 
 # 1) SIRIUS Export
 
-
 rule SiriusExport:
     input:
-        mzML=join("results", "Interim", "mzML", "Aligned_{sample}.mzML"),
-        featureXML=join(
+        mzML = join("results", "Interim", "mzML", "Aligned_{sample}.mzML"),
+        featureXML = lambda x: join(
             "results",
             "Interim",
             (
-                "Requantified"
+                "Requantification"
                 if config["rules"]["requantification"]
                 else "Preprocessing"
             ),
@@ -28,6 +27,8 @@ rule SiriusExport:
         join("results", "Interim", "SIRIUS", "sirius-input", "{sample}.ms"),
     log:
         join("workflow", "report", "logs", "SIRIUS", "SiriusExport_{sample}.log"),
+    params:
+        requant = "true" if config["rules"]["requantification"] else "false"
     conda:
         join("..", "envs", "openms.yaml")
     threads: config["system"]["threads"]
@@ -107,22 +108,12 @@ rule SIRIUS:
 
 rule SIRIUS_annotations:
     input:
-        matrix=join(
-            "results",
-            "Interim",
-            (
-                "Requantified"
-                if config["rules"]["requantification"]
-                else "Preprocessing"
-            ),
-            "FeatureMatrix.tsv",
-        ),
         flags=expand(
             join(
                 "results", "Interim", "SIRIUS", "sirius-projects", "{sample}_done.txt"
             ),
             sample=SUBSAMPLES,
-        ),
+        )
     output:
         join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv"),
     log:
@@ -134,9 +125,10 @@ rule SIRIUS_annotations:
         combine_annotations=(
             "true" if config["SIRIUS"]["combine_annotations"] else "false"
         ),
+        requant = "true" if config["rules"]["requantification"] else "false"
     shell:
         """
-        python workflow/scripts/sirius_annotation.py {input.matrix} {output} {params.combine_annotations} > /dev/null 2>> {log}
+        python workflow/scripts/sirius_annotation.py {params.requant} {output} {params.combine_annotations} > /dev/null 2>> {log}
         """
 
 

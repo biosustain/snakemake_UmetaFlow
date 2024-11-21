@@ -9,11 +9,6 @@ rule annotate_graphml_with_sirius:
     input:
         matrix=join("results", "Interim", "SIRIUS", "FeatureMatrix.tsv"),
         mgf=join("results", "GNPS", "MSMS.mgf"),
-        graphml=(
-            join("resources", find_files("resources", "*.graphml")[0])
-            if find_files("resources", "*.graphml")
-            else "none"
-        ),
     output:
         output_graphml=join("results", "GNPS", "fbmn_network_sirius.graphml"),
     log:
@@ -21,11 +16,17 @@ rule annotate_graphml_with_sirius:
     threads: config["system"]["threads"]
     conda:
         join("..", "envs", "pyopenms.yaml")
+    params:
+        graphml=(
+            join("resources", find_files("resources", "*.graphml")[0])
+            if find_files("resources", "*.graphml")
+            else "none"
+        ),
     shell:
         """
-        if [[ {input.graphml} != "none" ]]
+        if [[ {params.graphml} != "none" ]]
         then
-            python workflow/scripts/gnps_graphml_sirius_annotation.py {input.matrix} {input.mgf} {input.graphml} {output.output_graphml} > /dev/null 2>> {log}
+            python workflow/scripts/gnps_graphml_sirius_annotation.py {input.matrix} {input.mgf} {params.graphml} {output.output_graphml} > /dev/null 2>> {log}
         else
             echo "No GNPS FBMN graphml file was found" > {output} > /dev/null 2>> {log}
         fi
@@ -41,27 +42,19 @@ if gnps_result:
     rule GNPS_annotations:
         input:
             lib = join("resources", gnps_result[0]),
-            matrix = join(
-                "results",
-                "Interim",
-                (
-                    "Requantified"
-                    if config["rules"]["requantification"]
-                    else "Preprocessing"
-                ),
-                "FeatureMatrix.tsv",
-            ),
             mgf_path = join("results", "GNPS", "MSMS.mgf"),
         output:
             join("results", "Interim", "GNPS", "FeatureMatrix.tsv"),
         log:
             join("workflow", "report", "logs", "GNPS", "GNPS_annotations.log"),
         threads: config["system"]["threads"]
+        params:
+            requant = "true" if config["rules"]["requantification"] else "false"
         conda:
             join("..", "envs", "pyopenms.yaml")
         shell:
             """
-            python workflow/scripts/gnps_annotation.py {input.lib} {input.matrix} {input.mgf_path} {output} > /dev/null 2>> {log}
+            python workflow/scripts/gnps_annotation.py {input.lib} {params.requant} {input.mgf_path} {output} > /dev/null 2>> {log}
             """
 
     rule GNPS_annotation_cleanup:

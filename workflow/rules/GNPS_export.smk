@@ -5,9 +5,7 @@ from os.path import join
 
 rule FileFilter:
     input:
-        join("results", "Interim",
-            ("Requantified" if config["rules"]["requantification"] else "Preprocessing"),
-            "consenus_features.consensusXML")
+        join("results", "Interim", ("Requantification" if config["rules"]["requantification"] else "Preprocessing"), "consenus_features.consensusXML")
     output:
         join("results", "Interim", "GNPS", "filtered.consensusXML")
     log: join("workflow", "report", "logs", "GNPS", "FileFilter.log")

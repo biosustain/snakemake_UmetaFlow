@@ -1,12 +1,11 @@
-import numpy as np
 import pandas as pd
 import sys
-from pyteomics import mgf, auxiliary
+from pyteomics import mgf
+from pathlib import Path
 
 
-def GNPS_annotations(lib, input_matrix, input_mgf, output_matrix):
-    matrix = pd.read_csv(input_matrix, sep="\t")
-    print(matrix)
+def GNPS_annotations(lib, requant, input_mgf, output_matrix):
+    matrix = pd.read_csv(Path("results", "Interim", ("Requantification" if requant == "true" else "Preprocessing"), "FeatureMatrix.tsv") , sep="\t")
     matrix["id"]= matrix["id"].astype(str)
 
     mgf_file = mgf.MGF(source=input_mgf, use_header=True, convert_arrays=2, read_charges=True, read_ions=False, dtype=None, encoding=None)

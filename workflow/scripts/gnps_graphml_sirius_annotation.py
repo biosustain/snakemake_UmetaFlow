@@ -3,11 +3,12 @@ import pandas as pd
 import networkx as nx
 import sys
 from pyteomics import mgf
+from pathlib import Path
 
-def integration(input_matrix, input_mgf, input_graphml, output_graphml):
+def integration(requant, input_mgf, input_graphml, output_graphml):
 
-    matrix = pd.read_csv(input_matrix, sep="\t")
-    matrix["id"]= matrix["id"].astype(str)
+    matrix = pd.read_csv(Path("results", "Interim", ("Requantification" if requant == "true" else "Preprocessing"), "FeatureMatrix.tsv") , sep="\t")
+    matrix["id"] = matrix["id"].astype(str)
 
     mgf_file = mgf.MGF(source=input_mgf, use_header=True, convert_arrays=2, read_charges=True, read_ions=False, dtype=None, encoding=None)
     parameters=[]
