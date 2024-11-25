@@ -1,0 +1,6 @@
+name: file-conversion
+channels:
+  - bioconda
+dependencies:
+  - mono
+  - bioconda::thermorawfileparser

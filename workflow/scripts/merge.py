@@ -3,6 +3,7 @@ import os
 import glob
 import sys
 
+
 def merge(in_complete, in_requant, in_merge):
     for complete_map in sorted(glob.glob(in_complete)):
         for requant_map in sorted(glob.glob(in_requant)):
@@ -16,6 +17,7 @@ def merge(in_complete, in_requant, in_merge):
                 fm_ffm.setUniqueIds()
                 FeatureXMLFile().store(in_merge, fm_ffm)
     return in_merge
+
 
 if __name__ == "__main__":
     merge(sys.argv[1], sys.argv[2], sys.argv[3])

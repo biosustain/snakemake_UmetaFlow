@@ -14,7 +14,7 @@ If you have Agilent or Bruker files, skip this step: write <span style="color: r
 
 Converting raw data to a feature table with a series of OpenMS algorithms (see documentation [here](https://abibuilder.cs.uni-tuebingen.de/archive/openms/Documentation/nightly/html/index.html)). 
 
-If the user defines blank/QC samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a **cutoff > 0.3** (average int in blanks devided by average int in samples).
+If the user defines blank/QC samples under `config/blanks.tsv`, the workflow will filter out the features found in those samples with a **cutoff > 0.3** (average int in blanks divided by average int in samples).
 
 ![dag](/images/Preprocessing.svg) 
 
@@ -24,20 +24,19 @@ Re-quantify all raw files to avoid missing values resulted by the pre-processing
 
 ![dag](/images/Re-quantification.svg) 
 
-### `4) SIRIUS and CSI:FingerID:`
+### `4) SIRIUS:`
 
-The pre-processed feature tables are then introduced to SIRIUS and CSI:FingerID for formula and structural predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)). 
+The pre-processed feature tables are then introduced to SIRIUS, CSI:FingerID and CANOPUS for formula, structural and compound class predictions (see documentation [here](https://boecker-lab.github.io/docs.sirius.github.io/)). 
 
 CSI:FingerID is using external Web servers (from the Boecher lab in Jena) for the structural library seach and all computations for the structural predictions. The disadvantage in this case is that the workflow is dependent on the functionality of their servers, queued jobs, etc. 
 
-CSI_FingeID is optional and to exclude it, rule [sirius.smk](sirius.smk) can be set as TRUE and rule [sirius_csi.smk](sirius_csi.smk) as FALSE from the [config.yaml](/config/config.yaml) file. If one or the other are set to TRUE, the user will be asked to provide a user email and password at the start of the run and the workflow will set it temporarily as an environmental variable. If the user adds it permanently as an environmental variable (independently of the present workflow) , they will not be asked to provide it again.
+CSI:FingerID and CANOPUS are optional. To exclude them set the parameters in the config file accordingly.
 
-Level 3 MSI annotations are added to the feature matrix.
+The user will be asked to provide a SIRIUS user email and password at the start of the run and the workflow will set it temporarily as an environmental variable. If the user adds it permanently as an environmental variable (independently of the present workflow) , they will not be asked to provide it again.
 
-### `5) GNPSexport:` 
+### `5) GNPS_export:` 
 
 Generate all the files necessary to create a FBMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/featurebasedmolecularnetworking-with-openms/)) or an IIMN job at GNPS (see documentation [here](https://ccms-ucsd.github.io/GNPSDocumentation/fbmn-iin/#iimn-networks-with-collapsed-ion-identity-edges). 
-
 
 ![dag](/images/GNPSExport.svg) 
 
@@ -45,25 +44,10 @@ Generate all the files necessary to create a FBMN job at GNPS (see documentation
 
 Annotate the feature matrix with MS2 spectral matching through the OpenMS algorithm MetaboliteSpectralMatcher and an in-house or publicly available library (MSI level 2 identifications)
 
-### `7) fbmn_integration:`
+### `7) FBMN integration:`
 
-Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory `resources/` of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the `results/GNPSexport/` directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
+Once the FBMN or IIMN job is completed, the user can download the cytoscape data in a zipped format. The downloaded folder includes MS2 library search matches under the directory “DB_result”. The user can transfer the tab-separated file with all GNPS library annotations under the directory `resources/` of UmetaFlow. This will allow for additional metabolite annotation, through the rule annotate. The FBMN folder also contains a graphml file for visualization. The user can transfer the file under the `results/GNPS/` directory and choose to integrate the SIRIUS and CSI:FingerID predictions to the network to facilitate visual inspection. Both annotations are established through a unique scan number that is generated at the MS2 clustering level.
 
 ### `8) MS2Query:`
 
-To run MS2Query, the user needs to download all model files manually from https://zenodo.org/record/7753249#.ZBmO_sLMJPY for positive mode and https://zenodo.org/record/7753267#.ZBmPYsLMJPY for negative mode and add them under the `resources/ms2query` directory.
-
-Model files for positive mode:
-ms2ds_model_GNPS_15_12_2021.hdf5
-ms2query_random_forest_model.onnx
-spec2vec_model_GNPS_15_12_2021.model
-spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
-spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
-ALL_GNPS_210409_positive_processed_annotated_CF_NPC_classes.txt (classes for MS2DeepScore compound class annotation)
-
-Model files for negative mode:
-neg_GNPS_15_12_2021_ms2ds_model.hdf5
-neg_GNPS_15_12_2021_ms2query_random_forest_model.onnx
-neg_mode_spec2vec_model_GNPS_15_12_2021.model
-neg_mode_spec2vec_model_GNPS_15_12_2021.model.syn1neg.npy
-neg_mode_spec2vec_model_GNPS_15_12_2021.model.wv.vectors.npy
+Models for analog search will be downloaded automatically. Besides the correct ion mode in the config file, no parameters need to be set by the user.

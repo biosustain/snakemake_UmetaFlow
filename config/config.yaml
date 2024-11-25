@@ -3,25 +3,25 @@
 # one row per sample. It can be parsed easily via pandas.
 pep_version: 2.1.0
 sample_table: "dataset.tsv"
-subsample_table: ["samples.tsv"]
+subsample_table: [ "samples.tsv" ]
 
 projects:
-  - name: Test
-    sample_table: dataset.tsv
-    subsample_table: ["samples.tsv"]
-    rules: "config/config.yaml"
+- name: Test
+  sample_table: dataset.tsv
+  subsample_table: [ "samples.tsv" ]
+  rules: "config/config.yaml"
 
 #### RULE CONFIGURATION ####
 # rules: set value to TRUE if you want to run the analysis or FALSE if you don't
 rules:
-  fileconversion: TRUE #true only for *.raw files from Thermo
-  preprocessing: TRUE #from raw data to a table of features
-  GNPSexport: TRUE #all the files necessary for FBMN
-  requantification: FALSE #true for files with common features
-  sirius: FALSE #annotate the feature matrix with (only) formula predictions
-  sirius_csi: FALSE #annotate the feature matrix with formula and structural predictions (MSI level 3 annotations)
-  spectralmatcher: TRUE #spectral matching with in-house or any downloaded MSMS library & feature matrix annotation (MSI level 2 annotations)
-  analogsearch: FALSE # Machine learning tool for spectral matching and analogue annotation (spec2vec and MS2DeepScore)
+  fileconversion: FALSE # True only for *.raw files from Thermo
+  preprocessing: TRUE # From raw data to a table of features
+  requantification: FALSE # True for files with common features
+  GNPS_export: TRUE # All the files necessary for FBMN
+  SIRIUS: FALSE # Annotate the feature matrix with predictions for chemical formula, structure (CSI:FingerID) and chemical classes (CANOPUS)
+  # The following rules require GNPS_export: TRUE
+  spectralmatcher: FALSE # Spectral matching with in-house or any downloaded MSMS library & feature matrix annotation (MSI level 2 annotations)
+  MS2Query: FALSE # Machine learning tool for spectral matching and analogue annotation (spec2vec and MS2DeepScore)
   fbmn_integration: FALSE # After FBMN is finished: integration of formula and structural predictions to the GraphML network file. Optionally, annotate with the MSMS library matches from GNPS also (MSI level 2)
 
 #### PARAMETER CONFIGURATION ####
@@ -59,9 +59,21 @@ featurelink:
 align:
   mz_max: 10.0 # (in ppm) do not pair features with m/z distance larger than that number - Instrument specific
 
-# 7) SIRIUS/CSI:FingerID
-sirius:
+# 7) SIRIUS/CSI:FingerID/CANOPUS
+SIRIUS:
+  export_only: FALSE # Only export input files for SIRIUS, but don't actually execute SIRIUS here
+  predict_structure: TRUE
+  predict_compound_class: TRUE
+  # combine_annotations: TRUE --> combine annotations (e.g. SIRIUS_molecularFormula) from all files into a single column separated by " ## "
+  # FALSE --> keep a separate column for each file (e.g. sample1_SIRIUS_molecularFormula, sample2_SIRIUS_molecularFormula, ...)
+  combine_annotations: TRUE
+  max_mz: 300
   instrument: 'orbitrap' # (valid: 'default', 'qtof', 'orbitrap', 'fticr')
   pos_ions_considered: "[M+H]+,[M-H2O+H]+,[M+Na]+,[M+NH4]+"
   neg_ions_considered: "[M-H]-,[M-H2O-H]-,[M-HCOOH]-"
-  database: none # Search formulas in the Union of the given databases db-name1,db-name2,db-name3. If no database is given all possible molecular formulas will be respected (no database is used). Example: possible DBs: ALL,BIO,PUBCHEM,MESH,HMDB,KNAPSACK,CHEBI,PUBMED,KEGG,HSDB,MACONDA,METACYC,GNPS,ZINCBIO,UNDP,YMDB,PLANTCYC,NORMAN,ADDITIONAL,PUBCHEMANNOTATIONBIO,PUBCHEMANNOTATIONDRUG,PUBCHEMANNOTATIONSAFETYANDTOXIC,PUBCHEMANNOTATIONFOOD,KEGGMINE,ECOCYCMINE,YMDBMINE
+  elements_considered: "SBrClBSe"
+  elements_enforced: "CHNOP"
+  ppm_max: 10
+  ppm_max_ms2: 10
+  formula_database: none # Search formulas in the Union of the given databases db-name1,db-name2,db-name3. If no database is given all possible molecular formulas will be respected (no database is used). Example: possible DBs: ALL,BIO,PUBCHEM,MESH,HMDB,KNAPSACK,CHEBI,PUBMED,KEGG,HSDB,MACONDA,METACYC,GNPS,ZINCBIO,UNDP,YMDB,PLANTCYC,NORMAN,ADDITIONAL,PUBCHEMANNOTATIONBIO,PUBCHEMANNOTATIONDRUG,PUBCHEMANNOTATIONSAFETYANDTOXIC,PUBCHEMANNOTATIONFOOD,KEGGMINE,ECOCYCMINE,YMDBMINE
+  structure_database: "BIO"
