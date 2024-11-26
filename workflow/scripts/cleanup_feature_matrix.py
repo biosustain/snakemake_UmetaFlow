@@ -18,7 +18,7 @@ def cleanup(input_tsv, output_tsv):
         exclude="number"
     ).fillna("")
 
-    # Remove columns which contain feature IDs for individual files
+    # Drop feature ID columns
     df = df.drop(columns=[c for c in df.columns if c.endswith("_IDs")])
 
     # Remove "SCANS", "id" and "quality" columns

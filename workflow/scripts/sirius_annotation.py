@@ -3,9 +3,8 @@ from pathlib import Path
 import sys
 
 
-def sirius_annotations(requant, annotated, combine_annotations):
+def sirius_annotations(requant, annotated, combine_annotations, csi_canopus):
     df = pd.read_csv(Path("results", "Interim", ("Requantification" if requant == "true" else "Preprocessing"), "FeatureMatrix.tsv") , sep="\t")
-
 
     sirius_projects_dirs = [p for p in Path(Path(annotated).parent.parent, "SIRIUS", "sirius-projects").iterdir() if p.is_dir()]
 
@@ -29,6 +28,8 @@ def sirius_annotations(requant, annotated, combine_annotations):
     # Annotate for each input file (aka each sirius project directory)
     for p in sirius_projects_dirs:
         for tool, annotation_file, cols in zip(tools, annotation_files, column_names):
+            if tool in ("CSI:FingerID", "CANOPUS") and csi_canopus == "false":
+                continue
             file = Path(p, annotation_file)
             if file.exists():
                 df_tmp = pd.read_csv(file, sep="\t")
@@ -45,6 +46,8 @@ def sirius_annotations(requant, annotated, combine_annotations):
     if combine_annotations == "true":
         # Create summary columns, where the file origin is omitted ("##" separated lists)
         for tool, columns in zip(tools, column_names):
+            if tool in ("CSI:FingerID", "CANOPUS") and csi_canopus == "false":
+                continue
             for col in columns:
                 if "#" in col:
                     col = col.split("#")[1]
@@ -63,4 +66,4 @@ def sirius_annotations(requant, annotated, combine_annotations):
 
 
 if __name__ == "__main__":
-    sirius_annotations(sys.argv[1], sys.argv[2], sys.argv[3])
+    sirius_annotations(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
