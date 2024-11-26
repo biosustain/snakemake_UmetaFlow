@@ -62,8 +62,7 @@ align:
 # 7) SIRIUS/CSI:FingerID/CANOPUS
 SIRIUS:
   export_only: FALSE # Only export input files for SIRIUS, but don't actually execute SIRIUS here
-  predict_structure: TRUE # CSI:FingerID
-  predict_compound_class: TRUE # CANOPUS
+  predict_structure_and_class: TRUE # CSI:FingerID and CANOPUS
   # combine_annotations: TRUE --> combine annotations (e.g. SIRIUS_molecularFormula) from all files into a single column separated by " ## "
   # FALSE --> keep a separate column for each file (e.g. sample1_SIRIUS_molecularFormula, sample2_SIRIUS_molecularFormula, ...)
   combine_annotations: TRUE
