@@ -19,8 +19,8 @@ def cleanup(input_tsv, output_tsv):
     ).fillna("")
 
     # Rename feature ID columns and move them to the end of the dataframe
-    df = df.rename(columns={c: c.replace("_IDS", "feature_IDs") for c in df.columns if c.endswith("_IDs")})
-    renamed_columns = [c for c in df.columns if c.endswith("feature_IDs")]
+    df = df.rename(columns={c: c.replace("_IDs", "_feature_IDs") for c in df.columns if c.endswith("_IDs")})
+    renamed_columns = [c for c in df.columns if c.endswith("_feature_IDs")]
     df = df[[c for c in df.columns if c not in renamed_columns] + renamed_columns]
 
     # Remove "SCANS", "id" and "quality" columns
@@ -41,7 +41,7 @@ def cleanup(input_tsv, output_tsv):
         ),
     )
     # Keep consensus feature ID
-    df["consensus_IDs"] = df.index
+    df["consensus_feature_IDs"] = df.index
     df = df.set_index("metabolite")
 
     # Rename RT and mz columns
