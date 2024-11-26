@@ -18,10 +18,8 @@ def cleanup(input_tsv, output_tsv):
         exclude="number"
     ).fillna("")
 
-    # Rename feature ID columns and move them to the end of the dataframe
-    df = df.rename(columns={c: c.replace("_IDs", "_feature_IDs") for c in df.columns if c.endswith("_IDs")})
-    renamed_columns = [c for c in df.columns if c.endswith("_feature_IDs")]
-    df = df[[c for c in df.columns if c not in renamed_columns] + renamed_columns]
+    # Drop feature ID columns
+    df = df.drop(columns=[c for c in df.columns if c.endswith("_IDs")])
 
     # Remove "SCANS", "id" and "quality" columns
     df = df.drop(columns=[c for c in ["SCANS", "id", "quality"] if c in df.columns])
@@ -40,8 +38,6 @@ def cleanup(input_tsv, output_tsv):
             axis=1,
         ),
     )
-    # Keep consensus feature ID
-    df["consensus_feature_IDs"] = df.index
     df = df.set_index("metabolite")
 
     # Rename RT and mz columns
