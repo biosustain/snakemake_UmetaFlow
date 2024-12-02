@@ -1,5 +1,7 @@
-name: openms
 channels:
+  - conda-forge
   - bioconda
+  - defaults
 dependencies:
-  - bioconda::openms==3.2
+  - openms=3.2
+  - zlib>=1.2.13,<2.0a0
