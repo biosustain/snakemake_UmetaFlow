@@ -10,32 +10,41 @@ envvars:
 
 # 1) SIRIUS Export
 
-rule SiriusExport:
-    input:
-        mzML = join("results", "Interim", "mzML", "Aligned_{sample}.mzML"),
-        featureXML = join(
-            "results",
-            "Interim",
-            (
-                "Requantification"
-                if config["rules"]["requantification"]
-                else "Preprocessing"
-            ),
-            "MFD_{sample}.featureXML",
-        ),
-    output:
-        join("results", "SIRIUS", "sirius-input", "{sample}.ms"),
-    log:
-        join("workflow", "report", "logs", "SIRIUS", "SiriusExport_{sample}.log"),
-    params:
-        requant = "true" if config["rules"]["requantification"] else "false"
-    conda:
-        join("..", "envs", "openms.yaml")
-    threads: config["system"]["threads"]
-    shell:
-        """
-        SiriusExport -in {input.mzML} -in_featureinfo {input.featureXML} -out {output} -filter_by_num_masstraces 2  -feature_only true -threads {threads} -no_progress -log {log} 2>> {log}
-        """
+if config["rules"]["requantification"]:
+    rule SiriusExport:
+        input:
+            mzML = join("results", "Interim", "mzML", "Aligned_{sample}.mzML"),
+            featureXML = join("results", "Interim", "Requantification", "MFD_{sample}.featureXML"),
+        output:
+            join("results", "SIRIUS", "sirius-input", "{sample}.ms"),
+        log:
+            join("workflow", "report", "logs", "SIRIUS", "SiriusExport_{sample}.log"),
+        conda:
+            join("..", "envs", "openms.yaml")
+        threads: config["system"]["threads"]
+        shell:
+            """
+            SiriusExport -in {input.mzML} -in_featureinfo {input.featureXML} -out {output} -filter_by_num_masstraces 2  -feature_only true -threads {threads} -no_progress -log {log} 2>> {log}
+            """
+else:
+    rule SiriusExport:
+        input:
+            mzML = join("results", "Interim", "mzML", "Aligned_{sample}.mzML"),
+            featureXML = join("results", "Interim", "Preprocessing", "MFD_{sample}.featureXML"),
+        output:
+            join("results", "SIRIUS", "sirius-input", "{sample}.ms"),
+        log:
+            join("workflow", "report", "logs", "SIRIUS", "SiriusExport_{sample}.log"),
+        params:
+            requant = "true" if config["rules"]["requantification"] else "false"
+        conda:
+            join("..", "envs", "openms.yaml")
+        threads: config["system"]["threads"]
+        shell:
+            """
+            SiriusExport -in {input.mzML} -in_featureinfo {input.featureXML} -out {output} -filter_by_num_masstraces 2  -feature_only true -threads {threads} -no_progress -log {log} 2>> {log}
+            """
+
 if not config["SIRIUS"]["export_only"]:
 
     # 2) Run SIRIUS with login
@@ -65,12 +74,13 @@ if not config["SIRIUS"]["export_only"]:
     ]
 
     fingerprint = []
-    if config["SIRIUS"]["predict_structure"]:
+    if config["SIRIUS"]["predict_structure_and_class"]:
         fingerprint = [
             "fingerprint",
             "structure",
             "--database",
             config["SIRIUS"]["structure_database"],
+            "canopus"
         ]
 
 
@@ -94,11 +104,10 @@ if not config["SIRIUS"]["export_only"]:
             max_mz=config["SIRIUS"]["max_mz"],
             formula=" ".join(formula),
             fingerprint=" ".join(fingerprint),
-            canopus="canopus" if config["SIRIUS"]["predict_compound_class"] else "",
         shell:
             """
             sirius login --user={params.user} --password={params.password} 2>> {log}
-            sirius --input {input} --project {output.projects} --no-compression --maxmz {params.max_mz} {params.formula} {params.fingerprint} {params.canopus} write-summaries 2>> {log}
+            sirius --input {input} --project {output.projects} --no-compression --maxmz {params.max_mz} {params.formula} {params.fingerprint} write-summaries 2>> {log}
             date '+%Y-%m-%d %H:%M:%S' > {output.flag}
             """
 
@@ -125,10 +134,11 @@ if not config["SIRIUS"]["export_only"]:
             combine_annotations=(
                 "true" if config["SIRIUS"]["combine_annotations"] else "false"
             ),
-            requant = "true" if config["rules"]["requantification"] else "false"
+            requant = "true" if config["rules"]["requantification"] else "false",
+            csi_canopus = "true" if config["SIRIUS"]["predict_structure_and_class"] else "false"
         shell:
             """
-            python workflow/scripts/sirius_annotation.py {params.requant} {output} {params.combine_annotations} > /dev/null 2>> {log}
+            python workflow/scripts/sirius_annotation.py {params.requant} {output} {params.combine_annotations} {params.csi_canopus} > /dev/null 2>> {log}
             """
 
 
