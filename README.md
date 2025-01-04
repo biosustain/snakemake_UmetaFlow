@@ -40,11 +40,22 @@ conda create -c conda-forge -c bioconda -n umetaflow-snakemake snakemake python=
 conda activate umetaflow-snakemake
 ```
 
+
 3. [Clone](https://help.github.com/en/articles/cloning-a-repository) this repository to your local system, into the place where you want to perform the data analysis.
 
 ```
 git clone https://github.com/biosustain/snakemake_UmetaFlow.git
 ```
+
+### Installation on MacOS with Silicon Chips
+
+Run the MacOS setup script. Requires [Homebrew](https://brew.sh/) to be installed. This script will download SIRIUS and ThermoRawFileParser (for file conversion) into the `resources` folder and install `mono` via the `brew` package manager. 
+
+```
+python macos_setup.py
+```
+
+**WARNING FOR DEVELOPERS:** This script will modify workflow code and conda environment files, changes should not be commited.
 
 ## Configuration
 Configure the workflow according to your metabolomics data and instrument method via editing the files in the `config/` folder. 
