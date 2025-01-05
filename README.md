@@ -40,10 +40,43 @@ conda create -c conda-forge -c bioconda -n umetaflow-snakemake snakemake python=
 conda activate umetaflow-snakemake
 ```
 
+
 3. [Clone](https://help.github.com/en/articles/cloning-a-repository) this repository to your local system, into the place where you want to perform the data analysis.
 
 ```
 git clone https://github.com/biosustain/snakemake_UmetaFlow.git
+```
+
+### Installation on MacOS with Silicon Chips
+
+1. **Run the MacOS setup script**
+
+Requires [Homebrew](https://brew.sh/) to be installed. This script will download SIRIUS and ThermoRawFileParser (for file conversion) into the `resources` folder and install `mono` via the `brew` package manager. 
+
+```
+python macos_setup.py
+```
+
+2. **Install OpenMS manually**
+
+[Download the installer for OpenMS 3.3.0. for MacOS Silicon.](https://abibuilder.cs.uni-tuebingen.de/archive/openms/OpenMSInstaller/release/3.3.0/OpenMS-3.3.0-macOS-Silicon.pkg). To run the installer you need to allow installation from unknown sources in the system settings on the bottom of the *Privacy and Security* tab.
+
+With this specific release you need to update the code signature manually. Open a terminal and move to the location of your OpenMS installation (typically `Users/username/Applications/OpenMS-3.3.0`) and execute the following command:
+
+```
+sudo codesign --force -s - ./bin/*
+```
+
+Now, add the location of the OpenMS TOPP tools to PATH, to make them accessible globally. Append this line to the end of your shell profile (typically `.zshrc` in your home directory).
+
+```
+export PATH="$PATH:/Users/your-user-name/Applications/OpenMS-3.3.0/bin"
+```
+
+**⚠️ WARNING FOR DEVELOPERS:** This script will modify workflow code and conda environment files, changes should not be commited. To revert changes simply run the setup script again with the `--revert` flag.
+
+```
+python macos_setup.py --revert
 ```
 
 ## Configuration
