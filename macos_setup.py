@@ -1,6 +1,7 @@
 import os
 import subprocess
 import shutil
+import sys
 
 """
 Download resources required for running UmetaFlow on MacOS Silicon.
@@ -109,47 +110,75 @@ def check_installed(tool: str):
         print(f"{tool} is not installed.")
     return False
 
+def revert_env_file(file: str, new_lines: list):
+    """
+    Adds lines to the env file, reverting it back to the original.
+
+    Parameters:
+        file (str): The conda env file.
+        new_lines (list): List of lines to add.
+
+    Returns:
+        None
+    """
+    to_add = "\n".join(new_lines)
+    with open(file, "r") as f:
+        content = f.read()
+    if to_add not in content:
+        with open(file, "a") as f:
+            f.write(to_add)
+
 def main():
-    print("This script will set up UmetaFlow for MacOS Silicon.")
+    if not "--revert" in sys.argv:
+        print("This script will set up UmetaFlow for MacOS Silicon.")
 
-    main_folder = "resources"
+        main_folder = "resources"
 
-    # OpenMS
-    update_env_file("workflow/envs/openms.yaml", ["dependencies", "openms=3.2", "zlib"])
+        # OpenMS
+        update_env_file("workflow/envs/openms.yaml", ["dependencies", "openms=3.2", "zlib"])
 
-    # SIRIUS
-    sirius_folder = os.path.join(main_folder, "Sirius")
-    sirius_url = "https://github.com/sirius-ms/sirius/releases/download/v5.8.6/sirius-5.8.6-osx64.zip"
-    sirius_zip_name = "sirius-5.8.6-osx64.zip"
+        # SIRIUS
+        sirius_folder = os.path.join(main_folder, "Sirius")
+        sirius_url = "https://github.com/sirius-ms/sirius/releases/download/v5.8.6/sirius-5.8.6-osx64.zip"
+        sirius_zip_name = "sirius-5.8.6-osx64.zip"
 
-    print("\nDownloading and extracting SIRIUS...")
-    download_and_extract(sirius_url, sirius_folder, sirius_zip_name)
-    update_env_file("workflow/envs/sirius.yaml", ["dependencies", "sirius-ms"])
-    update_workflow_code("workflow/rules/SIRIUS.smk", {" sirius ": " resources/Sirius/sirius.app/Contents/MacOS/sirius "})
-    print("\nSIRIUS setup complete.")
+        print("\nDownloading and extracting SIRIUS...")
+        download_and_extract(sirius_url, sirius_folder, sirius_zip_name)
+        update_env_file("workflow/envs/sirius.yaml", ["dependencies", "sirius-ms"])
+        update_workflow_code("workflow/rules/SIRIUS.smk", {" sirius ": " resources/Sirius/sirius.app/Contents/MacOS/sirius "})
+        print("\nSIRIUS setup complete.")
 
-    # ThermoRawFileParser
-    trfp_folder = os.path.join(main_folder, "ThermoRawFileParser")
-    trfp_url = "https://github.com/compomics/ThermoRawFileParser/releases/download/v1.3.4/ThermoRawFileParser.zip"
-    trfp_zip_name = "ThermoRawFileParser.zip"
+        # ThermoRawFileParser
+        trfp_folder = os.path.join(main_folder, "ThermoRawFileParser")
+        trfp_url = "https://github.com/compomics/ThermoRawFileParser/releases/download/v1.3.4/ThermoRawFileParser.zip"
+        trfp_zip_name = "ThermoRawFileParser.zip"
 
-    print("\nDownloading and extracting ThermoRawFileParser...")
-    download_and_extract(trfp_url, trfp_folder, trfp_zip_name)
-    update_env_file("workflow/envs/file-conversion.yaml", ["dependencies", "mono", "thermorawfileparser"])
-    update_workflow_code("workflow/rules/fileconversion.smk", {"thermorawfileparser": "mono resources/ThermoRawFileParser/ThermoRawfileparser.exe", "--output ": "--output_file "})
+        print("\nDownloading and extracting ThermoRawFileParser...")
+        download_and_extract(trfp_url, trfp_folder, trfp_zip_name)
+        update_env_file("workflow/envs/file-conversion.yaml", ["dependencies", "mono", "thermorawfileparser"])
+        update_workflow_code("workflow/rules/fileconversion.smk", {"thermorawfileparser": "mono resources/ThermoRawFileParser/ThermoRawfileparser.exe", "--output ": "--output_file "})
 
-    if not check_installed("mono"):
-        # Install mono via brew
-        if check_installed("brew"):
-            print("\nInstalling 'mono' via homebrew...")
-            subprocess.run(["brew", "install", "mono"])
-    
-    if not check_installed("mono"):
-        print("\nWARNING: 'mono' is not installed, but required for the file conversion step. Make sure it is installed (e.g. via homebrew).\n\nhttps://formulae.brew.sh/formula/mono\n\nOR install homebrew and run this script again\n\nInstall homebrew running this command:\n\n/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")
+        if not check_installed("mono"):
+            # Install mono via brew
+            if check_installed("brew"):
+                print("\nInstalling 'mono' via homebrew...")
+                subprocess.run(["brew", "install", "mono"])
+        
+        if not check_installed("mono"):
+            print("\nWARNING: 'mono' is not installed, but required for the file conversion step. Make sure it is installed (e.g. via homebrew).\n\nhttps://formulae.brew.sh/formula/mono\n\nOR install homebrew and run this script again\n\nInstall homebrew running this command:\n\n/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")
+        else:
+            print("\nThermoRawFileParser setup complete.")
+
     else:
-        print("\nThermoRawFileParser setup complete.")
+        print("Reverting MacOS related changes in the workflow code...")
+        revert_env_file("workflow/envs/openms.yaml", ["dependencies:", "  - openms=3.2", "  - zlib>=1.2.13,<2.0a0"])
+        update_workflow_code("workflow/rules/SIRIUS.smk", {" resources/Sirius/sirius.app/Contents/MacOS/sirius ": " sirius "})
+        revert_env_file("workflow/envs/sirius.yaml", ["dependencies:", "  - conda-forge::sirius-ms==5.8.6"])
+        update_workflow_code("workflow/rules/fileconversion.smk", {"mono resources/ThermoRawFileParser/ThermoRawfileparser.exe": "thermorawfileparser", "--output_file ": "--output "})
+        revert_env_file("workflow/envs/file-conversion.yaml", ["dependencies:", "  - mono", "  - bioconda::thermorawfileparser"])
 
     print("\nDONE")
+
 
 if __name__ == "__main__":
     main()
