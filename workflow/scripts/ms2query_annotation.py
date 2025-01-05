@@ -10,7 +10,7 @@ def ms2query_annotations(requant, annotated, ms2query_csv):
     df_ms2query["feature_id"] = df_ms2query["feature_id"].apply(lambda x: int(x[2:]))
     df_ms2query = df_ms2query.set_index("feature_id")
 
-    ms2query_columns = ["inchikey", "analog_compound_name", "smiles", "cf_kingdom", "cf_superclass", "cf_class", "cf_subclass", "cf_direct_parent", "npc_class_results", "npc_superclass_results", "npc_pathway_results"]
+    ms2query_columns = ["ms2query_model_prediction", "precursor_mz_difference", "inchikey", "analog_compound_name", "smiles", "cf_kingdom", "cf_superclass", "cf_class", "cf_subclass", "cf_direct_parent", "npc_class_results", "npc_superclass_results", "npc_pathway_results"]
 
     for i in df.index:
         if i in df_ms2query.index:
